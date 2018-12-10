@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  db:
+    image: "postgres:10"
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=excalibook
+
+  db-admin:
+    image: "dpage/pgadmin4:3.6"
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:5005:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin
+      - PGADMIN_DEFAULT_PASSWORD=admin
