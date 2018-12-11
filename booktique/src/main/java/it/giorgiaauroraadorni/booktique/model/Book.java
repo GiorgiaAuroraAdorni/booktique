@@ -18,7 +18,7 @@ public class Book extends AuditModel implements Serializable {
     @Id
     private Long id;
 
-    // FIXME: chack ISBN
+    // FIXME: check ISBN
     //@Id
     @NotBlank
     @Size(min = 13, max = 13)
@@ -36,7 +36,7 @@ public class Book extends AuditModel implements Serializable {
 
     @NotBlank
     @Size(min = 3, max = 100)
-    private String editor;
+    private String publisher;
 
     // FIXME
     private int edition;
@@ -109,12 +109,12 @@ public class Book extends AuditModel implements Serializable {
         this.subtitle = subtitle;
     }
 
-    public String getEditor() {
-        return editor;
+    public String getPublisher() {
+        return publisher;
     }
 
-    public void setEditor(String editor) {
-        this.editor = editor;
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
 
     public int getEdition() {
@@ -169,7 +169,7 @@ public class Book extends AuditModel implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPrequel(Book prequel) {
+        this.prequel = prequel;
     }
 }
