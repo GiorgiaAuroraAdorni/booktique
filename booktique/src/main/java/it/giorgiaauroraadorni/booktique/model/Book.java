@@ -16,7 +16,7 @@ public class Book extends AuditModel implements Serializable {
     }
 
     @Id
-    private int id;
+    private Long id;
 
     // FIXME: chack ISBN
     //@Id
@@ -28,7 +28,6 @@ public class Book extends AuditModel implements Serializable {
     @Size(min = 3, max = 100)
     private String title;
 
-    @NotBlank
     @Size(min = 3, max = 100)
     private String subtitle;
 
@@ -77,6 +76,14 @@ public class Book extends AuditModel implements Serializable {
         return authors;
     }
     */
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getIsbn() {
         return isbn;
