@@ -1,14 +1,22 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="employee")
+@Table(name = "employee")
 public class Employee extends Person {
 
     private Person employee;
+
+    @NotBlank
+    @Column(unique = true)
+    private String username;
+
+    @NotBlank
+    private String password;
 
     private LocalDate hireDate;
 
@@ -16,7 +24,7 @@ public class Employee extends Person {
     private Address address;
 
     @NotNull
-    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Employee supervisor;
 
     // Getters and Setters
@@ -50,5 +58,21 @@ public class Employee extends Person {
 
     public void setSupervisor(Employee supervisor) {
         this.supervisor = supervisor;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
