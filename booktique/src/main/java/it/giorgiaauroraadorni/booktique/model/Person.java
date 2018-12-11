@@ -3,6 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "person")
@@ -23,6 +24,9 @@ public class Person extends AuditModel {
     @NotBlank
     @Size(min = 1, max = 50)
     private String surname;
+
+    @NotBlank
+    private LocalDate birthDate;
 
     @Size(min = 1, max = 70)
     private String email;
@@ -78,6 +82,14 @@ public class Person extends AuditModel {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 }
 
