@@ -55,11 +55,15 @@ public class Book extends AuditModel implements Serializable {
     private String seriesName;
 
     // FIXME
-    @Size(min = 3, max = 100)
-    private String relatedVolumesInSeries;
+    @JoinColumn(name="prequel_id", referencedColumnName = "id", nullable = true)
+    @OneToOne(optional = true)
+    private Book prequel;
 
-    @Column(columnDefinition = "text")
-    private String description;
+    /*
+    @JoinColumn(name="sequel_id", referencedColumnName = "prequel_id", nullable = true)
+    @OneToOne(mappedBy = "prequel", optional = true)
+    private Book sequel;
+    */
 
     // FIXME: Getters and Setters
     /*public void setAuthors(Set<Author> authors) {
@@ -157,16 +161,8 @@ public class Book extends AuditModel implements Serializable {
         this.seriesName = seriesName;
     }
 
-    public String getRelatedVolumesInSeries() {
-        return relatedVolumesInSeries;
-    }
-
-    public void setRelatedVolumesInSeries(String relatedVolumesInSeries) {
-        this.relatedVolumesInSeries = relatedVolumesInSeries;
-    }
-
-    public String getDescription() {
-        return description;
+    public Book getPrequel() {
+        return prequel;
     }
 
     public void setPrequel(Book prequel) {
