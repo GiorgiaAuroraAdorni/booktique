@@ -5,6 +5,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "book")
@@ -31,8 +33,9 @@ public class Book extends AuditModel implements Serializable {
     @Size(min = 3, max = 100)
     private String subtitle;
 
-    /*// FIXME
-    private Set<Author> authors;*/
+    // FIXME
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Author> authors;
 
     @NotBlank
     @Size(min = 3, max = 100)
@@ -50,11 +53,6 @@ public class Book extends AuditModel implements Serializable {
     // FIXME
     private LocalDate publicationDate;
 
-    // FIXME
-    @Size(min = 3, max = 100)
-    private String seriesName;
-
-    // FIXME
     @JoinColumn(name="prequel_id", referencedColumnName = "id", nullable = true)
     @OneToOne(optional = true)
     private Book prequel;
@@ -65,15 +63,12 @@ public class Book extends AuditModel implements Serializable {
     private Book sequel;
     */
 
-    // FIXME: Getters and Setters
-    /*public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
-    }
-
+    //Getters and Setters
+/*
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}
             , fetch = FetchType.EAGER)
     @JoinTable(table = @Table(name = "book_author"),
-//            joinColumns = {@JoinColumn(name = "book_id")},
+            joinColumns = {@JoinColumn(name = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
 
     public Set<Author> getAuthors() {
@@ -111,6 +106,14 @@ public class Book extends AuditModel implements Serializable {
 
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
+    }
+
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
     }
 
     public String getPublisher() {
@@ -151,14 +154,6 @@ public class Book extends AuditModel implements Serializable {
 
     public void setPublicationDate(LocalDate publicationDate) {
         this.publicationDate = publicationDate;
-    }
-
-    public String getSeriesName() {
-        return seriesName;
-    }
-
-    public void setSeriesName(String seriesName) {
-        this.seriesName = seriesName;
     }
 
     public Book getPrequel() {
