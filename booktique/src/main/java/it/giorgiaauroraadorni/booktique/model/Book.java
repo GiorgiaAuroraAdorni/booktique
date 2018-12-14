@@ -53,15 +53,11 @@ public class Book extends AuditModel implements Serializable {
     // FIXME
     private LocalDate publicationDate;
 
-    @JoinColumn(name="prequel_id", referencedColumnName = "id", nullable = true)
-    @OneToOne(optional = true)
+    @OneToOne
     private Book prequel;
 
-    /*
-    @JoinColumn(name="sequel_id", referencedColumnName = "prequel_id", nullable = true)
-    @OneToOne(mappedBy = "prequel", optional = true)
+    @OneToOne(mappedBy = "prequel")
     private Book sequel;
-    */
 
     //Getters and Setters
 /*
@@ -162,5 +158,13 @@ public class Book extends AuditModel implements Serializable {
 
     public void setPrequel(Book prequel) {
         this.prequel = prequel;
+    }
+
+    public Book getSequel() {
+        return sequel;
+    }
+
+    public void setSequel(Book sequel) {
+        this.sequel = sequel;
     }
 }
