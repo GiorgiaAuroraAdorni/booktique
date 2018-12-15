@@ -1,11 +1,13 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -20,10 +22,8 @@ public class Book extends AuditModel implements Serializable {
     @Id
     private Long id;
 
-    // FIXME: check ISBN
-    //@Id
-    @NotBlank
-    @Size(min = 13, max = 13)
+    @NaturalId
+    @Pattern(regexp = "^[\\d]{13}$")
     private String isbn;
 
     @NotBlank
@@ -32,7 +32,7 @@ public class Book extends AuditModel implements Serializable {
 
     @Size(min = 3, max = 100)
     private String subtitle;
-    
+
     @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Author> authors;
 
@@ -48,7 +48,6 @@ public class Book extends AuditModel implements Serializable {
     @Enumerated(EnumType.STRING)
     private Format bookFormat;
 
-    // FIXME
     private LocalDate publicationDate;
 
     @OneToOne
@@ -58,18 +57,6 @@ public class Book extends AuditModel implements Serializable {
     private Book sequel;
 
     //Getters and Setters
-/*
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}
-            , fetch = FetchType.EAGER)
-    @JoinTable(table = @Table(name = "book_author"),
-            joinColumns = {@JoinColumn(name = "book_id")},
-            inverseJoinColumns = {@JoinColumn(name = "author_id")})
-
-    public Set<Author> getAuthors() {
-        return authors;
-    }
-    */
-
     public Long getId() {
         return id;
     }
