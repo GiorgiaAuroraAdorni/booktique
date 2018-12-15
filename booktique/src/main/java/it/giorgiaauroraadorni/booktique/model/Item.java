@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="item")
+@Table(name="items")
 public class Item extends AuditModel {
 
     @Id

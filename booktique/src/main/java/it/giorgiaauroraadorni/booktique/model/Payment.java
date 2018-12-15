@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="payment")
+@Table(name="payments")
 public class Payment extends AuditModel {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

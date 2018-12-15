@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="address")
+@Table(name="addresses")
 public class Address extends AuditModel {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

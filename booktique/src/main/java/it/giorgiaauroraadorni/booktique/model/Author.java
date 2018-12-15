@@ -3,7 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="author")
+@Table(name="authors")
 public class Author extends Person {
 
     private Person author;

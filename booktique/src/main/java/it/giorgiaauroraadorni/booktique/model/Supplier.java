@@ -3,10 +3,9 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
 
 @Entity
-@Table(name="supplier")
+@Table(name="suppliers")
 public class Supplier extends AuditModel {
 
     @Id

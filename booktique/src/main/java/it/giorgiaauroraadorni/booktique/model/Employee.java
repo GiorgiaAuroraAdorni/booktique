@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "employees")
 public class Employee extends Person {
 
     private Person employee;

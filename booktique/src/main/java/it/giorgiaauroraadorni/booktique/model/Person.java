@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "person")
+@Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Person extends AuditModel {
     @Id
@@ -35,7 +35,6 @@ public class Person extends AuditModel {
     private String phone;
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }

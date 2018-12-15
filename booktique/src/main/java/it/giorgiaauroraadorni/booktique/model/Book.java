@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book extends AuditModel implements Serializable {
     public enum Format {
         digital,
