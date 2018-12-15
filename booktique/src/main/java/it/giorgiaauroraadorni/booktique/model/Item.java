@@ -21,7 +21,7 @@ public class Item extends AuditModel {
     private double unitPrice;
 
     @NotNull
-    private int quantityPerUnit;
+    private Integer quantityPerUnit;
 
     // Getters and Setters
     public Long getId() {
@@ -56,11 +56,11 @@ public class Item extends AuditModel {
         this.unitPrice = unitPrice;
     }
 
-    public int getQuantityPerUnit() {
+    public Integer getQuantityPerUnit() {
         return quantityPerUnit;
     }
 
-    public void setQuantityPerUnit(int quantityPerUnit) {
+    public void setQuantityPerUnit(Integer quantityPerUnit) {
         this.quantityPerUnit = quantityPerUnit;
     }
 }

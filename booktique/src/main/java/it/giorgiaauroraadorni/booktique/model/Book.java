@@ -41,8 +41,7 @@ public class Book extends AuditModel implements Serializable {
     @Size(min = 3, max = 100)
     private String publisher;
 
-    // FIXME
-    private int edition;
+    private Integer edition;
 
     @Size(min = 3, max = 30)
     private String language;
@@ -120,11 +119,11 @@ public class Book extends AuditModel implements Serializable {
         this.publisher = publisher;
     }
 
-    public int getEdition() {
+    public Integer getEdition() {
         return edition;
     }
 
-    public void setEdition(int edition) {
+    public void setEdition(Integer edition) {
         this.edition = edition;
     }
 
