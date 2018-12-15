@@ -1,7 +1,9 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -24,7 +26,8 @@ public class Order extends AuditModel {
     private LocalDate shippingDate;
 
     @NotNull
-    private double amount;
+    @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
+    private BigDecimal amount;
 
     public enum Status {
         canceled,
@@ -83,11 +86,11 @@ public class Order extends AuditModel {
         this.shippingDate = shippingDate;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
