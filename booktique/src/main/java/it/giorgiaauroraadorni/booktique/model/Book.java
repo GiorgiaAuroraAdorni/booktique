@@ -32,9 +32,8 @@ public class Book extends AuditModel implements Serializable {
 
     @Size(min = 3, max = 100)
     private String subtitle;
-
-    // FIXME
-    @ManyToMany(cascade = CascadeType.ALL)
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Author> authors;
 
     @NotBlank
