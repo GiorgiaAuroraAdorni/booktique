@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="orders")
-public class Order extends AuditModel {
+@Table(name="purchases")
+public class Purchase extends AuditModel {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
@@ -40,7 +40,7 @@ public class Order extends AuditModel {
     }
 
     @Enumerated(EnumType.STRING)
-    private Order.Status status;
+    private Purchase.Status status;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Payment payment;
