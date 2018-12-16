@@ -42,8 +42,19 @@ public class Purchase extends AuditModel {
     @Enumerated(EnumType.STRING)
     private Purchase.Status status;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
-    private Payment payment;
+    @NotNull
+    private LocalDate paymentDate;
+
+    public enum paymentType {
+        creditCard,
+        cash,
+        check,
+        giftCard
+    }
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Purchase.paymentType paymentType;
 
     // Getters and Setters
     public Long getId() {
@@ -102,11 +113,19 @@ public class Purchase extends AuditModel {
         this.status = status;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public LocalDate getPaymentDate() {
+        return paymentDate;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public Purchase.paymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(Purchase.paymentType paymentType) {
+        this.paymentType = paymentType;
     }
 }
