@@ -1,7 +1,4 @@
-FROM openjdk:11-jdk
-VOLUME /tmp
-ARG DEPENDENCY=target/dependency
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","it.giorgiaauroraadorni.booktique.BooktiqueApplication"]
+FROM maven:3.6-jdk-11
+WORKDIR /app
+COPY . .
+ENTRYPOINT ["mvn", "spring-boot:run"]
