@@ -1,7 +1,10 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -13,9 +16,10 @@ public class Person extends AuditModel {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Size(min = 16, max = 16)
-    private String CF;
+    // This is an italian fiscal code.
+    @NaturalId
+    @Pattern(regexp = "^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$")
+    private String fiscalCode;
 
     @NotBlank
     @Size(min = 3, max = 50)
@@ -28,11 +32,14 @@ public class Person extends AuditModel {
     @NotBlank
     private LocalDate birthDate;
 
-    @Size(min = 1, max = 70)
+    // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
+    // that are less than 2 or more than 6 letters.
+    @Pattern(regexp = "^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$")
     private String email;
 
-    @Size(min = 1, max = 25)
-    private String phone;
+    // This is a phone number. It specifies a italian mobile phone numbers.
+    @Pattern(regexp = "^(\\((00|\\+)39\\)|(00|\\+)39)?(38[890]|34[7-90]|36[680]|33[3-90]|32[89])\\d{7}$")
+    private String mobilePhone;
 
     // Getters and Setters
     public Long getId() {
@@ -43,12 +50,12 @@ public class Person extends AuditModel {
         this.id = id;
     }
 
-    public String getCF() {
-        return CF;
+    public String getFiscalCode() {
+        return fiscalCode;
     }
 
-    public void setCF(String CF) {
-        this.CF = CF;
+    public void setFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
     }
 
     public String getName() {
@@ -75,12 +82,12 @@ public class Person extends AuditModel {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMobilePhone() {
+        return mobilePhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
     }
 
     public LocalDate getBirthDate() {
