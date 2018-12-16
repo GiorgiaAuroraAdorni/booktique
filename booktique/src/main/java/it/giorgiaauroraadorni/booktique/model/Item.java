@@ -1,7 +1,9 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name="items")
@@ -18,7 +20,8 @@ public class Item extends AuditModel {
     private Supplier supplier;
 
     @NotNull
-    private double unitPrice;
+    @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
+    private BigDecimal unitPrice;
 
     @NotNull
     private Integer quantityPerUnit;
@@ -48,11 +51,11 @@ public class Item extends AuditModel {
         this.supplier = supplier;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
