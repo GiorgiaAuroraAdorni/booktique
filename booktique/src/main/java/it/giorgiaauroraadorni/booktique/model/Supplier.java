@@ -2,6 +2,7 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -16,11 +17,14 @@ public class Supplier extends AuditModel {
     @Size(min = 3, max = 50)
     private String companyName;
 
-    @Size(min = 1, max = 70)
+    // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
+    // that are less than 2 or more than 6 letters.
+    @Pattern(regexp = "^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$")
     private String email;
 
-    @Size(min = 1, max = 25)
-    private String phone;
+    // This is a phone number. It specifies a italian mobile phone numbers.
+    @Pattern(regexp = "^(\\((00|\\+)39\\)|(00|\\+)39)?(38[890]|34[7-90]|36[680]|33[3-90]|32[89])\\d{7}$")
+    private String mobilePhone;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -50,12 +54,12 @@ public class Supplier extends AuditModel {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMobilePhone() {
+        return mobilePhone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMobilePhone(String phone) {
+        this.mobilePhone = mobilePhone;
     }
 
     public Address getAddress() {
