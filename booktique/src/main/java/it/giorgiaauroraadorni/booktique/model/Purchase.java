@@ -5,6 +5,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name="purchases")
@@ -18,6 +19,9 @@ public class Purchase extends AuditModel {
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Employee employee;
+
+    @OneToMany
+    private Set<Item> items;
 
     @NotNull
     private LocalDate orderDate;
@@ -128,4 +132,13 @@ public class Purchase extends AuditModel {
     public void setPaymentType(Purchase.paymentType paymentType) {
         this.paymentType = paymentType;
     }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<Item> items) {
+        this.items = items;
+    }
+
 }
