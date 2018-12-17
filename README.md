@@ -19,8 +19,8 @@ $ cd booktique
 $ docker-compose up
 ```
 
-<!--Alternative to `docker-compose up` it's possible to rebuild the app using  `docker-compose up --build`.-->  
-The application will be available at [http://localhost:8080/](http://localhost:8080/)
+An alternative to `docker-compose up` is the command `docker-compose up --build` that allows the rebuild of the app.  
+The application will be available at [http://localhost:8080/](http://localhost:8080/)  
 In addition, the `docker-compose.yml` file also starts an instance of pgAdmin to
 access the database directly: you can reach it at [http://localhost:5432/](http://localhost:5432/).
 
@@ -59,4 +59,15 @@ The model is composed of 9 entities:
 
 - **address** - postal information about customer and supplier. In this object is stored the street address, the postal code, the city, region and country name.
 
-## 
+#### Relationships
+
+Between those entities ther's 14 relations, in particular:
+
+- two self-relations: the first one is a One-to-One relation between a book and his prequel, inand in the other between the book and his sequel; the second is a Many-to-One relation between employees and supervisor (each employee is associated with only one supervisor).
+- one relation Many-to-Many between books and authors, handled with lazy load. <!-- (spiegare dell'altra tabella generata)-->
+- one inheritance hierarchy that involves 4 entities:  the class person serves as a superclass for employee, author and customer subclass.
+
+![alt text](images/BooktiqueDbVisualizer.png)
+
+<!--rigenerare l'immagine -->
+
