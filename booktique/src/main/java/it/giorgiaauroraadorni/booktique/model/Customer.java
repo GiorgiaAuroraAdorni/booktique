@@ -18,6 +18,7 @@ public class Customer extends Person {
 
     private String vatNumber;
 
+    // This is a full postal address for the contact represented by this object.
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 

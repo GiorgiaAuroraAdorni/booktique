@@ -14,6 +14,8 @@ import java.util.Date;
         value = {"createdAt", "updatedAt"},
         allowGetters = true
 )
+/* This class contains annotation that will automatically populate createdAt and updatedAt values when the entities
+   are persisted */
 public abstract class AuditModel implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
