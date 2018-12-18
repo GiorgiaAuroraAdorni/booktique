@@ -25,7 +25,7 @@ public class Book extends AuditModel implements Serializable {
 
     // The ISBN is a sequence of 10/13 digits start with only 978.
     @NaturalId
-    @Pattern(regexp = "/((978[\\--– ])?[0-9][0-9\\--– ]{10}[\\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])/")
+    @Pattern(regexp = "^((978[\\--– ])?[0-9][0-9\\--– ]{10}[\\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])$")
     private String isbn;
 
     @NotBlank
