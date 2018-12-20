@@ -85,4 +85,34 @@ class BookRepositoryTest {
         assertNotNull(author.getId());
     }
 
+    @Test
+    public void testPrequel() {
+        // create the prequel book
+        Book book1 = new Book();
+        book1.setIsbn("88-7782-702-5");
+        book1.setTitle("Harry Potter e la pietra filosofale");
+        book1.setPublisher("Salani Editore");
+        book1.setPublicationDate(LocalDate.of(1998, 05, 01));
+
+        // create the sequel book
+        Book book2 = new Book();
+        book2.setIsbn("88-7782-703-3");
+        book2.setTitle("Harry Potter e la camera dei segreti");
+        book2.setPublisher("Salani Editore");
+        book2.setPublicationDate(LocalDate.of(1999, 01, 01));
+        // set the book prequel
+        book2.setPrequel(book1);
+
+        // save the books in the repository
+        bookRepository.save(book1);
+        bookRepository.save(book2);
+
+        // check if the books are added correctly to the repository
+        assertTrue(bookRepository.findAll().contains(book1));
+        assertTrue(bookRepository.findAll().contains(book2));
+
+        // check if prequel and sequel are correctly setted
+        assertNotNull(book1.getSequel());
+        assertNotNull(book2.getPrequel());
+    }
 }
