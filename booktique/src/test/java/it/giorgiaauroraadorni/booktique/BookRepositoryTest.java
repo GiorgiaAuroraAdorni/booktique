@@ -14,27 +14,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookRepositoryTest {
     // Set automatically the attribute to the BookRepository instance
     @Autowired
-    private BookRepository repository;
+    private BookRepository bookRepository;
 
     @Test
     void repositoryLoads() {}
 
     @Test
-    public void testBookCreate() {
-//        Author author = new Author();
-//
-//        author.setFiscalCode("CRL ZNR 64P25 A638G");
-//        author.setName("Carlos");
-//        author.setSurname("Ruiz Zafón");
-
+    public void testSimpleBookCreate() {
+        // test only the mandatory parameter
         Book book = new Book();
         book.setIsbn("978-84-08-04364-5");
         book.setTitle("La sombra del viento");
         book.setPublisher("Editorial Planeta");
 
-        repository.save(book);
+        // save the book in the repository
+        bookRepository.save(book);
 
-        assertTrue(repository.findAll().contains(book));
+        // check if the book is added correctly to the repository
+        assertTrue(bookRepository.findAll().contains(book));
+
+        // check if the book id is correctly automatic generated
+        assertNotNull(book.getId());
+
+        // check if book contains also the annotation that will automatically populate createdAt and updatedAt
+        assertNotNull(book.getCreatedAt());
+        assertNotNull(book.getUpdatedAt());
+    }
+
     }
 
 }
