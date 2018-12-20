@@ -52,10 +52,10 @@ public class Book extends AuditModel implements Serializable {
 
     private LocalDate publicationDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Book prequel;
 
-    @OneToOne(mappedBy = "prequel")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "prequel")
     private Book sequel;
 
     //Getters and Setters
