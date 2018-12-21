@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -39,7 +41,8 @@ class BookRepositoryTest {
         bookRepository.save(book);
 
         // check if the book is added correctly to the repository
-        assertTrue(bookRepository.findAll().contains(book));
+        List<Book> savedBook = bookRepository.findAll();
+        assertTrue(savedBook.contains(book));
 
         // check if the book id is correctly automatic generated
         assertNotNull(book.getId());
@@ -73,13 +76,14 @@ class BookRepositoryTest {
         book.setBookFormat(Book.Format.hardcover);
         book.setEdition(1);
         book.setLanguage("español");
-        book.setPublicationDate(LocalDate.of(2008, 04, 17));
+        book.setPublicationDate(LocalDate.of(2008, 4, 17));
 
         // save the book in the repository
         bookRepository.save(book);
 
         // check if the book is added correctly to the repository
-        assertTrue(bookRepository.findAll().contains(book));
+        List<Book> savedBook = bookRepository.findAll();
+        assertTrue(savedBook.contains(book));
         assertNotNull(book.getAuthors());
         assertTrue(book.getAuthors().contains(author));
         assertNotNull(author.getId());
@@ -92,14 +96,14 @@ class BookRepositoryTest {
         book1.setIsbn("88-7782-702-5");
         book1.setTitle("Harry Potter e la pietra filosofale");
         book1.setPublisher("Salani Editore");
-        book1.setPublicationDate(LocalDate.of(1998, 05, 01));
+        book1.setPublicationDate(LocalDate.of(1998, 5, 1));
 
         // create the sequel book
         Book book2 = new Book();
         book2.setIsbn("88-7782-703-3");
         book2.setTitle("Harry Potter e la camera dei segreti");
         book2.setPublisher("Salani Editore");
-        book2.setPublicationDate(LocalDate.of(1999, 01, 01));
+        book2.setPublicationDate(LocalDate.of(1999, 1, 1));
         // set the book prequel
         book2.setPrequel(book1);
 
@@ -108,8 +112,9 @@ class BookRepositoryTest {
         bookRepository.save(book2);
 
         // check if the books are added correctly to the repository
-        assertTrue(bookRepository.findAll().contains(book1));
-        assertTrue(bookRepository.findAll().contains(book2));
+        List<Book> savedBook = bookRepository.findAll();
+        assertTrue(savedBook.contains(book1));
+        assertTrue(savedBook.contains(book2));
 
         // check if prequel and sequel are correctly setted
         assertNotNull(book1.getSequel());
