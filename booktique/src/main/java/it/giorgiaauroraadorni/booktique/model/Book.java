@@ -143,7 +143,7 @@ public class Book extends AuditModel implements Serializable {
         return prequel;
     }
 
-    public void setPrequel(Book prequel) {
+    private void setPrequel(Book prequel) {
         this.prequel = prequel;
     }
 
@@ -151,7 +151,16 @@ public class Book extends AuditModel implements Serializable {
         return sequel;
     }
 
-    public void setSequel(Book sequel) {
+    private void setSequel(Book sequel) {
         this.sequel = sequel;
+    }
+
+    /**
+     * Set both sides of the association, adding a prequel to the book and setting the book as a sequel for the prequel
+     * @param prequel
+     */
+    public void addPrequel(Book prequel) {
+        this.setPrequel(prequel);
+        prequel.setSequel(this);
     }
 }

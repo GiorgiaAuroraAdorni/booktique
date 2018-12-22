@@ -105,7 +105,7 @@ class BookRepositoryTest {
         book2.setPublisher("Salani Editore");
         book2.setPublicationDate(LocalDate.of(1999, 1, 1));
         // set the book prequel
-        book2.setPrequel(book1);
+        book2.addPrequel(book1);
 
         // save the books in the repository
         bookRepository.save(book1);
@@ -120,4 +120,5 @@ class BookRepositoryTest {
         assertNotNull(book1.getSequel());
         assertNotNull(book2.getPrequel());
     }
+
 }
