@@ -20,9 +20,9 @@ $ docker-compose up
 ```
 
 An alternative to `docker-compose up` is the command `docker-compose up --build` that allows the rebuild of the app.  
-The application will be available at [http://localhost:8080/](http://localhost:8080/)  
+The application will be available at <http://localhost:8080/> .  
 In addition, the `docker-compose.yml` file also starts an instance of pgAdmin to
-access the database directly: you can reach it at [http://localhost:5432/](http://localhost:5432/).
+access the database directly: you can reach it at <http://localhost:5005/>.
 
 Docker Compose also allows to locally run the unit tests:
 
