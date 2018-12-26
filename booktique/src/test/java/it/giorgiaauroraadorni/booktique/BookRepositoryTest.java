@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -119,6 +120,8 @@ class BookRepositoryTest {
             // check if the books id is correctly automatic generated
             assertNotNull(dummyBooks.get(i).getId());
 
+            //FIXME: controllare anche gli altri parametri?
+
             // check if books contain also the annotation that will automatically populate createdAt and updatedAt
             assertNotNull(dummyBooks.get(i).getCreatedAt());
             assertNotNull(dummyBooks.get(i).getUpdatedAt());
@@ -136,16 +139,62 @@ class BookRepositoryTest {
 
     @Test
     public void testBookPrequel() {
-        // check if books prequels are correctly setted
+        // check if books prequels are set correctly
         assertNotNull(dummyBooks.get(3).getPrequel());
         assertNull(dummyBooks.get(0).getPrequel());
         assertNull(dummyBooks.get(1).getPrequel());
         assertNull(dummyBooks.get(2).getPrequel());
 
-        // check if books sequels are correctly setted
+        // check if books sequels are set correctly
         assertNotNull(dummyBooks.get(2).getSequel());
         assertNull(dummyBooks.get(0).getSequel());
         assertNull(dummyBooks.get(1).getSequel());
         assertNull(dummyBooks.get(3).getSequel());
+    }
+
+    @Test
+    public void author_identifierUnicityTest() {
+        /*
+         * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
+         * by violating an integrity constraint, in particular, the unique constraints on the properties that
+         * constitute a natural-id
+         */
+
+        Author duplicatedAuthor = new Author();
+        // set manually a new id because when i try to insert a second record it results in update of existing record
+        duplicatedAuthor.setId(9999l);
+        duplicatedAuthor.setFiscalCode("ABCDEF12G24H567I");
+        duplicatedAuthor.setName("John");
+        duplicatedAuthor.setSurname("Cook");
+
+        // add and save the author in the repository
+        dummyAuthors.add(duplicatedAuthor);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            authorRepository.saveAll(dummyAuthors);
+            authorRepository.flush();
+        });
+    }
+
+    @Test
+    public void book_identifierUnicityTest() {
+        /*
+         * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
+         * by violating an integrity constraint, in particular, the unique constraints on the properties that
+         * constitute a natural-id
+         */
+
+        Book duplicatedBook = new Book();
+        // set manually a new id because when i try to insert a second record it results in update of existing record
+        duplicatedBook.setId(9999l);
+        duplicatedBook.setIsbn("978-84-08-04364-5");
+        duplicatedBook.setTitle("Mountain Of Dreams");
+        duplicatedBook.setPublisher("Adventure Publications");
+
+        // save the book in the repository
+        dummyBooks.add(duplicatedBook);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            bookRepository.saveAll(dummyBooks);
+            bookRepository.flush();
+        });
     }
 }
