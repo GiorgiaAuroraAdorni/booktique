@@ -169,7 +169,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    public void author_identifierUnicityTest() {
+    public void testUniqueAuthorIdentifier() {
         /*
          * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
          * by violating an integrity constraint, in particular, the unique constraints on the properties that
@@ -192,7 +192,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    public void book_identifierUnicityTest() {
+    public void testUniqueBookIdentifier() {
         /*
          * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
          * by violating an integrity constraint, in particular, the unique constraints on the properties that
