@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +79,7 @@ class BookRepositoryTest {
         // Create a book with many attributes
         dummyBooks.get(2).setIsbn("88-7782-702-5");
         dummyBooks.get(2).setTitle("Young In The West");
+        dummyBooks.get(2).setSubtitle("The A - Z Guide");
         dummyBooks.get(2).setPublisher("Lyon Publishing");
         dummyBooks.get(2).setAuthors(authors);
         dummyBooks.get(2).setBookFormat(Book.Format.hardcover);
@@ -116,21 +118,35 @@ class BookRepositoryTest {
 
     @Test
     public void testCreateBook() {
+        List<Book> savedBooks = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             // check if the books id is correctly automatic generated
             assertNotNull(dummyBooks.get(i).getId());
 
-            //FIXME: controllare anche gli altri parametri?
-
-            // check if books contain also the annotation that will automatically populate createdAt and updatedAt
+            // check if the books contain the createdAt and updatedAt annotation that are automatically populate
             assertNotNull(dummyBooks.get(i).getCreatedAt());
             assertNotNull(dummyBooks.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            savedBooks.add(bookRepository.getOne(dummyBooks.get(i).getId()));
+
+            assertEquals(savedBooks.get(i).getIsbn(), dummyBooks.get(i).getIsbn());
+            assertEquals(savedBooks.get(i).getTitle(), dummyBooks.get(i).getTitle());
+            assertEquals(savedBooks.get(i).getPublisher(), dummyBooks.get(i).getPublisher());
+            assertEquals(savedBooks.get(i).getAuthors(), dummyBooks.get(i).getAuthors());
+            assertEquals(savedBooks.get(i).getBookFormat(), dummyBooks.get(i).getBookFormat());
+            assertEquals(savedBooks.get(i).getEdition(), dummyBooks.get(i).getEdition());
+            assertEquals(savedBooks.get(i).getLanguage(), dummyBooks.get(i).getLanguage());
+            assertEquals(savedBooks.get(i).getPublicationDate(), dummyBooks.get(i).getPublicationDate());
+            assertEquals(savedBooks.get(i).getPrequel(), dummyBooks.get(i).getPrequel());
+            assertEquals(savedBooks.get(i).getSequel(), dummyBooks.get(i).getSequel());
+            assertEquals(savedBooks.get(i).getSubtitle(), dummyBooks.get(i).getSubtitle());
         }
     }
 
     @Test
     public void testBookAuthors() {
-        // check if
+        // check if the authors are set correctly
         assertNotNull(dummyBooks.get(1).getAuthors());
         assertNotNull(dummyBooks.get(2).getAuthors());
         assertNull(dummyBooks.get(0).getAuthors());
@@ -139,13 +155,13 @@ class BookRepositoryTest {
 
     @Test
     public void testBookPrequel() {
-        // check if books prequels are set correctly
+        // check if the books prequels are set correctly
         assertNotNull(dummyBooks.get(3).getPrequel());
         assertNull(dummyBooks.get(0).getPrequel());
         assertNull(dummyBooks.get(1).getPrequel());
         assertNull(dummyBooks.get(2).getPrequel());
 
-        // check if books sequels are set correctly
+        // check if the books sequels are set correctly
         assertNotNull(dummyBooks.get(2).getSequel());
         assertNull(dummyBooks.get(0).getSequel());
         assertNull(dummyBooks.get(1).getSequel());
