@@ -213,4 +213,25 @@ class BookRepositoryTest {
             bookRepository.flush();
         });
     }
+
+    @Test
+    public void testIllegalBookFormat() {
+        /*
+         * Throws an exception when attempting to create a book with illegal format type
+         */
+        // FIXME: change the name
+        Book wrongBook = new Book();
+        // set manually a new id because when i try to insert a second record it results in update of existing record
+        wrongBook.setTitle("The Secret Of Book");
+        wrongBook.setIsbn("9781234567897");
+        wrongBook.setPublisher("GoldWrite Publishing");
+        assertThrows(IllegalArgumentException.class, () -> wrongBook.setBookFormat(Book.Format.valueOf("AudioBook")));
+
+        // save the book in the repository
+        dummyBooks.add(wrongBook);
+        bookRepository.saveAll(dummyBooks);
+        bookRepository.flush();
+
+    }
+
 }
