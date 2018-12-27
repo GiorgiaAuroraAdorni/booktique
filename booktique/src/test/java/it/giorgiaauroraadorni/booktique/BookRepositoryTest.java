@@ -70,8 +70,8 @@ class BookRepositoryTest {
 
         // Create a book with two authors
         Set<Author> authors = new HashSet<>();
-        authors.add(dummyAuthors.get(0));
-        authors.add(dummyAuthors.get(1));
+        authors.add(authorRepository.getOne(dummyAuthors.get(0).getId()));
+        authors.add(authorRepository.getOne(dummyAuthors.get(1).getId()));
         dummyBooks.get(1).setIsbn("9788408081180");
         dummyBooks.get(1).setTitle("Witches And Rebels");
         dummyBooks.get(1).setPublisher("Lincoln Publishing");
@@ -188,10 +188,9 @@ class BookRepositoryTest {
         duplicatedAuthor.setName("John");
         duplicatedAuthor.setSurname("Cook");
 
-        // add and save the author in the repository
-        dummyAuthors.add(duplicatedAuthor);
+        // save the author in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
-            authorRepository.saveAll(dummyAuthors);
+            authorRepository.save(duplicatedAuthor);
             authorRepository.flush();
         });
     }
@@ -212,9 +211,8 @@ class BookRepositoryTest {
         duplicatedBook.setPublisher("Adventure Publications");
 
         // save the book in the repository
-        dummyBooks.add(duplicatedBook);
         assertThrows(DataIntegrityViolationException.class, () -> {
-            bookRepository.saveAll(dummyBooks);
+            bookRepository.save(duplicatedBook);
             bookRepository.flush();
         });
     }
@@ -232,8 +230,7 @@ class BookRepositoryTest {
         assertThrows(IllegalArgumentException.class, () -> wrongBook.setBookFormat(Book.Format.valueOf("AudioBook")));
 
         // save the book in the repository
-        dummyBooks.add(wrongBook);
-        bookRepository.saveAll(dummyBooks);
+        bookRepository.save(wrongBook);
         bookRepository.flush();
     }
 
@@ -245,13 +242,14 @@ class BookRepositoryTest {
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
         // change author name
-        dummyAuthors.get(0).setName("Tom");
-        Set<Author> authors = new HashSet<>();
-        authors.add(dummyAuthors.get(0));
-        savedBook.setAuthors(authors);
-
+        Author author = authorRepository.getOne(dummyAuthors.get(0).getId());
+        author.setName("Tom");
         // update the Author object
-        authorRepository.saveAll(dummyAuthors);
+        authorRepository.save(author);
+
+        // add author to book
+        Set<Author> authors = new HashSet<>();
+        savedBook.setAuthors(authors);
 
         // add a subtitle
         savedBook.setSubtitle("The Secret Of The Dreams");
@@ -259,12 +257,16 @@ class BookRepositoryTest {
         // update the Book object
         bookRepository.save(savedBook);
 
+        Book updatedBook = bookRepository.findById(savedBook.getId()).get();
+
         // check that all the attributes have been updated correctly and contain the expected value
-        assertNotNull(bookRepository.findById(savedBook.getId()));
-        assertEquals(savedBook, bookRepository.findById(dummyBooks.get(0).getId()).get());
-        assertEquals("Tom", authorRepository.findById(dummyAuthors.get(0).getId()).get().getName());
-        assertEquals(authors, bookRepository.findById(savedBook.getId()).get().getAuthors());
-        assertEquals("The Secret Of The Dreams", bookRepository.findById(savedBook.getId()).get().getSubtitle());
+        assertNotNull(updatedBook);
+        assertEquals(savedBook, updatedBook);
+        assertEquals(authors, updatedBook.getAuthors());
+        for (Author a: updatedBook.getAuthors()) {
+            assertEquals("Tom", a.getName());
+        }
+        assertEquals("The Secret Of The Dreams", updatedBook.getSubtitle());
     }
 
     @Test
