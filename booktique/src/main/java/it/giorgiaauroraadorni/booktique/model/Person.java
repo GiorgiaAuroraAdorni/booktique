@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Person extends AuditModel {
+public abstract class Person extends AuditModel {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -29,7 +29,6 @@ public class Person extends AuditModel {
     @Size(min = 1, max = 50)
     private String surname;
 
-    @NotBlank
     private LocalDate birthDate;
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
