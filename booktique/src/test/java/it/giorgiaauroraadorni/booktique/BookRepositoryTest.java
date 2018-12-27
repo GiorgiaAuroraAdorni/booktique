@@ -12,10 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -246,8 +243,7 @@ class BookRepositoryTest {
          * Update one entry partially, edit different attributes and check if the fields are changed correctly
          */
         // get a Book from the repository
-        Book savedBook = bookRepository.getOne(dummyBooks.get(0).getId());
-
+        Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
         // change author name
         dummyAuthors.get(0).setName("Tom");
         Set<Author> authors = new HashSet<>();
@@ -264,10 +260,11 @@ class BookRepositoryTest {
         bookRepository.save(savedBook);
 
         // check that all the attributes have been updated correctly and contain the expected value
-        assertEquals(savedBook, bookRepository.getOne(savedBook.getId()));
-        assertEquals("Tom", authorRepository.getOne(dummyAuthors.get(0).getId()).getName());
-        assertEquals(authors, bookRepository.getOne(savedBook.getId()).getAuthors());
-        assertEquals("The Secret Of The Dreams", bookRepository.getOne(savedBook.getId()).getSubtitle());
+        assertNotNull(bookRepository.findById(savedBook.getId()));
+        assertEquals(savedBook, bookRepository.findById(dummyBooks.get(0).getId()).get());
+        assertEquals("Tom", authorRepository.findById(dummyAuthors.get(0).getId()).get().getName());
+        assertEquals(authors, bookRepository.findById(savedBook.getId()).get().getAuthors());
+        assertEquals("The Secret Of The Dreams", bookRepository.findById(savedBook.getId()).get().getSubtitle());
     }
 
 }
