@@ -36,7 +36,9 @@ class BookRepositoryTest {
 
     @BeforeEach
     void createDummyAuthor() {
-        /* Create a list of authors entities that will be use in the test */
+        /*
+        * Create a list of authors entities that will be use in the test
+        */
         dummyAuthors = IntStream
                 .range(0, 2)
                 .mapToObj(i -> new Author())
@@ -56,7 +58,9 @@ class BookRepositoryTest {
 
     @BeforeEach
     void createDummyBook() {
-        /* Create a list of books entities that will be use in the test */
+        /*
+        * Create a list of books entities that will be use in the test
+        */
         dummyBooks = IntStream
                 .range(0, 4)
                 .mapToObj(i -> new Book())
@@ -68,7 +72,7 @@ class BookRepositoryTest {
         dummyBooks.get(0).setPublisher("Adventure Publications");
 
         // Create a book with two authors
-        Set<Author> authors = new HashSet<Author>();
+        Set<Author> authors = new HashSet<>();
         authors.add(dummyAuthors.get(0));
         authors.add(dummyAuthors.get(1));
         dummyBooks.get(1).setIsbn("9788408081180");
@@ -118,6 +122,10 @@ class BookRepositoryTest {
 
     @Test
     public void testCreateBook() {
+        /*
+         * Insert many entries in the repository and check if these are readable and the attributes are correct
+         */
+
         List<Book> savedBooks = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             // check if the books id is correctly automatic generated
@@ -219,7 +227,6 @@ class BookRepositoryTest {
         /*
          * Throws an exception when attempting to create a book with illegal format type
          */
-        // FIXME: change the name
         Book wrongBook = new Book();
         // set manually a new id because when i try to insert a second record it results in update of existing record
         wrongBook.setTitle("The Secret Of Book");
