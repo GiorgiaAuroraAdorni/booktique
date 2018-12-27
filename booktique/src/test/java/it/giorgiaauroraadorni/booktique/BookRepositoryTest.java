@@ -165,12 +165,14 @@ class BookRepositoryTest {
         assertNull(dummyBooks.get(0).getPrequel());
         assertNull(dummyBooks.get(1).getPrequel());
         assertNull(dummyBooks.get(2).getPrequel());
+        assertEquals(dummyBooks.get(2), dummyBooks.get(3).getPrequel());
 
         // check if the books sequels are set correctly
         assertNotNull(dummyBooks.get(2).getSequel());
         assertNull(dummyBooks.get(0).getSequel());
         assertNull(dummyBooks.get(1).getSequel());
         assertNull(dummyBooks.get(3).getSequel());
+        assertEquals(dummyBooks.get(3), dummyBooks.get(2).getSequel());
     }
 
     @Test
