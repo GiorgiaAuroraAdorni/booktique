@@ -267,4 +267,18 @@ class BookRepositoryTest {
         assertEquals("The Secret Of The Dreams", bookRepository.findById(savedBook.getId()).get().getSubtitle());
     }
 
+    @Test
+    public void testDeleteBook() {
+        /*
+         * Delete an entry and check if the book was removed correctly
+         */
+        // get a Book from the repository
+        Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
+
+        // delete the Book object
+        bookRepository.delete(savedBook);
+
+        // check that the book has been deleted correctly
+        assertEquals(bookRepository.findById(dummyBooks.get(0).getId()), Optional.empty());
+    }
 }
