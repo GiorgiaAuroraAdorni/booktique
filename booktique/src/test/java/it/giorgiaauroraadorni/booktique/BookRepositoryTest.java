@@ -231,7 +231,28 @@ class BookRepositoryTest {
         dummyBooks.add(wrongBook);
         bookRepository.saveAll(dummyBooks);
         bookRepository.flush();
+    }
 
+    @Test
+    public void testUpdateBook() {
+        Book savedBook = bookRepository.getOne(dummyBooks.get(0).getId());
+        savedBook.setSubtitle("The Secret Of The Dreams");
+
+        bookRepository.save(savedBook);
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(bookRepository.getOne(savedBook.getId()).getSubtitle());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getIsbn(), savedBook.getIsbn());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getTitle(), savedBook.getTitle());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getPublisher(), savedBook.getPublisher());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getAuthors(), savedBook.getAuthors());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getBookFormat(), savedBook.getBookFormat());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getEdition(), savedBook.getEdition());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getLanguage(), savedBook.getLanguage());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getPublicationDate(), savedBook.getPublicationDate());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getPrequel(), savedBook.getPrequel());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getSequel(), savedBook.getSequel());
+        assertEquals(bookRepository.getOne(savedBook.getId()).getSubtitle(), savedBook.getSubtitle());
     }
 
 }
