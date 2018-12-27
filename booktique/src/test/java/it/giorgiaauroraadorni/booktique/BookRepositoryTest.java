@@ -235,24 +235,32 @@ class BookRepositoryTest {
 
     @Test
     public void testUpdateBook() {
+        /*
+         * Update one entry partially, edit different attributes and check if the fields are changed correctly
+         */
+        // get a Book from the repository
         Book savedBook = bookRepository.getOne(dummyBooks.get(0).getId());
+
+        // change author name
+        dummyAuthors.get(0).setName("Tom");
+        Set<Author> authors = new HashSet<>();
+        authors.add(dummyAuthors.get(0));
+        savedBook.setAuthors(authors);
+
+        // update the Author object
+        authorRepository.saveAll(dummyAuthors);
+
+        // add a subtitle
         savedBook.setSubtitle("The Secret Of The Dreams");
 
+        // update the Book object
         bookRepository.save(savedBook);
 
         // check that all the attributes have been updated correctly and contain the expected value
-        assertNotNull(bookRepository.getOne(savedBook.getId()).getSubtitle());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getIsbn(), savedBook.getIsbn());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getTitle(), savedBook.getTitle());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getPublisher(), savedBook.getPublisher());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getAuthors(), savedBook.getAuthors());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getBookFormat(), savedBook.getBookFormat());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getEdition(), savedBook.getEdition());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getLanguage(), savedBook.getLanguage());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getPublicationDate(), savedBook.getPublicationDate());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getPrequel(), savedBook.getPrequel());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getSequel(), savedBook.getSequel());
-        assertEquals(bookRepository.getOne(savedBook.getId()).getSubtitle(), savedBook.getSubtitle());
+        assertEquals(savedBook, bookRepository.getOne(savedBook.getId()));
+        assertEquals("Tom", authorRepository.getOne(dummyAuthors.get(0).getId()).getName());
+        assertEquals(authors, bookRepository.getOne(savedBook.getId()).getAuthors());
+        assertEquals("The Secret Of The Dreams", bookRepository.getOne(savedBook.getId()).getSubtitle());
     }
 
 }
