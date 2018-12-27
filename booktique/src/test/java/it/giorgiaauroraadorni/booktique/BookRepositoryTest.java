@@ -320,5 +320,38 @@ class BookRepositoryTest {
         assertNotNull(bookSequelAfterDel);
         assertNull(bookSequelAfterDel.getPrequel());
         assertNotEquals(bookPrequel, bookSequelAfterDel.getPrequel());
+
+        // at the end re-delete all the entries
+        bookRepository.deleteAll();
+    }
+
+    @Test
+    public void testDeleteBookSequel() {
+        /*
+         * Delete an entry and check if the book was removed correctly
+         */
+        // re-insert all the entries and verifying that the operation has been carried out correctly
+        bookRepository.saveAll(dummyBooks);
+        var savedBook = bookRepository.findAll();
+        assertTrue(savedBook.containsAll(dummyBooks));
+
+        // get a Book from the repository
+        Book bookSequel = bookRepository.findById(dummyBooks.get(3).getId()).get();
+        Book bookPrequel = bookSequel.getPrequel();
+
+        // delete the Book object
+        bookRepository.delete(bookSequel);
+        // update the book sequel
+        bookPrequel.addSequel(null);
+        bookRepository.save(bookPrequel);
+
+        Book bookPrequelAfterDel = bookRepository.findById(bookPrequel.getId()).get();
+
+        // check that the book has been deleted correctly
+        assertEquals(bookRepository.findById(dummyBooks.get(3).getId()), Optional.empty());
+        // check if the sequel field is correctly update
+        assertNotNull(bookPrequelAfterDel);
+        assertNull(bookPrequelAfterDel.getSequel());
+        assertNotEquals(bookSequel, bookPrequelAfterDel.getSequel());
     }
 }
