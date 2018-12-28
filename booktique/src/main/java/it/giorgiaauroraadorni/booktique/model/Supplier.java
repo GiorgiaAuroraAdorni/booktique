@@ -3,7 +3,6 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="suppliers")
@@ -14,7 +13,7 @@ public class Supplier extends AuditModel {
     private Long id;
 
     @NotBlank
-    @Size(min = 3, max = 50)
+    @Column(length = 30)
     private String companyName;
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains

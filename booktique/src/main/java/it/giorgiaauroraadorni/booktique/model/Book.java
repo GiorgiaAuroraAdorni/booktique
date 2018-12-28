@@ -29,22 +29,22 @@ public class Book extends AuditModel implements Serializable {
     private String isbn;
 
     @NotBlank
-    @Size(min = 3, max = 100)
+    @Column(length = 100)
     private String title;
 
-    @Size(min = 3, max = 100)
+    @Column(length = 100)
     private String subtitle;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Author> authors;
 
     @NotBlank
-    @Size(min = 3, max = 100)
+    @Column(length = 30)
     private String publisher;
 
     private Integer edition;
 
-    @Size(min = 3, max = 30)
+    @Column(length = 30)
     private String language;
 
     @Enumerated(EnumType.STRING)

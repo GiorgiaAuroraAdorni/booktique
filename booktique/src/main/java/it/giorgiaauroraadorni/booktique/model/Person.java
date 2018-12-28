@@ -5,7 +5,6 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -22,11 +21,11 @@ public abstract class Person extends AuditModel {
     private String fiscalCode;
 
     @NotBlank
-    @Size(min = 3, max = 50)
+    @Column(length = 30)
     private String name;
 
     @NotBlank
-    @Size(min = 1, max = 50)
+    @Column(length = 30)
     private String surname;
 
     private LocalDate dateOfBirth;
@@ -37,7 +36,7 @@ public abstract class Person extends AuditModel {
     private String email;
 
     // This is a phone number. It specifies a italian mobile phone numbers.
-    @Pattern(regexp = "^([+]39)?((3[1-9][0-9]))([\\d]{7})$")
+    @Pattern(regexp = "^([+]39)?(3[1-9][0-9])([\\d]{7})$")
     private String mobilePhone;
 
     // Getters and Setters

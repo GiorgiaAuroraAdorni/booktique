@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="addresses")
@@ -11,29 +10,25 @@ public class Address extends AuditModel {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    //
     @NotBlank
-    @Size(min = 5, max = 120)
     private String address;
 
-    //
-    @Size(min = 1, max = 120)
     private String building;
 
     @NotBlank
-    @Size(min = 2, max = 80)
+    @Column(length = 189)
     private String city;
 
     @NotBlank
-    @Size(min = 2, max = 30)
+    @Column(length = 90)
     private String region;
 
     @NotBlank
-    @Size(max = 10)
+    @Column(length = 18)
     private String postalCode;
 
     @NotBlank
-    @Size(min = 2, max = 30)
+    @Column(length = 90)
     private String country;
 
     // Getters and Setters

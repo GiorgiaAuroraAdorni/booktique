@@ -12,10 +12,11 @@ public class Employee extends Person {
     private Person employee;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, length = 30)
     private String username;
 
     @NotBlank
+    @Column(length = 30)
     private String password;
 
     private LocalDate hireDate;

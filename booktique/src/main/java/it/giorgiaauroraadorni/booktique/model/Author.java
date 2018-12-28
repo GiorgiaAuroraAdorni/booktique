@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="authors")
@@ -10,7 +9,7 @@ public class Author extends Person {
 
     private Person author;
 
-    @Size(min = 10, max = 280)
+    @Column(length = 280)
     private String biography;
 
     // The web site url matches with or without protocol.
