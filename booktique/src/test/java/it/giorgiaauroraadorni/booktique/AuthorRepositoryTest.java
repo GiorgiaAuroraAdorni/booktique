@@ -68,4 +68,15 @@ class AuthorRepositoryTest {
         // save the authors in the repository
         authorRepository.saveAll(dummyAuthors);
     }
+
+    @Test
+    void repositoryLoads() {}
+
+    @Test
+    void repositoryFindAll() {
+        var savedAuthor = authorRepository.findAll();
+
+        // check if all the authors are correctly added to the repository
+        assertTrue(savedAuthor.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
+    }
 }
