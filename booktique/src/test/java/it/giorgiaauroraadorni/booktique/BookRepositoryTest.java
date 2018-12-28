@@ -205,7 +205,7 @@ class BookRepositoryTest {
          */
         Book wrongBook = new Book();
 
-        // set manually a new id because when i try to insert a second record it results in update of existing record
+        // set manually a new id in order to insert a new record and not for update an existing record
         wrongBook.setTitle("The Secret Of Book");
         wrongBook.setIsbn("9781234567897");
         wrongBook.setPublisher("GoldWrite Publishing");
@@ -250,6 +250,44 @@ class BookRepositoryTest {
             assertEquals("Tom", a.getName());
         }
         assertEquals("The Secret Of The Dreams", updatedBook.getSubtitle());
+    }
+
+    @Test
+    public void testUpdateBookPrequel() {
+        /*
+         * Update one entry with prequel or sequel attribute and check if the fields are changed correctly
+         */
+        // get a Book from the repository
+        Book sequelBook = bookRepository.findById(dummyBooks.get(3).getId()).get();
+        Book initialPrequelBook = sequelBook.getPrequel();
+
+        // change the book prequel and set null the sequel of the initial prequel
+        sequelBook.addPrequel(bookRepository.findById(dummyBooks.get(1).getId()).get());
+        initialPrequelBook.addSequel(null);
+
+        // update the book object
+        bookRepository.save(sequelBook);
+
+        Book updatedSequelBook = bookRepository.findById(sequelBook.getId()).get();
+        Book newPrequelBook = sequelBook.getPrequel();
+
+        // check that all book exist
+        assertNotNull(updatedSequelBook);
+        assertNotNull(initialPrequelBook);
+        assertNotNull(newPrequelBook);
+
+        // check that the sequel book attributes have been updated correctly and contain the expected value
+        assertNull(updatedSequelBook.getSequel());
+        assertEquals(sequelBook, updatedSequelBook);
+        assertEquals(newPrequelBook, updatedSequelBook.getPrequel());
+        assertNotEquals(initialPrequelBook, updatedSequelBook.getPrequel());
+
+        // check that the initial prequel book attributes have been updated correctly and contain the expected value
+        assertNull(initialPrequelBook.getSequel());
+        assertNotEquals(updatedSequelBook, initialPrequelBook.getSequel());
+
+        // check that the neq prequel book attributes have been updated correctly and contain the expected value
+        assertEquals(updatedSequelBook, newPrequelBook.getSequel());
     }
 
     @Test
