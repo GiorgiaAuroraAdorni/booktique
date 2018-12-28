@@ -37,12 +37,12 @@ class AuthorRepositoryTest {
                 .mapToObj(i -> new Author())
                 .collect(Collectors.toList());
 
-        // Create an author with only the mandatory parameter (inherited from person)
+        // create an author with only the mandatory parameter (inherited from person)
         dummyAuthors.get(0).setFiscalCode("ABCDEF12G24H567I");
         dummyAuthors.get(0).setName("John");
         dummyAuthors.get(0).setSurname("Cook");
 
-        // Create an author with all the person attributes
+        // create an author with all the person attributes
 
         dummyAuthors.get(1).setFiscalCode("LMNOPQ89R10S111T");
         dummyAuthors.get(1).setName("Nathalie");
@@ -51,7 +51,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(1).setEmail("NathalieRussel@mail.com");
         dummyAuthors.get(1).setMobilePhone("+393739739330");
 
-        // Create an author with many attributes
+        // create an author with many attributes
         dummyAuthors.get(2).setFiscalCode("SMTJLU80T52F205H");
         dummyAuthors.get(2).setName("Julie");
         dummyAuthors.get(2).setSurname("Smith");
@@ -62,6 +62,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(2).setBiography("Julie is a friendly government politician. She has a post-graduate degree " +
                 "in philosophy, politics and economics. \\n She is currently single. Her most recent romance was with" +
                 " a sous chef called Walter Roland Campbell.\\n Julie has one child with Walter: Montgomery aged 4.");
+
         // save the authors in the repository
         authorRepository.saveAll(dummyAuthors);
     }
@@ -160,6 +161,7 @@ class AuthorRepositoryTest {
          * Throws an exception when attempting to create an author without mandatory attributes
          */
         Author wrongAuthor = new Author();
+
         assertThrows(ConstraintViolationException.class, () -> {
             authorRepository.save(wrongAuthor);
             authorRepository.flush();
@@ -243,7 +245,6 @@ class AuthorRepositoryTest {
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        //wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
         assertThrows(DateTimeException.class, () -> {
             wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
             authorRepository.save(wrongAuthor);
@@ -251,6 +252,28 @@ class AuthorRepositoryTest {
         });
     }
 
+    @Test
+    public void testIllegalSizeAttributes() {
+        /*
+         * Throws an exception when attempting to create or update an author with illegal size for the attributes
+         */
+        Author wrongAuthor = new Author();
+
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            wrongAuthor.setBiography("Julie is a friendly government politician. She has a post-graduate degree in " +
+                "philosophy, politics and economics. \n She is currently single. Her most recent romance was with a " +
+                "sous chef called Walter Roland Campbell, who was the same age as her. They broke up because Walter " +
+                "wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend Walter: " +
+                "Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty. They " +
+                "have a very fiery friendship.");
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+
+        // FIXME: add test for name/surname too long (more than 30 character)
     }
 
     @Test
@@ -271,5 +294,4 @@ class AuthorRepositoryTest {
         authorRepository.deleteAll();
         assertTrue(authorRepository.findAll().isEmpty());
     }
-
 }
