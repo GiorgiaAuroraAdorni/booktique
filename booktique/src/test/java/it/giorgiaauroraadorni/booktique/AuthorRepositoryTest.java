@@ -104,4 +104,26 @@ class AuthorRepositoryTest {
             assertEquals(savedAuthor.get(i).getBiography(), dummyAuthors.get(i).getBiography());
         }
     }
+
+    @Test
+    public void testUniqueAuthorIdentifier() {
+        /*
+         * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
+         * by violating an integrity constraint, in particular, the unique constraints on the properties that
+         * constitute a natural-id
+         */
+        Author duplicatedAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        duplicatedAuthor.setId(9999l);
+        duplicatedAuthor.setFiscalCode("ABCDEF12G24H567I");
+        duplicatedAuthor.setName("John");
+        duplicatedAuthor.setSurname("Cook");
+
+        // save the author in the repository
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            authorRepository.save(duplicatedAuthor);
+            authorRepository.flush();
+        });
+    }
 }

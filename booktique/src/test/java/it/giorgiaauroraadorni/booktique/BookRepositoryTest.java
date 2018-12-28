@@ -125,7 +125,7 @@ class BookRepositoryTest {
         List<Book> savedBooks = new ArrayList<>();
 
         for (int i = 0; i < dummyBooks.size(); i++) {
-            // check if the books id is correctly automatic generated
+            // check if the books id are correctly automatic generated
             assertNotNull(bookRepository.getOne(dummyBooks.get(i).getId()));
             savedBooks.add(bookRepository.getOne(dummyBooks.get(i).getId()));
 
@@ -177,28 +177,6 @@ class BookRepositoryTest {
     }
 
     @Test
-    public void testUniqueAuthorIdentifier() {
-        /*
-         * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
-         * by violating an integrity constraint, in particular, the unique constraints on the properties that
-         * constitute a natural-id
-         */
-        Author duplicatedAuthor = new Author();
-
-        // set manually a new id because when i try to insert a second record it results in update of existing record
-        duplicatedAuthor.setId(9999l);
-        duplicatedAuthor.setFiscalCode("ABCDEF12G24H567I");
-        duplicatedAuthor.setName("John");
-        duplicatedAuthor.setSurname("Cook");
-
-        // save the author in the repository
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            authorRepository.save(duplicatedAuthor);
-            authorRepository.flush();
-        });
-    }
-
-    @Test
     public void testUniqueBookIdentifier() {
         /*
          * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
@@ -207,7 +185,7 @@ class BookRepositoryTest {
          */
         Book duplicatedBook = new Book();
 
-        // set manually a new id because when i try to insert a second record it results in update of existing record
+        // set manually a new id in order to insert a new record and not for update an existing record
         duplicatedBook.setId(9999l);
         duplicatedBook.setIsbn("978-84-08-04364-5");
         duplicatedBook.setTitle("Mountain Of Dreams");
