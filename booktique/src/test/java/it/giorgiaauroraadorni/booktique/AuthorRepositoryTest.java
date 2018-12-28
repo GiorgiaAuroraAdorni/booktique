@@ -155,6 +155,18 @@ class AuthorRepositoryTest {
     }
 
     @Test
+    public void testIllegalCreateAuthor() {
+        /*
+         * Throws an exception when attempting to create an author without mandatory attributes
+         */
+        Author wrongAuthor = new Author();
+        assertThrows(ConstraintViolationException.class, () -> {
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
+
+    @Test
     public void testIllegalFiscalCodeFormat() {
         /*
          * Throws an exception when attempting to create an author with illegal fiscal code format type
