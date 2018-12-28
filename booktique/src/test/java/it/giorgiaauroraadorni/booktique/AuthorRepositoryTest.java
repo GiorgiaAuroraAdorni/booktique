@@ -49,7 +49,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(1).setSurname("Russel");
         dummyAuthors.get(1).setBirthDate(LocalDate.of(1900, 1, 1));
         dummyAuthors.get(1).setEmail("NathalieRussel@mail.com");
-        dummyAuthors.get(1).setMobilePhone("+39373973933");
+        dummyAuthors.get(1).setMobilePhone("+393739739330");
 
         // Create an author with many attributes
         dummyAuthors.get(2).setFiscalCode("SMTJLU80T52F205H");
@@ -57,7 +57,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(2).setSurname("Smith");
         dummyAuthors.get(2).setBirthDate(LocalDate.of(1980, 12, 12));
         dummyAuthors.get(2).setEmail("JulieSmith@mail.com");
-        dummyAuthors.get(2).setMobilePhone("326330961");
+        dummyAuthors.get(2).setMobilePhone("3263309610");
         dummyAuthors.get(2).setWebSiteURL("https://www.JulieSmith.org");
         dummyAuthors.get(2).setBiography("Julie is a friendly government politician. She has a post-graduate degree " +
                 "in philosophy, politics and economics. \\n She is currently single. Her most recent romance was with" +
