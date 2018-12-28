@@ -79,4 +79,32 @@ class AuthorRepositoryTest {
         // check if all the authors are correctly added to the repository
         assertTrue(savedAuthor.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
     }
+
+    @Test
+    public void testCreateBook() {
+        /*
+         * Insert many entries in the repository and check if these are readable and the attributes are correct
+         */
+        List<Author> savedAuthor = new ArrayList<>();
+
+        for (int i = 0; i < dummyAuthors.size(); i++) {
+            // check if the authors id are correctly automatic generated
+            assertNotNull(authorRepository.getOne(dummyAuthors.get(i).getId()));
+            savedAuthor.add(authorRepository.getOne(dummyAuthors.get(i).getId()));
+
+            // check if the authors contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedAuthor.get(i).getCreatedAt());
+            assertNotNull(savedAuthor.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedAuthor.get(i).getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
+            assertEquals(savedAuthor.get(i).getName(), dummyAuthors.get(i).getName());
+            assertEquals(savedAuthor.get(i).getSurname(), dummyAuthors.get(i).getSurname());
+            assertEquals(savedAuthor.get(i).getBirthDate(), dummyAuthors.get(i).getBirthDate());
+            assertEquals(savedAuthor.get(i).getEmail(), dummyAuthors.get(i).getEmail());
+            assertEquals(savedAuthor.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
+            assertEquals(savedAuthor.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
+            assertEquals(savedAuthor.get(i).getBiography(), dummyAuthors.get(i).getBiography());
+        }
+    }
 }
