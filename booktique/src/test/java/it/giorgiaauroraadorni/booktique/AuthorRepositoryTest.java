@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -189,6 +190,64 @@ class AuthorRepositoryTest {
             authorRepository.flush();
         });
     }
+
+    @Test
+    public void testIllegalEmailFormat() {
+        /*
+         * Throws an exception when attempting to create an author with illegal email format type
+         */
+        Author wrongAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        wrongAuthor.setId(999l);
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        wrongAuthor.setEmail("KimmyTurner@mail@10.com");
+        assertThrows(ConstraintViolationException.class, () -> {
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
+
+    @Test
+    public void testIllegalMobilePhoneFormat() {
+        /*
+         * Throws an exception when attempting to create an author with illegal mobile phone format type
+         */
+        Author wrongAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        wrongAuthor.setId(999l);
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        wrongAuthor.setMobilePhone("0039333123456");
+        assertThrows(ConstraintViolationException.class, () -> {
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
+
+    @Test
+    public void testIllegalDateOfBirthFormat() {
+        /*
+         * Throws an exception when attempting to create an author with illegal date of birth format type
+         */
+        Author wrongAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        wrongAuthor.setId(999l);
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        //wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
+        assertThrows(DateTimeException.class, () -> wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32)));
+
+        authorRepository.save(wrongAuthor);
+        authorRepository.flush();
+    }
+
     @Test
     public void testDeleteAuthor() {
         /*
