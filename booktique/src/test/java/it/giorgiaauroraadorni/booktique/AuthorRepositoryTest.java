@@ -244,10 +244,13 @@ class AuthorRepositoryTest {
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
         //wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
-        assertThrows(DateTimeException.class, () -> wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32)));
+        assertThrows(DateTimeException.class, () -> {
+            wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
 
-        authorRepository.save(wrongAuthor);
-        authorRepository.flush();
     }
 
     @Test
