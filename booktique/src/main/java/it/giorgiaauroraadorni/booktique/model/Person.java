@@ -29,7 +29,7 @@ public abstract class Person extends AuditModel {
     @Size(min = 1, max = 50)
     private String surname;
 
-    private LocalDate birthDate;
+    private LocalDate dateOfBirth;
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
     // that are less than 2 or more than 6 letters.
@@ -89,12 +89,12 @@ public abstract class Person extends AuditModel {
         this.mobilePhone = mobilePhone;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }
 

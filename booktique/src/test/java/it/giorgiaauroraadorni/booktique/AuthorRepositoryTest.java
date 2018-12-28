@@ -47,7 +47,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(1).setFiscalCode("LMNOPQ89R10S111T");
         dummyAuthors.get(1).setName("Nathalie");
         dummyAuthors.get(1).setSurname("Russel");
-        dummyAuthors.get(1).setBirthDate(LocalDate.of(1900, 1, 1));
+        dummyAuthors.get(1).setDateOfBirth(LocalDate.of(1900, 1, 1));
         dummyAuthors.get(1).setEmail("NathalieRussel@mail.com");
         dummyAuthors.get(1).setMobilePhone("+393739739330");
 
@@ -55,7 +55,7 @@ class AuthorRepositoryTest {
         dummyAuthors.get(2).setFiscalCode("SMTJLU80T52F205H");
         dummyAuthors.get(2).setName("Julie");
         dummyAuthors.get(2).setSurname("Smith");
-        dummyAuthors.get(2).setBirthDate(LocalDate.of(1980, 12, 12));
+        dummyAuthors.get(2).setDateOfBirth(LocalDate.of(1980, 12, 12));
         dummyAuthors.get(2).setEmail("JulieSmith@mail.com");
         dummyAuthors.get(2).setMobilePhone("3263309610");
         dummyAuthors.get(2).setWebSiteURL("https://www.JulieSmith.org");
@@ -97,7 +97,7 @@ class AuthorRepositoryTest {
             assertEquals(savedAuthor.get(i).getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
             assertEquals(savedAuthor.get(i).getName(), dummyAuthors.get(i).getName());
             assertEquals(savedAuthor.get(i).getSurname(), dummyAuthors.get(i).getSurname());
-            assertEquals(savedAuthor.get(i).getBirthDate(), dummyAuthors.get(i).getBirthDate());
+            assertEquals(savedAuthor.get(i).getDateOfBirth(), dummyAuthors.get(i).getDateOfBirth());
             assertEquals(savedAuthor.get(i).getEmail(), dummyAuthors.get(i).getEmail());
             assertEquals(savedAuthor.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
             assertEquals(savedAuthor.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
