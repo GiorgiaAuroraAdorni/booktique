@@ -126,4 +126,31 @@ class AuthorRepositoryTest {
             authorRepository.flush();
         });
     }
+
+    @Test
+    public void testUpdateAuthor() {
+        /*
+         * Update one entry partially, edit different attributes and check if the fields are changed correctly
+         */
+        // get an author from the repository
+        Author savedAuthor = authorRepository.findById(dummyAuthors.get(2).getId()).get();
+
+        // change some attributes
+        savedAuthor.setName("Tom");
+        savedAuthor.setWebSiteURL("http://www.TomSmith.org");
+        savedAuthor.setEmail("TomSmith@mail.com");
+        savedAuthor.setBiography(null);
+
+        // update the Author object
+        authorRepository.save(savedAuthor);
+        Author updatedAuthor = authorRepository.findById(savedAuthor.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedAuthor);
+        assertEquals(savedAuthor, updatedAuthor);
+        assertEquals("Tom", updatedAuthor.getName());
+        assertEquals("http://www.TomSmith.org", updatedAuthor.getWebSiteURL());
+        assertEquals("TomSmith@mail.com", updatedAuthor.getEmail());
+        assertNull(updatedAuthor.getBiography());
+    }
 }
