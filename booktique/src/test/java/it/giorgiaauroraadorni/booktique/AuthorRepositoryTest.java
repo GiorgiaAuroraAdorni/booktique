@@ -173,8 +173,6 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
-        wrongAuthor.setId(999l);
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
@@ -191,8 +189,6 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
-        wrongAuthor.setId(999l);
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
@@ -210,8 +206,6 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
-        wrongAuthor.setId(999l);
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
@@ -229,8 +223,6 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
-        wrongAuthor.setId(999l);
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
@@ -248,8 +240,6 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
-        wrongAuthor.setId(999l);
         wrongAuthor.setName("Kimmy");
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
