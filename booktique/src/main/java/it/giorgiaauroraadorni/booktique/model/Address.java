@@ -11,15 +11,17 @@ public class Address extends AuditModel {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
+    //
     @NotBlank
-    @Size(min = 10, max = 120)
+    @Size(min = 5, max = 120)
     private String address;
 
-    @Size(min = 10, max = 120)
+    //
+    @Size(min = 1, max = 120)
     private String building;
 
     @NotBlank
-    @Size(min = 10, max = 80)
+    @Size(min = 2, max = 80)
     private String city;
 
     @NotBlank
