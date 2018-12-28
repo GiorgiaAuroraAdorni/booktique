@@ -124,7 +124,7 @@ class BookRepositoryTest {
          */
         List<Book> savedBooks = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < dummyBooks.size(); i++) {
             // check if the books id is correctly automatic generated
             assertNotNull(bookRepository.getOne(dummyBooks.get(i).getId()));
             savedBooks.add(bookRepository.getOne(dummyBooks.get(i).getId()));
