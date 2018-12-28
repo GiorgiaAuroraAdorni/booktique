@@ -153,4 +153,24 @@ class AuthorRepositoryTest {
         assertEquals("TomSmith@mail.com", updatedAuthor.getEmail());
         assertNull(updatedAuthor.getBiography());
     }
+
+    @Test
+    public void testDeleteAuthor() {
+        /*
+         * Delete an entry and check if it was removed correctly
+         */
+        // get an author from the repository
+        Author savedAuthor = authorRepository.findById(dummyAuthors.get(0).getId()).get();
+
+        // delete the author object
+        authorRepository.delete(savedAuthor);
+
+        // check that the author has been deleted correctly
+        assertEquals(authorRepository.findById(dummyAuthors.get(0).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        authorRepository.deleteAll();
+        assertTrue(authorRepository.findAll().isEmpty());
+    }
+
 }
