@@ -60,11 +60,8 @@ class AuthorRepositoryTest {
         dummyAuthors.get(2).setMobilePhone("326330961");
         dummyAuthors.get(2).setWebSiteURL("https://www.JulieSmith.org");
         dummyAuthors.get(2).setBiography("Julie is a friendly government politician. She has a post-graduate degree " +
-                "in  philosophy, politics and economics. \n She is currently single. Her most recent romance was with" +
-                " a sous chef called Walter Roland Campbell, who was the same age as her. They broke up because " +
-                "Walter wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend " +
-                "Walter: Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty." +
-                "They have a very fiery friendship.");
+                "in philosophy, politics and economics. \\n She is currently single. Her most recent romance was with" +
+                " a sous chef called Walter Roland Campbell.\\n Julie has one child with Walter: Montgomery aged 4.");
         // save the authors in the repository
         authorRepository.saveAll(dummyAuthors);
     }
