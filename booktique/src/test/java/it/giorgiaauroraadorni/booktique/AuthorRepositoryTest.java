@@ -1,9 +1,7 @@
 package it.giorgiaauroraadorni.booktique;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
-import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.repository.AuthorRepository;
-import it.giorgiaauroraadorni.booktique.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -154,6 +153,42 @@ class AuthorRepositoryTest {
         assertNull(updatedAuthor.getBiography());
     }
 
+    @Test
+    public void testIllegalFiscalCodeFormat() {
+        /*
+         * Throws an exception when attempting to create an author with illegal fiscal code format type
+         */
+        Author wrongAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        wrongAuthor.setId(999l);
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
+        assertThrows(ConstraintViolationException.class, () -> {
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
+
+    @Test
+    public void testIllegalWebSiteURLFormat() {
+        /*
+         * Throws an exception when attempting to create an author with illegal website URL format type
+         */
+        Author wrongAuthor = new Author();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        wrongAuthor.setId(999l);
+        wrongAuthor.setName("Kimmy");
+        wrongAuthor.setSurname("Turner");
+        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        wrongAuthor.setWebSiteURL("KimmyTurner.com");
+        assertThrows(ConstraintViolationException.class, () -> {
+            authorRepository.save(wrongAuthor);
+            authorRepository.flush();
+        });
+    }
     @Test
     public void testDeleteAuthor() {
         /*
