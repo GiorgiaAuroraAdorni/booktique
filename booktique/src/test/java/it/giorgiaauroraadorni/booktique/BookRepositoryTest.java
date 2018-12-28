@@ -122,19 +122,18 @@ class BookRepositoryTest {
         /*
          * Insert many entries in the repository and check if these are readable and the attributes are correct
          */
-
         List<Book> savedBooks = new ArrayList<>();
+
         for (int i = 0; i < 4; i++) {
             // check if the books id is correctly automatic generated
-            assertNotNull(dummyBooks.get(i).getId());
-
-            // check if the books contain the createdAt and updatedAt annotation that are automatically populate
-            assertNotNull(dummyBooks.get(i).getCreatedAt());
-            assertNotNull(dummyBooks.get(i).getUpdatedAt());
-
-            // check that all the attributes have been created correctly and contain the expected value
+            assertNotNull(bookRepository.getOne(dummyBooks.get(i).getId()));
             savedBooks.add(bookRepository.getOne(dummyBooks.get(i).getId()));
 
+            // check if the books contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedBooks.get(i).getCreatedAt());
+            assertNotNull(savedBooks.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
             assertEquals(savedBooks.get(i).getIsbn(), dummyBooks.get(i).getIsbn());
             assertEquals(savedBooks.get(i).getTitle(), dummyBooks.get(i).getTitle());
             assertEquals(savedBooks.get(i).getPublisher(), dummyBooks.get(i).getPublisher());
@@ -152,27 +151,29 @@ class BookRepositoryTest {
     @Test
     public void testBookAuthors() {
         // check if the authors are set correctly
-        assertNotNull(dummyBooks.get(1).getAuthors());
-        assertNotNull(dummyBooks.get(2).getAuthors());
-        assertNull(dummyBooks.get(0).getAuthors());
-        assertNull(dummyBooks.get(3).getAuthors());
+        assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getAuthors());
+        assertNotNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getAuthors());
+        assertNotNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getAuthors());
+        assertNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getAuthors());
     }
 
     @Test
     public void testBookPrequel() {
         // check if the books prequels are set correctly
-        assertNotNull(dummyBooks.get(3).getPrequel());
-        assertNull(dummyBooks.get(0).getPrequel());
-        assertNull(dummyBooks.get(1).getPrequel());
-        assertNull(dummyBooks.get(2).getPrequel());
-        assertEquals(dummyBooks.get(2), dummyBooks.get(3).getPrequel());
+        assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getPrequel());
+        assertNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getPrequel());
+        assertNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getPrequel());
+        assertNotNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getPrequel());
+        assertEquals(bookRepository.getOne(dummyBooks.get(2).getId()),
+                bookRepository.getOne(dummyBooks.get(3).getId()).getPrequel());
 
         // check if the books sequels are set correctly
-        assertNotNull(dummyBooks.get(2).getSequel());
-        assertNull(dummyBooks.get(0).getSequel());
-        assertNull(dummyBooks.get(1).getSequel());
-        assertNull(dummyBooks.get(3).getSequel());
-        assertEquals(dummyBooks.get(3), dummyBooks.get(2).getSequel());
+        assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getSequel());
+        assertNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getSequel());
+        assertNotNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getSequel());
+        assertNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getSequel());
+        assertEquals(bookRepository.getOne(dummyBooks.get(3).getId()),
+                bookRepository.getOne(dummyBooks.get(2).getId()).getSequel());
     }
 
     @Test
@@ -182,8 +183,8 @@ class BookRepositoryTest {
          * by violating an integrity constraint, in particular, the unique constraints on the properties that
          * constitute a natural-id
          */
-
         Author duplicatedAuthor = new Author();
+
         // set manually a new id because when i try to insert a second record it results in update of existing record
         duplicatedAuthor.setId(9999l);
         duplicatedAuthor.setFiscalCode("ABCDEF12G24H567I");
@@ -204,8 +205,8 @@ class BookRepositoryTest {
          * by violating an integrity constraint, in particular, the unique constraints on the properties that
          * constitute a natural-id
          */
-
         Book duplicatedBook = new Book();
+
         // set manually a new id because when i try to insert a second record it results in update of existing record
         duplicatedBook.setId(9999l);
         duplicatedBook.setIsbn("978-84-08-04364-5");
@@ -225,6 +226,7 @@ class BookRepositoryTest {
          * Throws an exception when attempting to create a book with illegal format type
          */
         Book wrongBook = new Book();
+
         // set manually a new id because when i try to insert a second record it results in update of existing record
         wrongBook.setTitle("The Secret Of Book");
         wrongBook.setIsbn("9781234567897");
@@ -243,9 +245,11 @@ class BookRepositoryTest {
          */
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
+
         // change author name
         Author author = authorRepository.getOne(dummyAuthors.get(0).getId());
         author.setName("Tom");
+
         // update the Author object
         authorRepository.save(author);
 
@@ -258,7 +262,6 @@ class BookRepositoryTest {
 
         // update the Book object
         bookRepository.save(savedBook);
-
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
