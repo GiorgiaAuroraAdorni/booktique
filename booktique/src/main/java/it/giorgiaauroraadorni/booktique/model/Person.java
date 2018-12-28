@@ -37,7 +37,7 @@ public abstract class Person extends AuditModel {
     private String email;
 
     // This is a phone number. It specifies a italian mobile phone numbers.
-    @Pattern(regexp = "^(\\((00|\\+)39\\)|(00|\\+)39)?(38[890]|34[7-90]|36[680]|33[3-90]|32[89])\\d{7}$")
+    @Pattern(regexp = "^([+]39)?((3[1-9][0-9]))([\\d]{7})$")
     private String mobilePhone;
 
     // Getters and Setters
