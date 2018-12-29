@@ -20,8 +20,7 @@ public class Employee extends Person {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @Column(nullable = false)
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
     private Employee supervisor;
 
     // Getters and Setters
