@@ -35,13 +35,13 @@ class AddressRepositoryTest {
                 .collect(Collectors.toList());
 
         // create a addresses with only the mandatory parameter
-        dummyAddresses.get(0).setAddress("Via Vinicio 59");
+        dummyAddresses.get(0).setSreetAddress("Via Vinicio 59");
         dummyAddresses.get(0).setCity("Macerata");
         dummyAddresses.get(0).setPostalCode("04017");
         dummyAddresses.get(0).setCountry("Italia");
 
         // create an addresses with all the possible attributes
-        dummyAddresses.get(1).setAddress("Via Tancredi 96");
+        dummyAddresses.get(1).setSreetAddress("Via Tancredi 96");
         dummyAddresses.get(1).setCity("Grosseto");
         dummyAddresses.get(1).setRegion("Toscana");
         dummyAddresses.get(1).setPostalCode("32349");

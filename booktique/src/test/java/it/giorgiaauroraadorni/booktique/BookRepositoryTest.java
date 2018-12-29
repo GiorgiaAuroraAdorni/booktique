@@ -107,14 +107,14 @@ class BookRepositoryTest {
 
     @Test
     void repositoryFindAll() {
-        var savedAuthor = authorRepository.findAll();
-        var savedBook = bookRepository.findAll();
+        var savedAuthors = authorRepository.findAll();
+        var savedBooks = bookRepository.findAll();
 
         // check if all the authors are correctly added to the repository
-        assertTrue(savedAuthor.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
+        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
 
         // check if all the books are correctly added to the repository
-        assertTrue(savedBook.containsAll(dummyBooks), "findAll should fetch all dummy books");
+        assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
     }
 
     @Test
@@ -286,8 +286,17 @@ class BookRepositoryTest {
         assertNull(initialPrequelBook.getSequel());
         assertNotEquals(updatedSequelBook, initialPrequelBook.getSequel());
 
-        // check that the neq prequel book attributes have been updated correctly and contain the expected value
+        // check that the new prequel book attributes have been updated correctly and contain the expected value
         assertEquals(updatedSequelBook, newPrequelBook.getSequel());
+    }
+
+    @Test
+    public void testUpdateBookAuthor() {
+        /*
+         * Update one entry deleting the author attribute and check if the fields are changed correctly
+         */
+
+        // WIP: dont work
     }
 
     @Test
@@ -373,4 +382,7 @@ class BookRepositoryTest {
         assertNull(bookPrequelAfterDel.getSequel());
         assertNotEquals(bookSequel, bookPrequelAfterDel.getSequel());
     }
+
+    /* Allow update or insert of null attributes */
+
 }

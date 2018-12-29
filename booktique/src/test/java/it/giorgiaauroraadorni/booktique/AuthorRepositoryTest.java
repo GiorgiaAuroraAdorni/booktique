@@ -43,7 +43,6 @@ class AuthorRepositoryTest {
         dummyAuthors.get(0).setSurname("Cook");
 
         // create an author with all the person attributes
-
         dummyAuthors.get(1).setFiscalCode("LMNOPQ89R10S111T");
         dummyAuthors.get(1).setName("Nathalie");
         dummyAuthors.get(1).setSurname("Russel");
@@ -72,10 +71,10 @@ class AuthorRepositoryTest {
 
     @Test
     void repositoryFindAll() {
-        var savedAuthor = authorRepository.findAll();
+        var savedAuthors = authorRepository.findAll();
 
         // check if all the authors are correctly added to the repository
-        assertTrue(savedAuthor.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
+        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
     }
 
     @Test

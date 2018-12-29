@@ -11,7 +11,7 @@ public class Address extends AuditModel {
     private Long id;
 
     @NotBlank
-    private String address;
+    private String streetAddress;
 
     private String building;
 
@@ -39,12 +39,12 @@ public class Address extends AuditModel {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setSreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
     public String getBuilding() {
