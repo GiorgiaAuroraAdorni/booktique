@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,11 +31,10 @@ class BookRepositoryTest {
     private List<Author> dummyAuthors;
     private List<Book> dummyBooks;
 
-    @BeforeEach
-    void createDummyAuthor() {
-        /*
-        * Create a list of authors entities that will be use in the test
-        */
+    /**
+     * Create a list of authors entities that will be use in the test
+     */
+    private void createDummyAuthor() {
         dummyAuthors = IntStream
                 .range(0, 2)
                 .mapToObj(i -> new Author())
@@ -51,14 +49,13 @@ class BookRepositoryTest {
         dummyAuthors.get(1).setSurname("Russel");
 
         // save the authors in the repository
-        authorRepository.saveAll(dummyAuthors);
+        dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
-    @BeforeEach
-    void createDummyBook() {
-        /*
-        * Create a list of books entities that will be use in the test
-        */
+    /**
+     * Create a list of books entities that will be use in the test
+     */
+    private void createDummyBook() {
         dummyBooks = IntStream
                 .range(0, 4)
                 .mapToObj(i -> new Book())
@@ -100,7 +97,13 @@ class BookRepositoryTest {
         dummyBooks.get(3).addPrequel(dummyBooks.get(2));
 
         // save the books in the repository
-        bookRepository.saveAll(dummyBooks);
+        dummyBooks = bookRepository.saveAll(dummyBooks);
+    }
+
+    @BeforeEach
+    void createDummyEntities() {
+        createDummyAuthor();
+        createDummyBook();
     }
 
     @Test
@@ -118,11 +121,11 @@ class BookRepositoryTest {
         assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
     }
 
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
     @Test
     public void testCreateBook() {
-        /*
-         * Insert many entries in the repository and check if these are readable and the attributes are correct
-         */
         List<Book> savedBooks = new ArrayList<>();
 
         for (int i = 0; i < dummyBooks.size(); i++) {
@@ -146,6 +149,7 @@ class BookRepositoryTest {
             assertEquals(savedBooks.get(i).getPrequel(), dummyBooks.get(i).getPrequel());
             assertEquals(savedBooks.get(i).getSequel(), dummyBooks.get(i).getSequel());
             assertEquals(savedBooks.get(i).getSubtitle(), dummyBooks.get(i).getSubtitle());
+            assertEquals(savedBooks.get(i).getId(), dummyBooks.get(i).getId());
         }
     }
 
@@ -177,13 +181,13 @@ class BookRepositoryTest {
                 bookRepository.getOne(dummyBooks.get(2).getId()).getSequel());
     }
 
+    /**
+     * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
+     * by violating an integrity constraint, in particular, the unique constraints on the properties that
+     * constitute a natural-id
+     */
     @Test
     public void testUniqueBookIdentifier() {
-        /*
-         * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
-         * by violating an integrity constraint, in particular, the unique constraints on the properties that
-         * constitute a natural-id
-         */
         Book duplicatedBook = new Book();
 
         // set manually a new id in order to insert a new record and not for update an existing record
@@ -199,11 +203,11 @@ class BookRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create a book with illegal format type
+     */
     @Test
     public void testIllegalBookFormat() {
-        /*
-         * Throws an exception when attempting to create a book with illegal format type
-         */
         Book wrongBook = new Book();
 
         // set manually a new id in order to insert a new record and not for update an existing record
@@ -217,11 +221,11 @@ class BookRepositoryTest {
         bookRepository.flush();
     }
 
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
     @Test
     public void testUpdateBook() {
-        /*
-         * Update one entry partially, edit different attributes and check if the fields are changed correctly
-         */
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
 
@@ -253,11 +257,11 @@ class BookRepositoryTest {
         assertEquals("The Secret Of The Dreams", updatedBook.getSubtitle());
     }
 
+    /**
+     * Update one entry with prequel or sequel attribute and check if the fields are changed correctly
+     */
     @Test
     public void testUpdateBookPrequel() {
-        /*
-         * Update one entry with prequel or sequel attribute and check if the fields are changed correctly
-         */
         // get a Book from the repository
         Book sequelBook = bookRepository.findById(dummyBooks.get(3).getId()).get();
         Book initialPrequelBook = sequelBook.getPrequel();
@@ -291,20 +295,19 @@ class BookRepositoryTest {
         assertEquals(updatedSequelBook, newPrequelBook.getSequel());
     }
 
+    /**
+     * Update one entry deleting the author attribute and check if the fields are changed correctly
+     */
     @Test
     public void testUpdateBookAuthor() {
-        /*
-         * Update one entry deleting the author attribute and check if the fields are changed correctly
-         */
-
-        // WIP: dont work
+        // FIXME: WIP: dont work
     }
 
+    /**
+     * Throws an exception when attempting to create a book without mandatory attributes
+     */
     @Test
     public void testIllegalCreateBook() {
-        /*
-         * Throws an exception when attempting to create a book without mandatory attributes
-         */
         Book wrongbook = new Book();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
@@ -313,11 +316,11 @@ class BookRepositoryTest {
         });
     }
 
+    /**
+     * Delete an entry and check if the book was removed correctly
+     */
     @Test
     public void testDeleteBook() {
-        /*
-         * Delete an entry and check if the book was removed correctly
-         */
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
 
@@ -332,18 +335,11 @@ class BookRepositoryTest {
         assertTrue(bookRepository.findAll().isEmpty());
     }
 
+    /**
+     * Delete an entry and check if the book was removed correctly
+     */
     @Test
     public void testDeleteBookPrequel() {
-        /*
-         * Delete an entry and check if the book was removed correctly
-         */
-
-        // Refresh the data in the repository re-inserting all the entries and verifying that the operation has been
-        // carried out correctly
-        bookRepository.saveAll(dummyBooks);
-        var savedBook = bookRepository.findAll();
-        assertTrue(savedBook.containsAll(dummyBooks));
-
         // get a Book from the repository
         Book bookPrequel = bookRepository.findById(dummyBooks.get(2).getId()).get();
         Book bookSequel = bookPrequel.getSequel();
@@ -362,21 +358,13 @@ class BookRepositoryTest {
         assertNotNull(bookSequelAfterDel);
         assertNull(bookSequelAfterDel.getPrequel());
         assertNotEquals(bookPrequel, bookSequelAfterDel.getPrequel());
-
-        // at the end re-delete all the entries
-        bookRepository.deleteAll();
     }
 
+    /**
+     * Delete an entry and check if the book was removed correctly
+     */
     @Test
     public void testDeleteBookSequel() {
-        /*
-         * Delete an entry and check if the book was removed correctly
-         */
-        // re-insert all the entries and verifying that the operation has been carried out correctly
-        bookRepository.saveAll(dummyBooks);
-        var savedBook = bookRepository.findAll();
-        assertTrue(savedBook.containsAll(dummyBooks));
-
         // get a Book from the repository
         Book bookSequel = bookRepository.findById(dummyBooks.get(3).getId()).get();
         Book bookPrequel = bookSequel.getPrequel();
