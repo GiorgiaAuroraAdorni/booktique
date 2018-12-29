@@ -19,7 +19,6 @@ public class Address extends AuditModel {
     @Column(length = 189)
     private String city;
 
-    @NotBlank
     @Column(length = 90)
     private String region;
 
