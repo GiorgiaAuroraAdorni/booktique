@@ -207,13 +207,13 @@ class BookRepositoryTest {
      */
     @Test
     public void testIllegalBookFormat() {
-        Book wrongBook = new Book();
+        Book invalidBook = new Book();
 
         // set manually a new id in order to insert a new record and not for update an existing record
-        wrongBook.setTitle("The Secret Of Book");
-        wrongBook.setIsbn("9781234567897");
-        wrongBook.setPublisher("GoldWrite Publishing");
-        assertThrows(IllegalArgumentException.class, () -> wrongBook.setBookFormat(Book.Format.valueOf("AudioBook")));
+        invalidBook.setTitle("The Secret Of Book");
+        invalidBook.setIsbn("9781234567897");
+        invalidBook.setPublisher("GoldWrite Publishing");
+        assertThrows(IllegalArgumentException.class, () -> invalidBook.setBookFormat(Book.Format.valueOf("AudioBook")));
     }
 
     /**
@@ -303,10 +303,10 @@ class BookRepositoryTest {
      */
     @Test
     public void testIllegalCreateBook() {
-        Book wrongbook = new Book();
+        Book invalidBook = new Book();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            bookRepository.saveAndFlush(wrongbook);
+            bookRepository.saveAndFlush(invalidBook);
         });
     }
 

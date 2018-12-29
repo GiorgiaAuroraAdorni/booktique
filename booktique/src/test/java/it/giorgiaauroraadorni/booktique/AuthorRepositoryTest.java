@@ -159,10 +159,10 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalCreateAuthor() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
     }
 
@@ -171,13 +171,13 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalFiscalCodeFormat() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
     }
 
@@ -186,14 +186,14 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalWebSiteURLFormat() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        wrongAuthor.setWebSiteURL("KimmyTurner.com");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        invalidAuthor.setWebSiteURL("KimmyTurner.com");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
     }
 
@@ -202,14 +202,14 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalEmailFormat() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        wrongAuthor.setEmail("KimmyTurner@mail@10.com");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        invalidAuthor.setEmail("KimmyTurner@mail@10.com");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
     }
 
@@ -218,14 +218,14 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalMobilePhoneFormat() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        wrongAuthor.setMobilePhone("0039333123456");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        invalidAuthor.setMobilePhone("0039333123456");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
     }
 
@@ -234,14 +234,14 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalDateOfBirthFormat() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
         assertThrows(DateTimeException.class, () -> {
-            wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
-            authorRepository.save(wrongAuthor);
+            invalidAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
+            authorRepository.save(invalidAuthor);
         });
     }
 
@@ -250,19 +250,19 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testIllegalSizeAttributes() {
-        Author wrongAuthor = new Author();
+        Author invalidAuthor = new Author();
 
-        wrongAuthor.setName("Kimmy");
-        wrongAuthor.setSurname("Turner");
-        wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
+        invalidAuthor.setName("Kimmy");
+        invalidAuthor.setSurname("Turner");
+        invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
         assertThrows(DataIntegrityViolationException.class, () -> {
-            wrongAuthor.setBiography("Julie is a friendly government politician. She has a post-graduate degree in " +
+            invalidAuthor.setBiography("Julie is a friendly government politician. She has a post-graduate degree in " +
                 "philosophy, politics and economics. \n She is currently single. Her most recent romance was with a " +
                 "sous chef called Walter Roland Campbell, who was the same age as her. They broke up because Walter " +
                 "wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend Walter: " +
                 "Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty. They " +
                 "have a very fiery friendship.");
-            authorRepository.saveAndFlush(wrongAuthor);
+            authorRepository.saveAndFlush(invalidAuthor);
         });
 
         // FIXME: add test for name/surname too long (more than 30 character)
