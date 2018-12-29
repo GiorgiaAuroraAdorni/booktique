@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -297,6 +298,19 @@ class BookRepositoryTest {
          */
 
         // WIP: dont work
+    }
+
+    @Test
+    public void testIllegalCreateBook() {
+        /*
+         * Throws an exception when attempting to create a book without mandatory attributes
+         */
+        Book wrongbook = new Book();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            bookRepository.save(wrongbook);
+            bookRepository.flush();
+        });
     }
 
     @Test
