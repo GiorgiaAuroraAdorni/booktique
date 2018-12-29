@@ -37,14 +37,16 @@ class AddressRepositoryTest {
                 .collect(Collectors.toList());
 
         // create a addresses with only the mandatory parameter
-        dummyAddresses.get(0).setSreetAddress("Via Vinicio 59");
-        dummyAddresses.get(0).setCity("Macerata");
+        dummyAddresses.get(0).setStreetAddress("Via Vinicio 59");
+        dummyAddresses.get(0).setCity("Montecassiano");
+        dummyAddresses.get(0).setProvince("MC");
         dummyAddresses.get(0).setPostalCode("04017");
         dummyAddresses.get(0).setCountry("Italia");
 
         // create an addresses with all the possible attributes
-        dummyAddresses.get(1).setSreetAddress("Via Tancredi 96");
-        dummyAddresses.get(1).setCity("Grosseto");
+        dummyAddresses.get(1).setStreetAddress("Via Tancredi 96");
+        dummyAddresses.get(1).setCity("Fonteblanda");
+        dummyAddresses.get(1).setProvince("GR");
         dummyAddresses.get(1).setRegion("Toscana");
         dummyAddresses.get(1).setPostalCode("32349");
         dummyAddresses.get(1).setCountry("Italia");
@@ -85,6 +87,7 @@ class AddressRepositoryTest {
             assertEquals(savedAddresses.get(i).getStreetAddress(), dummyAddresses.get(i).getStreetAddress());
             assertEquals(savedAddresses.get(i).getBuilding(), dummyAddresses.get(i).getBuilding());
             assertEquals(savedAddresses.get(i).getCity(), dummyAddresses.get(i).getCity());
+            assertEquals(savedAddresses.get(i).getProvince(), dummyAddresses.get(i).getProvince());
             assertEquals(savedAddresses.get(i).getCountry(), dummyAddresses.get(i).getCountry());
             assertEquals(savedAddresses.get(i).getPostalCode(), dummyAddresses.get(i).getPostalCode());
             assertEquals(savedAddresses.get(i).getRegion(), dummyAddresses.get(i).getRegion());
@@ -121,10 +124,10 @@ class AddressRepositoryTest {
         /*
          * Throws an exception when attempting to create an address without mandatory attributes
          */
-        Address wrongAddress = new Address();
+        Address invalidAddress = new Address();
 
         assertThrows(ConstraintViolationException.class, () -> {
-            addressRepository.save(wrongAddress);
+            addressRepository.save(invalidAddress);
             addressRepository.flush();
         });
     }
