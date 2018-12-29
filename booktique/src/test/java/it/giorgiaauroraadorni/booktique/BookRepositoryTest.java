@@ -198,8 +198,7 @@ class BookRepositoryTest {
 
         // save the book in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
-            bookRepository.save(duplicatedBook);
-            bookRepository.flush();
+            bookRepository.saveAndFlush(duplicatedBook);
         });
     }
 
@@ -215,10 +214,6 @@ class BookRepositoryTest {
         wrongBook.setIsbn("9781234567897");
         wrongBook.setPublisher("GoldWrite Publishing");
         assertThrows(IllegalArgumentException.class, () -> wrongBook.setBookFormat(Book.Format.valueOf("AudioBook")));
-
-        // save the book in the repository
-        bookRepository.save(wrongBook);
-        bookRepository.flush();
     }
 
     /**
@@ -311,8 +306,7 @@ class BookRepositoryTest {
         Book wrongbook = new Book();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            bookRepository.save(wrongbook);
-            bookRepository.flush();
+            bookRepository.saveAndFlush(wrongbook);
         });
     }
 

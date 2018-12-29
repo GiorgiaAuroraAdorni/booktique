@@ -122,8 +122,7 @@ class AuthorRepositoryTest {
 
         // save the author in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
-            authorRepository.save(duplicatedAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(duplicatedAuthor);
         });
     }
 
@@ -162,8 +161,7 @@ class AuthorRepositoryTest {
         Author wrongAuthor = new Author();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
     }
 
@@ -178,8 +176,7 @@ class AuthorRepositoryTest {
         wrongAuthor.setSurname("Turner");
         wrongAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
     }
 
@@ -195,8 +192,7 @@ class AuthorRepositoryTest {
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
         wrongAuthor.setWebSiteURL("KimmyTurner.com");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
     }
 
@@ -212,8 +208,7 @@ class AuthorRepositoryTest {
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
         wrongAuthor.setEmail("KimmyTurner@mail@10.com");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
     }
 
@@ -229,8 +224,7 @@ class AuthorRepositoryTest {
         wrongAuthor.setFiscalCode("TRNKMM90T04Z000A");
         wrongAuthor.setMobilePhone("0039333123456");
         assertThrows(ConstraintViolationException.class, () -> {
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
     }
 
@@ -247,7 +241,6 @@ class AuthorRepositoryTest {
         assertThrows(DateTimeException.class, () -> {
             wrongAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
             authorRepository.save(wrongAuthor);
-            authorRepository.flush();
         });
     }
 
@@ -268,8 +261,7 @@ class AuthorRepositoryTest {
                 "wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend Walter: " +
                 "Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty. They " +
                 "have a very fiery friendship.");
-            authorRepository.save(wrongAuthor);
-            authorRepository.flush();
+            authorRepository.saveAndFlush(wrongAuthor);
         });
 
         // FIXME: add test for name/surname too long (more than 30 character)
