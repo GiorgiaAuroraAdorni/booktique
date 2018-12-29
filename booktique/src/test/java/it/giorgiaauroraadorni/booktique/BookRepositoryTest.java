@@ -307,7 +307,7 @@ class BookRepositoryTest {
          */
         Book wrongbook = new Book();
 
-        assertThrows(ConstraintViolationException.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             bookRepository.save(wrongbook);
             bookRepository.flush();
         });

@@ -161,7 +161,7 @@ class AuthorRepositoryTest {
          */
         Author wrongAuthor = new Author();
 
-        assertThrows(ConstraintViolationException.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             authorRepository.save(wrongAuthor);
             authorRepository.flush();
         });

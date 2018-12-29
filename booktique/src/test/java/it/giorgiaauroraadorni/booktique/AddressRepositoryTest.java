@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,7 +126,7 @@ class AddressRepositoryTest {
          */
         Address invalidAddress = new Address();
 
-        assertThrows(ConstraintViolationException.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             addressRepository.save(invalidAddress);
             addressRepository.flush();
         });
