@@ -9,6 +9,7 @@ public class Address extends AuditModel {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
+    // Street Name + House Number
     @Column(nullable = false)
     private String streetAddress;
 
@@ -16,6 +17,10 @@ public class Address extends AuditModel {
 
     @Column(length = 189, nullable = false)
     private String city;
+
+    // Province Abbreviation
+    @Column(length = 2, nullable = false)
+    private String province;
 
     @Column(length = 90)
     private String region;
@@ -39,7 +44,7 @@ public class Address extends AuditModel {
         return streetAddress;
     }
 
-    public void setSreetAddress(String streetAddress) {
+    public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
     }
 
@@ -57,6 +62,14 @@ public class Address extends AuditModel {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
     }
 
     public String getRegion() {
