@@ -175,4 +175,18 @@ public class Book extends AuditModel implements Serializable {
             sequel.setPrequel(this);
         }
     }
+
+    /**
+     *
+     */
+    @PreRemove
+    public void preRemoveBook() {
+        prequel = this.getPrequel();
+        sequel = this.getSequel();
+        if (sequel != null) {
+            sequel.setPrequel(null);
+        } else if (prequel != null) {
+            prequel.setSequel(null);
+        }
+    }
 }

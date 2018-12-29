@@ -340,9 +340,6 @@ class BookRepositoryTest {
 
         // delete the Book object
         bookRepository.delete(bookPrequel);
-        // update the book prequel
-        bookSequel.addPrequel(null);
-        bookRepository.save(bookSequel);
 
         Book bookSequelAfterDel = bookRepository.findById(bookSequel.getId()).get();
 
@@ -365,9 +362,6 @@ class BookRepositoryTest {
 
         // delete the Book object
         bookRepository.delete(bookSequel);
-        // update the book sequel
-        bookPrequel.addSequel(null);
-        bookRepository.save(bookPrequel);
 
         Book bookPrequelAfterDel = bookRepository.findById(bookPrequel.getId()).get();
 
