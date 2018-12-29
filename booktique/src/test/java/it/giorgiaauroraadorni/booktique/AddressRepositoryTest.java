@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,6 +62,33 @@ class AddressRepositoryTest {
 
         // check if all the authors are correctly added to the repository
         assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy adresses");
+    }
+
+    @Test
+    public void testCreateAddress() {
+        /*
+         * Insert many entries in the repository and check if these are readable and the attributes are correct
+         */
+        List<Address> savedAddresses = new ArrayList<>();
+
+        for (int i = 0; i < dummyAddresses.size(); i++) {
+            // check if the books id are correctly automatic generated
+            assertNotNull(addressRepository.getOne(dummyAddresses.get(i).getId()));
+            savedAddresses.add(addressRepository.getOne(dummyAddresses.get(i).getId()));
+
+            // check if the books contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedAddresses.get(i).getCreatedAt());
+            assertNotNull(savedAddresses.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedAddresses.get(i).getStreetAddress(), dummyAddresses.get(i).getStreetAddress());
+            assertEquals(savedAddresses.get(i).getBuilding(), dummyAddresses.get(i).getBuilding());
+            assertEquals(savedAddresses.get(i).getCity(), dummyAddresses.get(i).getCity());
+            assertEquals(savedAddresses.get(i).getCountry(), dummyAddresses.get(i).getCountry());
+            assertEquals(savedAddresses.get(i).getPostalCode(), dummyAddresses.get(i).getPostalCode());
+            assertEquals(savedAddresses.get(i).getRegion(), dummyAddresses.get(i).getRegion());
+            assertEquals(savedAddresses.get(i).getId(), dummyAddresses.get(i).getId());
+        }
     }
 
     @Test
