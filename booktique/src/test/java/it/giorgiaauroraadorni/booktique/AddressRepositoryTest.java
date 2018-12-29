@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +92,42 @@ class AddressRepositoryTest {
         }
     }
 
+    @Test
+    public void testUpdateAddress() {
+        /*
+         * Update one entry partially, edit different attributes and check if the fields are changed correctly
+         */
+        // get an Address from the repository
+        Address savedAddress = addressRepository.getOne(dummyAddresses.get(0).getId());
+
+        // change attributes
+        savedAddress.setRegion("Marche");
+        savedAddress.setPostalCode("62100");
+
+        // update the address object
+        addressRepository.save(savedAddress);
+
+        Address updatedAddress = addressRepository.findById(savedAddress.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedAddress);
+        assertEquals(savedAddress, updatedAddress);
+        assertEquals("Marche", updatedAddress.getRegion());
+        assertEquals("62100", updatedAddress.getPostalCode());
+    }
+
+    @Test
+    public void testIllegalCreateAddress() {
+        /*
+         * Throws an exception when attempting to create an address without mandatory attributes
+         */
+        Address wrongAddress = new Address();
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            addressRepository.save(wrongAddress);
+            addressRepository.flush();
+        });
+    }
     @Test
     public void testDeleteAddress() {
         /*
