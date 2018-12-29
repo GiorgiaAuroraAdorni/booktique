@@ -11,12 +11,6 @@ import java.util.Set;
 @Entity
 @Table(name = "books")
 public class Book extends AuditModel implements Serializable {
-    public enum Format {
-        digital,
-        paperback,
-        hardcover
-    }
-
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -32,7 +26,7 @@ public class Book extends AuditModel implements Serializable {
     @Column(length = 100)
     private String subtitle;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY)
     private Set<Author> authors;
 
     @Column(length = 30, nullable = false)
@@ -42,6 +36,12 @@ public class Book extends AuditModel implements Serializable {
 
     @Column(length = 30)
     private String language;
+
+    public enum Format {
+        digital,
+        paperback,
+        hardcover
+    }
 
     @Enumerated(EnumType.STRING)
     private Format bookFormat;
