@@ -27,11 +27,11 @@ class AuthorRepositoryTest {
 
     private List<Author> dummyAuthors;
 
+    /**
+     * Create a list of authors entities that will be use in the test
+     */
     @BeforeEach
     void createDummyAuthor() {
-        /*
-         * Create a list of authors entities that will be use in the test
-         */
         dummyAuthors = IntStream
                 .range(0, 3)
                 .mapToObj(i -> new Author())
@@ -63,7 +63,7 @@ class AuthorRepositoryTest {
                 " a sous chef called Walter Roland Campbell.\\n Julie has one child with Walter: Montgomery aged 4.");
 
         // save the authors in the repository
-        authorRepository.saveAll(dummyAuthors);
+        dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
     @Test
@@ -77,11 +77,11 @@ class AuthorRepositoryTest {
         assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
     }
 
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
     @Test
     public void testCreateBook() {
-        /*
-         * Insert many entries in the repository and check if these are readable and the attributes are correct
-         */
         List<Author> savedAuthor = new ArrayList<>();
 
         for (int i = 0; i < dummyAuthors.size(); i++) {
@@ -102,16 +102,17 @@ class AuthorRepositoryTest {
             assertEquals(savedAuthor.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
             assertEquals(savedAuthor.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
             assertEquals(savedAuthor.get(i).getBiography(), dummyAuthors.get(i).getBiography());
+            assertEquals(savedAuthor.get(i).getId(), dummyAuthors.get(i).getId());
         }
     }
 
+    /**
+     * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
+     * by violating an integrity constraint, in particular, the unique constraints on the properties that
+     * constitute a natural-id
+     */
     @Test
     public void testUniqueAuthorIdentifier() {
-        /*
-         * Creates an author with the same FiscalCode of another and throws an exception when attempting to insert data
-         * by violating an integrity constraint, in particular, the unique constraints on the properties that
-         * constitute a natural-id
-         */
         Author duplicatedAuthor = new Author();
 
         // set manually a new id in order to insert a new record and not for update an existing record
@@ -126,11 +127,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
     @Test
     public void testUpdateAuthor() {
-        /*
-         * Update one entry partially, edit different attributes and check if the fields are changed correctly
-         */
         // get an author from the repository
         Author savedAuthor = authorRepository.findById(dummyAuthors.get(2).getId()).get();
 
@@ -153,11 +154,11 @@ class AuthorRepositoryTest {
         assertNull(updatedAuthor.getBiography());
     }
 
+    /**
+     * Throws an exception when attempting to create an author without mandatory attributes
+     */
     @Test
     public void testIllegalCreateAuthor() {
-        /*
-         * Throws an exception when attempting to create an author without mandatory attributes
-         */
         Author wrongAuthor = new Author();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
@@ -165,11 +166,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create an author with illegal fiscal code format type
+     */
     @Test
     public void testIllegalFiscalCodeFormat() {
-        /*
-         * Throws an exception when attempting to create an author with illegal fiscal code format type
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -180,11 +181,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create an author with illegal website URL format type
+     */
     @Test
     public void testIllegalWebSiteURLFormat() {
-        /*
-         * Throws an exception when attempting to create an author with illegal website URL format type
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -196,11 +197,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /*
+     * Throws an exception when attempting to create an author with illegal email format type
+     */
     @Test
     public void testIllegalEmailFormat() {
-        /*
-         * Throws an exception when attempting to create an author with illegal email format type
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -212,11 +213,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create an author with illegal mobile phone format type
+     */
     @Test
     public void testIllegalMobilePhoneFormat() {
-        /*
-         * Throws an exception when attempting to create an author with illegal mobile phone format type
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -228,11 +229,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create an author with illegal date of birth format type
+     */
     @Test
     public void testIllegalDateOfBirthFormat() {
-        /*
-         * Throws an exception when attempting to create an author with illegal date of birth format type
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -244,11 +245,11 @@ class AuthorRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create or update an author with illegal size for the attributes
+     */
     @Test
     public void testIllegalSizeAttributes() {
-        /*
-         * Throws an exception when attempting to create or update an author with illegal size for the attributes
-         */
         Author wrongAuthor = new Author();
 
         wrongAuthor.setName("Kimmy");
@@ -267,11 +268,11 @@ class AuthorRepositoryTest {
         // FIXME: add test for name/surname too long (more than 30 character)
     }
 
+    /**
+     * Delete an entry and check if it was removed correctly
+     */
     @Test
     public void testDeleteAuthor() {
-        /*
-         * Delete an entry and check if it was removed correctly
-         */
         // get an author from the repository
         Author savedAuthor = authorRepository.findById(dummyAuthors.get(0).getId()).get();
 
