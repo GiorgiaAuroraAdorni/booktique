@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -19,11 +18,12 @@ public class Item extends AuditModel {
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Supplier supplier;
 
-    @NotNull
+    @Column(nullable = false)
+    // FIXME
     @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
     private BigDecimal unitPrice;
 
-    @NotNull
+    @Column(nullable = false)
     private Integer quantityPerUnit;
 
     // Getters and Setters

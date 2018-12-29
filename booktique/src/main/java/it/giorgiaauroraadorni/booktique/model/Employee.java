@@ -1,8 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -11,12 +9,10 @@ public class Employee extends Person {
 
     private Person employee;
 
-    @NotBlank
-    @Column(unique = true, length = 30)
+    @Column(unique = true, length = 30, nullable = false)
     private String username;
 
-    @NotBlank
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String password;
 
     private LocalDate hireDate;
@@ -24,7 +20,7 @@ public class Employee extends Person {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @NotNull
+    @Column(nullable = false)
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Employee supervisor;
 

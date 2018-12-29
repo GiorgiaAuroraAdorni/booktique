@@ -3,9 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
@@ -28,8 +26,7 @@ public class Book extends AuditModel implements Serializable {
     @Pattern(regexp = "^((978[\\--– ])?[0-9][0-9\\--– ]{10}[\\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])$")
     private String isbn;
 
-    @NotBlank
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String title;
 
     @Column(length = 100)
@@ -38,8 +35,7 @@ public class Book extends AuditModel implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     private Set<Author> authors;
 
-    @NotBlank
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String publisher;
 
     private Integer edition;

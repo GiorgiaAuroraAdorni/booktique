@@ -3,7 +3,6 @@ package it.giorgiaauroraadorni.booktique.model;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
@@ -20,12 +19,10 @@ public abstract class Person extends AuditModel {
     @Pattern(regexp = "^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$")
     private String fiscalCode;
 
-    @NotBlank
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String name;
 
-    @NotBlank
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String surname;
 
     private LocalDate dateOfBirth;

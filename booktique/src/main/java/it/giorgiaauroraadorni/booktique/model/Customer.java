@@ -1,8 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="customers")
@@ -10,17 +8,15 @@ public class Customer extends Person {
 
     private Person customer;
 
-    @NotBlank
-    @Column(unique = true, length = 32)
-    @Size(min = 5)
+    @Column(unique = true, length = 32, nullable = false)
+    //@Size(min = 5)
     private String username;
 
-    @NotBlank
-    @Column(length = 128)
-    @Size(min = 8)
+    @Column(length = 128, nullable = false)
+    //@Size(min = 8)
     private String password;
 
-    @Column(length = 10)
+    @Column(length = 11)
     private String vatNumber;
 
     // This is a full postal address for the contact represented by this object.

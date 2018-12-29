@@ -1,7 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -12,8 +11,7 @@ public class Supplier extends AuditModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String companyName;
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains

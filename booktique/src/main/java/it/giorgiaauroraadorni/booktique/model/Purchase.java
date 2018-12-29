@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -23,13 +22,14 @@ public class Purchase extends AuditModel {
     @OneToMany
     private Set<Item> items;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate orderDate;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate shippingDate;
 
-    @NotNull
+    @Column(nullable = false)
+    // FIXME
     @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
     private BigDecimal amount;
 
@@ -46,7 +46,7 @@ public class Purchase extends AuditModel {
     @Enumerated(EnumType.STRING)
     private Purchase.Status status;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate paymentDate;
 
     public enum paymentType {
@@ -56,7 +56,7 @@ public class Purchase extends AuditModel {
         giftCard
     }
 
-    @NotNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Purchase.paymentType paymentType;
 
