@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -275,4 +275,22 @@ class CustomerRepositoryTest {
         });
     }
 
+    /**
+     * Delete an entry and check if the customer was removed correctly
+     */
+    @Test
+    public void testDeleteCustomer() {
+        // get a customer from the repository
+        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
+
+        // delete the customer object
+        customerRepository.delete(savedCustomer);
+
+        // check that the customer has been deleted correctly
+        assertEquals(customerRepository.findById(dummyCustomers.get(0).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        customerRepository.deleteAll();
+        assertTrue(customerRepository.findAll().isEmpty());
+    }
 }
