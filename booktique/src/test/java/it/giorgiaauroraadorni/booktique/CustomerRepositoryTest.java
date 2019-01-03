@@ -166,4 +166,15 @@ class CustomerRepositoryTest {
         }
     }
 
+    /**
+     * Throws an exception when attempting to create a customer without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreateCustomer() {
+        Customer invalidCustomer = new Customer();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
 }
