@@ -15,7 +15,7 @@ public class Address extends AuditModel {
 
     private String building;
 
-    @Column(length = 189, nullable = false)
+    @Column(length = 90, nullable = false)
     private String city;
 
     // Province Abbreviation
