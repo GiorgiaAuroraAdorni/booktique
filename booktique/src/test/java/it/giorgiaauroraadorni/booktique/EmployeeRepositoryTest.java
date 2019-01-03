@@ -162,4 +162,14 @@ class EmployeeRepositoryTest {
             assertEquals(savedEmployees.get(i).getId(), dummyEmployees.get(i).getId());
         }
     }
+
+    @Test
+    public void testEmployeeAddress() {
+        // check if the addresses are set correctly
+        assertNull(employeeRepository.findById(dummyEmployees.get(0).getId()).get().getAddress());
+        assertNull(employeeRepository.findById(dummyEmployees.get(1).getId()).get().getAddress());
+        assertNotNull(employeeRepository.findById(dummyEmployees.get(2).getId()).get().getAddress());
+
+    }
+
 }
