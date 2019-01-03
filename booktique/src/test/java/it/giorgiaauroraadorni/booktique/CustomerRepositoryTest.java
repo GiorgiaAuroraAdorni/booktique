@@ -152,6 +152,12 @@ class CustomerRepositoryTest {
             assertNotNull(savedCustomers.get(i).getUpdatedAt());
 
             // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedCustomers.get(i).getFiscalCode(), savedCustomers.get(i).getFiscalCode());
+            assertEquals(savedCustomers.get(i).getName(), savedCustomers.get(i).getName());
+            assertEquals(savedCustomers.get(i).getSurname(), savedCustomers.get(i).getSurname());
+            assertEquals(savedCustomers.get(i).getDateOfBirth(), savedCustomers.get(i).getDateOfBirth());
+            assertEquals(savedCustomers.get(i).getEmail(), savedCustomers.get(i).getEmail());
+            assertEquals(savedCustomers.get(i).getMobilePhone(), savedCustomers.get(i).getMobilePhone());
             assertEquals(savedCustomers.get(i).getUsername(), savedCustomers.get(i).getUsername());
             assertEquals(savedCustomers.get(i).getPassword(), savedCustomers.get(i).getPassword());
             assertEquals(savedCustomers.get(i).getAddress(), savedCustomers.get(i).getAddress());
