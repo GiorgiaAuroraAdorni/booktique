@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -245,6 +246,44 @@ class EmployeeRepositoryTest {
         Employee invalidEmployee = new Employee();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
+            employeeRepository.saveAndFlush(invalidEmployee);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an employee with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Employee invalidEmployee = new Employee();
+
+        invalidEmployee.setFiscalCode("CRLCHR83C13G224W");
+        invalidEmployee.setName("Christie");
+        invalidEmployee.setSurname("Carlson");
+        invalidEmployee.setSupervisor(employeeRepository.getOne(dummyEmployees.get(0).getId()));
+        invalidEmployee.setUsername("ChristieCarlson83");
+        invalidEmployee.setPassword("W422g31C38rHcLrC");
+
+        employeeRepository.save(invalidEmployee);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidEmployee.setUsername("ChristieCarlsonClark15gennaio1983");
+            employeeRepository.saveAndFlush(invalidEmployee);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidEmployee.setUsername("Chri");
+            employeeRepository.saveAndFlush(invalidEmployee);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidEmployee.setPassword("-X2LPM4r`2.SJn)nGxW3Dt}4$C+z??\"d7np=fHWDTB`y2ye:w2>\\5Kf,}\\Ks?*NBq7FG./Qp" +
+                    "(>uxFtfs~U(A!tLHSGk>a5bhue^2wq#~3K9mc2[P(J:]c&hez(Jm&F?j2");
+            employeeRepository.saveAndFlush(invalidEmployee);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidEmployee.setPassword("Chris83");
             employeeRepository.saveAndFlush(invalidEmployee);
         });
     }
