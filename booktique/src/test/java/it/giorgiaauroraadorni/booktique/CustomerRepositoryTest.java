@@ -198,6 +198,29 @@ class CustomerRepositoryTest {
     }
 
     /**
+     * Creates a customer with the same username of another and throws an exception when attempting to insert data
+     * by violating an integrity constraint, in particular, the unique constraints.
+     */
+    @Test
+    public void testUniqueCustomerUsernameIdentifier() {
+        Customer duplicatedUser = new Customer();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        duplicatedUser.setId(9999l);
+        duplicatedUser.setFiscalCode("MTCKLN83C18G224W");
+        duplicatedUser.setName("Kaitlin Christie");
+        duplicatedUser.setSurname("Mitchell");
+        duplicatedUser.setAddress(dummyAddresses.get(0));
+        duplicatedUser.setPassword("W422g31C38nLkCtM");
+
+        // save the customer in the repository
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedUser.setUsername("KaitlinMitchell83");
+            customerRepository.saveAndFlush(duplicatedUser);
+        });
+    }
+
+    /**
      * Throws an exception when attempting to create a customer without mandatory attributes
      */
     @Test
@@ -208,6 +231,7 @@ class CustomerRepositoryTest {
             customerRepository.saveAndFlush(invalidCustomer);
         });
     }
+
     /**
      * Throws an exception when attempting to create or update a customer with illegal size for the attributes
      */
