@@ -20,7 +20,7 @@ public class Employee extends Person {
     @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
     private Employee supervisor;
 
     // Getters and Setters

@@ -83,6 +83,7 @@ class EmployeeRepositoryTest {
         dummyEmployees.get(0).setName("Beverley");
         dummyEmployees.get(0).setSurname("Gregory");
         dummyEmployees.get(0).setUsername("BeverleyGregory75");
+        dummyEmployees.get(0).setSupervisor(dummyEmployees.get(1));
         dummyEmployees.get(0).setPassword("yJmKKSjRJX4HZXrvxjBs");
 
         // create a employees with all the person attributes
@@ -91,6 +92,7 @@ class EmployeeRepositoryTest {
         dummyEmployees.get(1).setSurname("Stone");
         dummyEmployees.get(1).setUsername("PeterStone70");
         dummyEmployees.get(1).setPassword("XxzNh9jMkfWaHhzG2YVG");
+        dummyEmployees.get(1).setSupervisor(dummyEmployees.get(1));
         dummyEmployees.get(1).setDateOfBirth(LocalDate.of(1970, 11, 3));
         dummyEmployees.get(1).setEmail("peter.stone40@example.com");
         dummyEmployees.get(1).setMobilePhone("+393733733730");
@@ -172,4 +174,11 @@ class EmployeeRepositoryTest {
 
     }
 
+    @Test
+    public void testEmployeeSupervisor() {
+        // check if the supervisors are set correctly
+        for (int i = 0; i < dummyEmployees.size(); i++) {
+            assertNotNull(employeeRepository.findById(dummyEmployees.get(0).getId()).get().getSupervisor());
+        }
+    }
 }
