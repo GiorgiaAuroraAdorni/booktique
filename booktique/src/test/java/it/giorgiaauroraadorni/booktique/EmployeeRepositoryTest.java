@@ -181,4 +181,35 @@ class EmployeeRepositoryTest {
             assertNotNull(employeeRepository.findById(dummyEmployees.get(0).getId()).get().getSupervisor());
         }
     }
+
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
+    @Test
+    public void testUpdateEmployee() {
+        // get a employees from the repository
+        Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+
+        // change some attributes
+        savedEmployee.setName("Terry");
+        savedEmployee.setFiscalCode("MTCTRR83C13G224W");
+        savedEmployee.setUsername("TerryMitchell83");
+        savedEmployee.setPassword("W422g31C38rRtCtM");
+        savedEmployee.setAddress(dummyAddresses.get(1));
+        savedEmployee.setSupervisor(dummyEmployees.get(2));
+
+        // update the employee object
+        employeeRepository.save(savedEmployee);
+        Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedEmployee);
+        assertEquals(savedEmployee, updatedEmployee);
+        assertEquals("Terry", updatedEmployee.getName());
+        assertEquals("MTCTRR83C13G224W", updatedEmployee.getFiscalCode());
+        assertEquals("TerryMitchell83", updatedEmployee.getUsername());
+        assertEquals("W422g31C38rRtCtM", updatedEmployee.getPassword());
+        assertEquals(addressRepository.getOne(dummyAddresses.get(1).getId()), updatedEmployee.getAddress());
+        assertEquals(employeeRepository.getOne(dummyEmployees.get(2).getId()), updatedEmployee.getSupervisor());
+    }
 }
