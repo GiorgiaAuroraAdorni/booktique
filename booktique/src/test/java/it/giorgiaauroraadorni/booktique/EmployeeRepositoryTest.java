@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -287,4 +288,25 @@ class EmployeeRepositoryTest {
             employeeRepository.saveAndFlush(invalidEmployee);
         });
     }
+
+    /**
+     * Delete an entry and check if the employee was removed correctly
+     */
+    @Test
+    public void testDeleteEmployee() {
+        // get a employee from the repository
+        Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+
+        // delete the employee object
+        employeeRepository.delete(savedEmployee);
+
+        // check that the employee has been deleted correctly
+        assertEquals(employeeRepository.findById(dummyEmployees.get(0).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        employeeRepository.deleteAll();
+        employeeRepository.flush();
+        assertTrue(employeeRepository.findAll().isEmpty());
+    }
+
 }
