@@ -17,10 +17,10 @@ public class Employee extends Person {
 
     private LocalDate hireDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Employee supervisor;
 
     // Getters and Setters
