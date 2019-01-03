@@ -167,6 +167,35 @@ class CustomerRepositoryTest {
     }
 
     /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
+    @Test
+    public void testUpdateCustomer() {
+        // get a customer from the repository
+        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
+
+        // change some attributes
+        savedCustomer.setName("Terry");
+        savedCustomer.setFiscalCode("MTCTRR83C13G224W");
+        savedCustomer.setUsername("TerryMitchell83");
+        savedCustomer.setPassword("W422g31C38rRtCtM");
+        savedCustomer.setAddress(dummyAddresses.get(1));
+
+        // update the Customer object
+        customerRepository.save(savedCustomer);
+        Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedCustomer);
+        assertEquals(savedCustomer, updatedCustomer);
+        assertEquals("Terry", updatedCustomer.getName());
+        assertEquals("MTCTRR83C13G224W", updatedCustomer.getFiscalCode());
+        assertEquals("TerryMitchell83", updatedCustomer.getUsername());
+        assertEquals("W422g31C38rRtCtM", updatedCustomer.getPassword());
+        assertEquals(addressRepository.getOne(dummyAddresses.get(1).getId()), updatedCustomer.getAddress());
+    }
+
+    /**
      * Throws an exception when attempting to create a customer without mandatory attributes
      */
     @Test
