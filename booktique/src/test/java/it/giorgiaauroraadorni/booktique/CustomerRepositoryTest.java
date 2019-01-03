@@ -161,7 +161,7 @@ class CustomerRepositoryTest {
     }
 
     @Test
-    public void testBookAddress() {
+    public void testCustomerAddress() {
         // check if the addresses are set correctly
         for (int i = 0; i < dummyCustomers.size(); i++) {
             assertNotNull(customerRepository.findById(dummyCustomers.get(i).getId()).get().getAddress());
