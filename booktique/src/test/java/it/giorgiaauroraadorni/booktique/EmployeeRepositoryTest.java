@@ -237,4 +237,15 @@ class EmployeeRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create an employee without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreateEmployee() {
+        Employee invalidEmployee = new Employee();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            employeeRepository.saveAndFlush(invalidEmployee);
+        });
+    }
 }
