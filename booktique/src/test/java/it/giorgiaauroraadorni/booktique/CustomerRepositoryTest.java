@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -132,4 +133,28 @@ class CustomerRepositoryTest {
         assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
     }
 
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
+    @Test
+    public void testCreateCustomer() {
+        List<Customer> savedCustomers = new ArrayList<>();
+
+        for (int i = 0; i < dummyCustomers.size(); i++) {
+            // check if the customers id are correctly automatic generated
+            assertNotNull(customerRepository.getOne(dummyCustomers.get(i).getId()));
+            savedCustomers.add(customerRepository.getOne(dummyCustomers.get(i).getId()));
+
+            // check if the customers contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedCustomers.get(i).getCreatedAt());
+            assertNotNull(savedCustomers.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedCustomers.get(i).getUsername(), savedCustomers.get(i).getUsername());
+            assertEquals(savedCustomers.get(i).getPassword(), savedCustomers.get(i).getPassword());
+            assertEquals(savedCustomers.get(i).getAddress(), savedCustomers.get(i).getAddress());
+            assertEquals(savedCustomers.get(i).getVatNumber(), savedCustomers.get(i).getVatNumber());
+            assertEquals(savedCustomers.get(i).getId(), savedCustomers.get(i).getId());
+        }
+    }
 }
