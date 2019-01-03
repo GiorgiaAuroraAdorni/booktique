@@ -157,4 +157,13 @@ class CustomerRepositoryTest {
             assertEquals(savedCustomers.get(i).getId(), savedCustomers.get(i).getId());
         }
     }
+
+    @Test
+    public void testBookAddress() {
+        // check if the addresses are set correctly
+        for (int i = 0; i < dummyCustomers.size(); i++) {
+            assertNotNull(customerRepository.findById(dummyCustomers.get(i).getId()).get().getAddress());
+        }
+    }
+
 }
