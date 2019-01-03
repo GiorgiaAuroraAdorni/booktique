@@ -8,8 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +99,6 @@ class CustomerRepositoryTest {
         dummyCustomers.get(1).setDateOfBirth(LocalDate.of(1949, 1, 1));
         dummyCustomers.get(1).setEmail("MorganDavidson@mail.com");
         dummyCustomers.get(1).setMobilePhone("+393733733730");
-
 
         // create a customers with many attributes
         dummyCustomers.get(2).setFiscalCode("FRSTVS80T12A271K");
@@ -206,4 +208,47 @@ class CustomerRepositoryTest {
             customerRepository.saveAndFlush(invalidCustomer);
         });
     }
+    /**
+     * Throws an exception when attempting to create or update a customer with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Customer invalidCustomer = new Customer();
+
+        invalidCustomer.setFiscalCode("CRLCHR83C13G224W");
+        invalidCustomer.setName("Christie");
+        invalidCustomer.setSurname("Carlson");
+        invalidCustomer.setAddress(addressRepository.getOne(dummyAddresses.get(0).getId()));
+        invalidCustomer.setUsername("ChristieCarlson83");
+        invalidCustomer.setPassword("W422g31C38rHcLrC");
+
+        customerRepository.save(invalidCustomer);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidCustomer.setUsername("ChristieCarlsonClark15gennaio1983");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setUsername("Chri");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setPassword("-X2LPM4r`2.SJn)nGxW3Dt}4$C+z??\"d7np=fHWDTB`y2ye:w2>\\5Kf,}\\Ks?*NBq7FG./Qp" +
+                    "(>uxFtfs~U(A!tLHSGk>a5bhue^2wq#~3K9mc2[P(J:]c&hez(Jm&F?j2");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setPassword("Chris83");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setVatNumber("12345678901234567890");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
 }
