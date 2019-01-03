@@ -309,4 +309,27 @@ class EmployeeRepositoryTest {
         assertTrue(employeeRepository.findAll().isEmpty());
     }
 
+    /**
+     * Update the supervisor of an entry and check if the fields of the parents are changed correctly
+     */
+    @Test
+    public void testUpdateEmployeeSupervisor() {
+        // get a supervisor from the repository
+        Employee employee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+        Employee supervisor = employee.getSupervisor();
+
+        // change the supervisor and update the employee object
+        employee.setSupervisor(employeeRepository.findById(dummyEmployees.get(0).getId()).get());
+        employeeRepository.save(employee);
+
+        Employee updatedEmployee = employeeRepository.findById(employee.getId()).get();
+
+        // check that the employees exist and that the supervisor attribute has been updated correctly and contain
+        // the expected value
+        assertNotNull(employee);
+        assertNotNull(updatedEmployee);
+        assertNotNull(updatedEmployee.getSupervisor());
+        assertEquals(employee, updatedEmployee.getSupervisor());
+        assertNotEquals(supervisor, updatedEmployee.getSupervisor());
+    }
 }
