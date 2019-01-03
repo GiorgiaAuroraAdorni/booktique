@@ -26,11 +26,11 @@ class AddressRepositoryTest {
 
     private List<Address> dummyAddresses;
 
+    /**
+     * Create a list of addresses entities that will be use in the test
+     */
     @BeforeEach
     void createDummyAddress() {
-        /*
-         * Create a list of addresses entities that will be use in the test
-         */
         dummyAddresses = IntStream
                 .range(0, 2)
                 .mapToObj(i -> new Address())
@@ -64,14 +64,14 @@ class AddressRepositoryTest {
         var savedAddresses = addressRepository.findAll();
 
         // check if all the authors are correctly added to the repository
-        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy adresses");
+        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
     }
 
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
     @Test
     public void testCreateAddress() {
-        /*
-         * Insert many entries in the repository and check if these are readable and the attributes are correct
-         */
         List<Address> savedAddresses = new ArrayList<>();
 
         for (int i = 0; i < dummyAddresses.size(); i++) {
@@ -95,11 +95,11 @@ class AddressRepositoryTest {
         }
     }
 
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
     @Test
     public void testUpdateAddress() {
-        /*
-         * Update one entry partially, edit different attributes and check if the fields are changed correctly
-         */
         // get an Address from the repository
         Address savedAddress = addressRepository.getOne(dummyAddresses.get(0).getId());
 
@@ -119,11 +119,11 @@ class AddressRepositoryTest {
         assertEquals("62100", updatedAddress.getPostalCode());
     }
 
+    /**
+     * Throws an exception when attempting to create an address without mandatory attributes
+     */
     @Test
     public void testIllegalCreateAddress() {
-        /*
-         * Throws an exception when attempting to create an address without mandatory attributes
-         */
         Address invalidAddress = new Address();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
@@ -131,11 +131,13 @@ class AddressRepositoryTest {
             addressRepository.flush();
         });
     }
+
+    /**
+     * Delete an entry and check if the address was removed correctly
+     */
     @Test
     public void testDeleteAddress() {
-        /*
-         * Delete an entry and check if the book was removed correctly
-         */
+
         // get a Book from the repository
         Address savedBook = addressRepository.findById(dummyAddresses.get(0).getId()).get();
 
