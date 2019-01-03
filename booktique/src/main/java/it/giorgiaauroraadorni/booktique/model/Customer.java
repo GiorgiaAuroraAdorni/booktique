@@ -1,6 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="customers")
@@ -9,11 +10,11 @@ public class Customer extends Person {
     private Person customer;
 
     @Column(unique = true, length = 32, nullable = false)
-    //@Size(min = 5)
+    @Size(min = 5)
     private String username;
 
     @Column(length = 128, nullable = false)
-    //@Size(min = 8)
+    @Size(min = 8)
     private String password;
 
     @Column(length = 11)
