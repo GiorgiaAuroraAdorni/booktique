@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -129,6 +130,49 @@ class AddressRepositoryTest {
         assertThrows(DataIntegrityViolationException.class, () -> {
             addressRepository.save(invalidAddress);
             addressRepository.flush();
+        });
+    }
+    /**
+     * Throws an exception when attempting to create or update an address with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Address invalidAddress = new Address();
+
+        invalidAddress.setStreetAddress("Via Leone 1");
+        invalidAddress.setCity("Milano");
+        invalidAddress.setProvince("MI");
+        invalidAddress.setPostalCode("41845");
+        invalidAddress.setCountry("Italia");
+
+        addressRepository.save(invalidAddress);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setCity("Stato Italia Regione Lombardia Città metropolitana Provincia di Milano MI dal " +
+                    "toponimo Mediolanum");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAddress.setRegion("Regione Lombardia Piemonte Emilia-Romagna Trentino-Alto Adige Veneto Cantone " +
+                    "dei Grigioni (Svizzera Svizzera) Canton Ticino (Svizzera Svizzera)");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAddress.setProvince("Stato Italia Regione Lombardia Città metropolitana Provincia di Milano MI dal " +
+                    "toponimo Mediolanum");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAddress.setPostalCode("41845418454184541845418454184541845");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAddress.setCountry("Stato Italia Repubblica Italiana Continente EuropaStato Italia Repubblica Italiana Continente Europa");
+            addressRepository.saveAndFlush(invalidAddress);
         });
     }
 
