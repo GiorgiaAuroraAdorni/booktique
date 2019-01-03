@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -306,6 +307,46 @@ class BookRepositoryTest {
         Book invalidBook = new Book();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a book with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Book invalidBook = new Book();
+
+        invalidBook.setIsbn("9780714503615");
+        invalidBook.setTitle("Marat/Sade");
+        invalidBook.setPublisher("Marion Boyars Publishers Ltd");
+
+        bookRepository.save(invalidBook);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidBook.setTitle("The Persecution and Assassination of Jean-Paul Marat as Performed by the Inmates of" +
+                    " the Asylum of Charenton Under the Direction of the Marquis de Sade");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidBook.setPublisher("Marion Boyars Publishers Ltd; 5 Revised edition edizione (1 ottobre 1969)");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidBook.setSubtitle("This extraordinary play, which swept Europe before coming to America, is based " +
+                    "on two historical truths: the infamous Marquis de Sade was confined in the lunatic asylum of " +
+                    "Charenton, where he staged plays; and the revolutionary Jean-Paul Marat was stabbed in a " +
+                    "bathtub by Charlotte Corday at the height of the Terror during the French Revolution. But this " +
+                    "play-within-a-play is not historical drama. Its thought is as modern as today's police states " +
+                    "and The Bomb; its theatrical impact has everywhere been called a major innovation.");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidBook.setLanguage("Indo-European Germanic West Germanic Anglo-Frisian Anglic English");
             bookRepository.saveAndFlush(invalidBook);
         });
     }
