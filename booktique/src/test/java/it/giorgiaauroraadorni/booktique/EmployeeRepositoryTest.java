@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -130,4 +131,35 @@ class EmployeeRepositoryTest {
         assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
     }
 
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
+    @Test
+    public void testCreateEmployee() {
+        List<Employee> savedEmployees = new ArrayList<>();
+
+        for (int i = 0; i < dummyEmployees.size(); i++) {
+            // check if the employees id are correctly automatic generated
+            assertNotNull(employeeRepository.getOne(dummyEmployees.get(i).getId()));
+            savedEmployees.add(employeeRepository.getOne(dummyEmployees.get(i).getId()));
+
+            // check if the employees contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedEmployees.get(i).getCreatedAt());
+            assertNotNull(savedEmployees.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedEmployees.get(i).getFiscalCode(), dummyEmployees.get(i).getFiscalCode());
+            assertEquals(savedEmployees.get(i).getName(), dummyEmployees.get(i).getName());
+            assertEquals(savedEmployees.get(i).getSurname(), dummyEmployees.get(i).getSurname());
+            assertEquals(savedEmployees.get(i).getDateOfBirth(), dummyEmployees.get(i).getDateOfBirth());
+            assertEquals(savedEmployees.get(i).getEmail(), dummyEmployees.get(i).getEmail());
+            assertEquals(savedEmployees.get(i).getMobilePhone(), dummyEmployees.get(i).getMobilePhone());
+            assertEquals(savedEmployees.get(i).getUsername(), dummyEmployees.get(i).getUsername());
+            assertEquals(savedEmployees.get(i).getPassword(), dummyEmployees.get(i).getPassword());
+            assertEquals(savedEmployees.get(i).getAddress(), dummyEmployees.get(i).getAddress());
+            assertEquals(savedEmployees.get(i).getSupervisor(), dummyEmployees.get(i).getSupervisor());
+            assertEquals(savedEmployees.get(i).getHireDate(), dummyEmployees.get(i).getHireDate());
+            assertEquals(savedEmployees.get(i).getId(), dummyEmployees.get(i).getId());
+        }
+    }
 }
