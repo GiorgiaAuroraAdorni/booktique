@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -212,4 +213,28 @@ class EmployeeRepositoryTest {
         assertEquals(addressRepository.getOne(dummyAddresses.get(1).getId()), updatedEmployee.getAddress());
         assertEquals(employeeRepository.getOne(dummyEmployees.get(2).getId()), updatedEmployee.getSupervisor());
     }
+
+    /**
+     * Creates an employee with the same username of another and throws an exception when attempting to insert data
+     * by violating an integrity constraint, in particular, the unique constraints.
+     */
+    @Test
+    public void testUniqueEmployeeUsernameIdentifier() {
+        Employee duplicatedEmployee = new Employee();
+
+        // set manually a new id in order to insert a new record and not for update an existing record
+        duplicatedEmployee.setId(9999l);
+        duplicatedEmployee.setFiscalCode("MTCKLN83C18G224W");
+        duplicatedEmployee.setName("Kaitlin Josephine");
+        duplicatedEmployee.setSurname("Mitchell Stewart");
+        duplicatedEmployee.setAddress(dummyAddresses.get(0));
+        duplicatedEmployee.setPassword("W422g31C38nLkCtM");
+
+        // save the employee in the repository
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedEmployee.setUsername("JosephineStewart");
+            employeeRepository.saveAndFlush(duplicatedEmployee);
+        });
+    }
+
 }
