@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
@@ -257,15 +258,23 @@ class AuthorRepositoryTest {
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidAuthor.setBiography("Julie is a friendly government politician. She has a post-graduate degree in " +
-                "philosophy, politics and economics. \n She is currently single. Her most recent romance was with a " +
-                "sous chef called Walter Roland Campbell, who was the same age as her. They broke up because Walter " +
-                "wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend Walter: " +
-                "Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty. They " +
-                "have a very fiery friendship.");
+                    "philosophy, politics and economics. \n She is currently single. Her most recent romance was with a " +
+                    "sous chef called Walter Roland Campbell, who was the same age as her. They broke up because Walter " +
+                    "wanted a quieter life than Julie could provide.\n Julie has one child with ex-boyfriend Walter: " +
+                    "Montgomery aged 4.\n Julie's best friend is a government politician called Josiah O'Doherty. They " +
+                    "have a very fiery friendship.");
             authorRepository.saveAndFlush(invalidAuthor);
         });
 
-        // FIXME: add test for name/surname too long (more than 30 character)
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAuthor.setName("KimmyAntoinetteEvangelineJustine");
+            authorRepository.saveAndFlush(invalidAuthor);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAuthor.setSurname("TurnerDonaldsonPenningtonNicholson");
+            authorRepository.saveAndFlush(invalidAuthor);
+        });
     }
 
     /**
