@@ -27,9 +27,7 @@ public class Purchase extends AuditModel {
     @Column(nullable = false)
     private LocalDate shippingDate;
 
-    @Column(nullable = false)
-    // FIXME
-    @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
     public enum Status {
