@@ -43,19 +43,8 @@ public class Purchase extends AuditModel {
     @Enumerated(EnumType.STRING)
     private Purchase.Status status;
 
-    @Column(nullable = false)
-    private LocalDate paymentDate;
-
-    public enum paymentType {
-        creditCard,
-        cash,
-        check,
-        giftCard
-    }
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Purchase.paymentType paymentType;
+    @Embedded
+    private Payment payment;
 
     // Getters and Setters
     public Long getId() {
@@ -114,22 +103,6 @@ public class Purchase extends AuditModel {
         this.status = status;
     }
 
-    public LocalDate getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(LocalDate paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public Purchase.paymentType getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(Purchase.paymentType paymentType) {
-        this.paymentType = paymentType;
-    }
-
     public Set<Item> getItems() {
         return items;
     }
@@ -138,4 +111,11 @@ public class Purchase extends AuditModel {
         this.items = items;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 }
