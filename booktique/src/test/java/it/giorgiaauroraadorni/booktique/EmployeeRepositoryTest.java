@@ -6,6 +6,7 @@ import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
 import it.giorgiaauroraadorni.booktique.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -334,26 +335,36 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Update the supervisor of an entry and check if the fields of the parents are changed correctly
+     * Delete the supervisor and check if the employee was updated correctly. Throws an exception when attempting to
+     * access an employee object whose supervisor has been deleted, since it isn't allowed to delete a supervisor if
+     * he has submitted. The elimination of a supervisor is allowed only if the subordinates are first re-allocated.
      */
     @Test
-    public void testUpdateEmployeeSupervisor() {
-        // get a supervisor from the repository
+    public void testDeleteEmployeeSupervisor() {
+        // get a a pair employee-supervisor from the repository
         Employee employee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
         Employee supervisor = employee.getSupervisor();
 
-        // change the supervisor and update the employee object
-        employee.setSupervisor(employeeRepository.findById(dummyEmployees.get(0).getId()).get());
+        // delete the supervisor object
+        employeeRepository.delete(supervisor);
+
+        // check that the supervisor has been deleted correctly
+        assertEquals(employeeRepository.findById(supervisor.getId()), Optional.empty());
+
+        // throws an exception when attempting to access an employee object whose supervisor has been deleted
+        assertThrows(AssertionFailedError.class, () -> {
+                    assertNull(employeeRepository.findById(employee.getId()).get().getSupervisor());
+                    assertNotEquals(supervisor, employeeRepository.findById(employee.getId()).get().getSupervisor());
+                }, "It's not possible to eliminate a supervisor if his subordinates have not been first relocated");
+
+        // reallocation of the subordinates
+        employee.setSupervisor(null);
         employeeRepository.save(employee);
 
-        Employee updatedEmployee = employeeRepository.findById(employee.getId()).get();
+        Employee employeeAftersupervisorDel = employeeRepository.findById(employee.getId()).get();
 
-        // check that the employees exist and that the supervisor attribute has been updated correctly and contain
-        // the expected value
-        assertNotNull(employee);
-        assertNotNull(updatedEmployee);
-        assertNotNull(updatedEmployee.getSupervisor());
-        assertEquals(employee, updatedEmployee.getSupervisor());
-        assertNotEquals(supervisor, updatedEmployee.getSupervisor());
+        // check if the supervisor field is correctly update
+        assertNull(employeeAftersupervisorDel.getSupervisor());
+        assertNotEquals(supervisor, employeeAftersupervisorDel.getSupervisor());
     }
 }
