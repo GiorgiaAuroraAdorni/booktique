@@ -336,6 +336,10 @@ class PurchaseRepositoryTest {
             assertNotNull(savedPurchases.get(i).getCreatedAt());
             assertNotNull(savedPurchases.get(i).getUpdatedAt());
 
+            // check if the purchases contain the amount
+            assertNotNull(savedPurchases.get(i).getAmount());
+            assertNotEquals(0, savedPurchases.get(i).getAmount());
+
             // check that all the attributes have been created correctly and contain the expected value
             assertEquals(savedPurchases.get(i).getCustomer(), dummyPurchases.get(i).getCustomer());
             assertEquals(savedPurchases.get(i).getEmployee(), dummyPurchases.get(i).getEmployee());
