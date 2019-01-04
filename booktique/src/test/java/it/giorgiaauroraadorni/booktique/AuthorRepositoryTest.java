@@ -176,8 +176,9 @@ class AuthorRepositoryTest {
 
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
-        invalidAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
+
         assertThrows(ConstraintViolationException.class, () -> {
+            invalidAuthor.setFiscalCode("ABCDEFGHIJKLMNOP");
             authorRepository.saveAndFlush(invalidAuthor);
         });
     }
@@ -192,8 +193,9 @@ class AuthorRepositoryTest {
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        invalidAuthor.setWebSiteURL("KimmyTurner.com");
+
         assertThrows(ConstraintViolationException.class, () -> {
+            invalidAuthor.setWebSiteURL("KimmyTurner.com");
             authorRepository.saveAndFlush(invalidAuthor);
         });
     }
@@ -208,8 +210,9 @@ class AuthorRepositoryTest {
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        invalidAuthor.setEmail("KimmyTurner@mail@10.com");
+
         assertThrows(ConstraintViolationException.class, () -> {
+            invalidAuthor.setEmail("KimmyTurner@mail@10.com");
             authorRepository.saveAndFlush(invalidAuthor);
         });
     }
@@ -224,8 +227,9 @@ class AuthorRepositoryTest {
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
-        invalidAuthor.setMobilePhone("0039333123456");
+
         assertThrows(ConstraintViolationException.class, () -> {
+            invalidAuthor.setMobilePhone("0039333123456");
             authorRepository.saveAndFlush(invalidAuthor);
         });
     }
@@ -240,6 +244,7 @@ class AuthorRepositoryTest {
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
+
         assertThrows(DateTimeException.class, () -> {
             invalidAuthor.setDateOfBirth(LocalDate.of(1980, 13, 32));
             authorRepository.save(invalidAuthor);
