@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -134,4 +135,15 @@ class ItemRepositoryTest {
         assertTrue(savedItems.containsAll(dummyItems), "findAll should fetch all dummy items");
     }
 
+    /**
+     * Throws an exception when attempting to create an item without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreateItem() {
+        Item invalidItem = new Item();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            itemRepository.saveAndFlush(invalidItem);
+        });
+    }
 }
