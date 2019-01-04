@@ -5,6 +5,7 @@ import it.giorgiaauroraadorni.booktique.model.Supplier;
 import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
 import it.giorgiaauroraadorni.booktique.repository.SupplierRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -75,5 +78,18 @@ class SupplierRepositoryTest {
     void createDummyEntities() {
         createDummyAddress();
         createDummySuppliers();
+    }
+
+    @Test
+    void repositoryLoads() {}
+
+    @Test
+    void repositoryFindAll() {
+        var savedSuppliers = supplierRepository.findAll();
+        var savedAddresses = addressRepository.findAll();
+
+        // check if all the suppliers are correctly added to the repository
+        assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
+        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
     }
 }
