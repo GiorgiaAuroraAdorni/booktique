@@ -225,4 +225,26 @@ class SupplierRepositoryTest {
         supplierRepository.deleteAll();
         assertTrue(supplierRepository.findAll().isEmpty());
     }
+
+    /**
+     * Delete the supplier address and check if the supplier was updated correctly
+     */
+    @Test
+    public void testDeleteSupplierAddress() {
+        // get a supplier from the repository
+        Supplier savedSupplier = supplierRepository.findById(dummySuppliers.get(1).getId()).get();
+        Address supplierAddress = savedSupplier.getAddress();
+
+        // delete all the addresses, set null the supplier address and verify the operation has been carried out
+        // correctly
+        savedSupplier.setAddress(null);
+        supplierRepository.save(savedSupplier);
+        addressRepository.deleteAll();
+
+        assertTrue(addressRepository.findAll().isEmpty());
+
+        // check that the supplier has been updated correctly
+        assertNotEquals(supplierAddress, supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
+        assertNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
+    }
 }
