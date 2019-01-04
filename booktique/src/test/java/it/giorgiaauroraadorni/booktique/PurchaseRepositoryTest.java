@@ -10,13 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -317,6 +319,35 @@ class PurchaseRepositoryTest {
         assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
         assertTrue(savedItems.containsAll(dummyItems), "findAll should fetch all dummy items");
         assertTrue(savedPurchases.containsAll(dummyPurchases), "findAll should fetch all dummy purchases");
+    }
+
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
+    @Test
+    public void testCreatePurchase() {
+        List<Purchase> savedPurchases = new ArrayList<>();
+
+        for (int i = 0; i < dummyPurchases.size(); i++) {
+            // check if the purchases id are correctly automatic generated
+            assertNotNull(purchaseRepository.getOne(dummyPurchases.get(i).getId()));
+            savedPurchases.add(purchaseRepository.getOne(dummyPurchases.get(i).getId()));
+
+            // check if the purchases contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedPurchases.get(i).getCreatedAt());
+            assertNotNull(savedPurchases.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedPurchases.get(i).getCustomer(), dummyPurchases.get(i).getCustomer());
+            assertEquals(savedPurchases.get(i).getEmployee(), dummyPurchases.get(i).getEmployee());
+            assertEquals(savedPurchases.get(i).getItems(), dummyPurchases.get(i).getItems());
+            assertEquals(savedPurchases.get(i).getOrderDate(), dummyPurchases.get(i).getOrderDate());
+            assertEquals(savedPurchases.get(i).getPaymentMethod(), dummyPurchases.get(i).getPaymentMethod());
+            assertEquals(savedPurchases.get(i).getShippingDate(), dummyPurchases.get(i).getShippingDate());
+            assertEquals(savedPurchases.get(i).getStatus(), dummyPurchases.get(i).getStatus());
+            assertEquals(savedPurchases.get(i).getAmount(), dummyPurchases.get(i).getAmount());
+            assertEquals(savedPurchases.get(i).getId(), dummyPurchases.get(i).getId());
+        }
     }
 
 }
