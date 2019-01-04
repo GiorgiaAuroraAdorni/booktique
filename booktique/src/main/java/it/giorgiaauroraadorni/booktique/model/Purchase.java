@@ -15,7 +15,7 @@ public class Purchase extends AuditModel {
     @ManyToOne(optional = false)
     private Customer customer;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     private Employee employee;
 
     @OneToMany
@@ -24,11 +24,7 @@ public class Purchase extends AuditModel {
     @Column(nullable = false)
     private LocalDate orderDate;
 
-    @Column(nullable = false)
     private LocalDate shippingDate;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
 
     public enum Status {
         canceled,
@@ -88,11 +84,11 @@ public class Purchase extends AuditModel {
     }
 
     public BigDecimal getAmount() {
+        BigDecimal amount = new BigDecimal(0);
+        for (Item i: items) {
+            amount.add(i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantityPerUnit())));
+        }
         return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 
     public Status getStatus() {
