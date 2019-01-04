@@ -74,7 +74,7 @@ class EmployeeRepositoryTest {
                 .mapToObj(i -> new Employee())
                 .collect(Collectors.toList());
 
-        // create a employees with only the mandatory parameter (inherited from person)
+        // create an employee with only the mandatory parameter (inherited from person)
         dummyEmployees.get(0).setFiscalCode("GRGBVR75C13G224W");
         dummyEmployees.get(0).setName("Beverley");
         dummyEmployees.get(0).setSurname("Gregory");
@@ -82,7 +82,7 @@ class EmployeeRepositoryTest {
         dummyEmployees.get(0).setSupervisor(dummyEmployees.get(1));
         dummyEmployees.get(0).setPassword("yJmKKSjRJX4HZXrvxjBs");
 
-        // create a employees with all the person attributes
+        // create an employee with all the person attributes
         dummyEmployees.get(1).setFiscalCode("STNPTR70A11C933C");
         dummyEmployees.get(1).setName("Peter");
         dummyEmployees.get(1).setSurname("Stone");
@@ -93,7 +93,7 @@ class EmployeeRepositoryTest {
         dummyEmployees.get(1).setEmail("peter.stone40@example.com");
         dummyEmployees.get(1).setMobilePhone("+393733733730");
 
-        // create a employees with many attributes
+        // create an employee with many attributes
         dummyEmployees.get(2).setFiscalCode("STWJSP77T12A271K");
         dummyEmployees.get(2).setName("Josephine");
         dummyEmployees.get(2).setSurname("Stewart");

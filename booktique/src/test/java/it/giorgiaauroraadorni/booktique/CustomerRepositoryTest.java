@@ -43,14 +43,14 @@ class CustomerRepositoryTest {
                 .mapToObj(i -> new Address())
                 .collect(Collectors.toList());
 
-        // create a addresses with only the mandatory parameter
+        // create an address with only the mandatory parameter
         dummyAddresses.get(0).setStreetAddress("Via Vinicio 59");
         dummyAddresses.get(0).setCity("Montecassiano");
         dummyAddresses.get(0).setProvince("MC");
         dummyAddresses.get(0).setPostalCode("04017");
         dummyAddresses.get(0).setCountry("Italia");
 
-        // create an addresses with all the possible attributes
+        // create an address with all the possible attributes
         dummyAddresses.get(1).setStreetAddress("Via Tancredi 96");
         dummyAddresses.get(1).setCity("Fonteblanda");
         dummyAddresses.get(1).setProvince("GR");
@@ -59,7 +59,7 @@ class CustomerRepositoryTest {
         dummyAddresses.get(1).setCountry("Italia");
         dummyAddresses.get(1).setBuilding("Appartamento 62 De Santis del friuli");
 
-        // create an addresses with all the possible attributes
+        // create an address with all the possible attributes
         dummyAddresses.get(2).setStreetAddress("Via Leone 1");
         dummyAddresses.get(2).setCity("Milano");
         dummyAddresses.get(2).setProvince("MI");
@@ -80,7 +80,7 @@ class CustomerRepositoryTest {
                 .mapToObj(i -> new Customer())
                 .collect(Collectors.toList());
 
-        // create a customers with only the mandatory parameter (inherited from person)
+        // create a customer with only the mandatory parameter (inherited from person)
         dummyCustomers.get(0).setFiscalCode("MTCKLN83C13G224W");
         dummyCustomers.get(0).setName("Kaitlin");
         dummyCustomers.get(0).setSurname("Mitchell");
@@ -89,7 +89,7 @@ class CustomerRepositoryTest {
         dummyCustomers.get(0).setUsername("KaitlinMitchell83");
         dummyCustomers.get(0).setPassword("W422g31C38nLkCtM");
 
-        // create a customers with all the person attributes
+        // create a customer with all the person attributes
         dummyCustomers.get(1).setFiscalCode("DVSMGN49A01C933C");
         dummyCustomers.get(1).setName("Morgan");
         dummyCustomers.get(1).setSurname("Davison");
@@ -100,7 +100,7 @@ class CustomerRepositoryTest {
         dummyCustomers.get(1).setEmail("MorganDavidson@mail.com");
         dummyCustomers.get(1).setMobilePhone("+393733733730");
 
-        // create a customers with many attributes
+        // create a customer with many attributes
         dummyCustomers.get(2).setFiscalCode("FRSTVS80T12A271K");
         dummyCustomers.get(2).setName("Travis");
         dummyCustomers.get(2).setSurname("Frost");
