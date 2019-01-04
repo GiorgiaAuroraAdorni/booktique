@@ -125,4 +125,27 @@ class SupplierRepositoryTest {
         assertNull(supplierRepository.findById(dummySuppliers.get(0).getId()).get().getAddress());
         assertNotNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
     }
+
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     */
+    @Test
+    public void testUpdateSupplier() {
+        // get a supplier from the repository
+        Supplier savedSupplier = supplierRepository.findById(dummySuppliers.get(0).getId()).get();
+
+        // change some attributes
+        savedSupplier.setCompanyName("Centibook Supplier S.r.l.");
+        savedSupplier.setPhoneNumber("045612185");
+
+        // update the supplier object
+        supplierRepository.save(savedSupplier);
+        Supplier updatedSupplier = supplierRepository.findById(savedSupplier.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedSupplier);
+        assertEquals(savedSupplier, updatedSupplier);
+        assertEquals("Centibook Supplier S.r.l.", updatedSupplier.getCompanyName());
+        assertEquals("045612185", updatedSupplier.getPhoneNumber());
+    }
 }
