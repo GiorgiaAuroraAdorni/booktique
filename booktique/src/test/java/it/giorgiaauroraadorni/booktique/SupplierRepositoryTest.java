@@ -190,4 +190,19 @@ class SupplierRepositoryTest {
             supplierRepository.saveAndFlush(invalidSupplier);
         });
     }
+
+    /*
+     * Throws an exception when attempting to create a supplier with illegal phone number format type
+     */
+    @Test
+    public void testIllegalPhoneNumberFormat() {
+        Supplier invalidSupplier = new Supplier();
+
+        invalidSupplier.setCompanyName("Fast Supplier S.r.l.");
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidSupplier.setPhoneNumber("01234567");
+            supplierRepository.saveAndFlush(invalidSupplier);
+        });
+    }
 }
