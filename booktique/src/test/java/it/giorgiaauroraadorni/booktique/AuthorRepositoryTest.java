@@ -83,27 +83,27 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testCreateBook() {
-        List<Author> savedAuthor = new ArrayList<>();
+        List<Author> savedAuthors = new ArrayList<>();
 
         for (int i = 0; i < dummyAuthors.size(); i++) {
             // check if the authors id are correctly automatic generated
             assertNotNull(authorRepository.getOne(dummyAuthors.get(i).getId()));
-            savedAuthor.add(authorRepository.getOne(dummyAuthors.get(i).getId()));
+            savedAuthors.add(authorRepository.getOne(dummyAuthors.get(i).getId()));
 
             // check if the authors contain the createdAt and updatedAt annotation that are automatically populate
-            assertNotNull(savedAuthor.get(i).getCreatedAt());
-            assertNotNull(savedAuthor.get(i).getUpdatedAt());
+            assertNotNull(savedAuthors.get(i).getCreatedAt());
+            assertNotNull(savedAuthors.get(i).getUpdatedAt());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals(savedAuthor.get(i).getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
-            assertEquals(savedAuthor.get(i).getName(), dummyAuthors.get(i).getName());
-            assertEquals(savedAuthor.get(i).getSurname(), dummyAuthors.get(i).getSurname());
-            assertEquals(savedAuthor.get(i).getDateOfBirth(), dummyAuthors.get(i).getDateOfBirth());
-            assertEquals(savedAuthor.get(i).getEmail(), dummyAuthors.get(i).getEmail());
-            assertEquals(savedAuthor.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
-            assertEquals(savedAuthor.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
-            assertEquals(savedAuthor.get(i).getBiography(), dummyAuthors.get(i).getBiography());
-            assertEquals(savedAuthor.get(i).getId(), dummyAuthors.get(i).getId());
+            assertEquals(savedAuthors.get(i).getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
+            assertEquals(savedAuthors.get(i).getName(), dummyAuthors.get(i).getName());
+            assertEquals(savedAuthors.get(i).getSurname(), dummyAuthors.get(i).getSurname());
+            assertEquals(savedAuthors.get(i).getDateOfBirth(), dummyAuthors.get(i).getDateOfBirth());
+            assertEquals(savedAuthors.get(i).getEmail(), dummyAuthors.get(i).getEmail());
+            assertEquals(savedAuthors.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
+            assertEquals(savedAuthors.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
+            assertEquals(savedAuthors.get(i).getBiography(), dummyAuthors.get(i).getBiography());
+            assertEquals(savedAuthors.get(i).getId(), dummyAuthors.get(i).getId());
         }
     }
 
