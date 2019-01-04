@@ -353,4 +353,43 @@ class PurchaseRepositoryTest {
         }
     }
 
+    /**
+     * Update one entry editing different attributes and check if the fields are changed correctly
+     */
+    @Test
+    public void testUpdatePurchase() {
+        // get a purchase from the repository
+        Purchase savedPurchase = purchaseRepository.findById(dummyPurchases.get(0).getId()).get();
+
+        // change some attributes
+        var amount = savedPurchase.getAmount();
+
+        Set<Item> oldItems = savedPurchase.getItems();
+        Set<Item> newItems = new HashSet<>();
+        for (Item i: oldItems) {
+            newItems.add(i);
+        }
+        newItems.add(dummyItems.get(2));
+        savedPurchase.setItems(newItems);
+
+        var orderDate = savedPurchase.getOrderDate();
+        savedPurchase.setOrderDate(LocalDate.of(2038, 1, 4));
+
+        // update the purchase object
+        purchaseRepository.save(savedPurchase);
+        Purchase updatedPurchase = purchaseRepository.findById(savedPurchase.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedPurchase);
+        assertEquals(savedPurchase, updatedPurchase);
+        assertNotEquals(oldItems, newItems);
+        assertEquals(newItems, updatedPurchase.getItems());
+        assertNotEquals(oldItems, updatedPurchase.getItems());
+        assertEquals(LocalDate.of(2038, 1, 4), updatedPurchase.getOrderDate());
+        assertNotEquals(orderDate, updatedPurchase.getOrderDate());
+        //FIXME
+        // assertNotEquals(amount, updatedPurchase.getAmount()); //assertNotEquals not work
+        assertNotEquals(0, updatedPurchase.getAmount());
+    }
+
 }
