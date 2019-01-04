@@ -11,12 +11,12 @@ public class Item extends AuditModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "book_item_id", unique = true)
+    @ManyToOne(optional = false)
+    //@JoinColumn(name = "book_item_id", unique = true)
     private Book bookItem;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "supplier_id", unique = true)
+    @ManyToOne(optional = false)
+    //@JoinColumn(name = "supplier_id", unique = true)
     private Supplier supplier;
 
     @Column(nullable = false, precision = 10, scale = 2)
