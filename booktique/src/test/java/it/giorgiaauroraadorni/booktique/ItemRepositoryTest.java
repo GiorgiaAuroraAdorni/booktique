@@ -136,6 +136,29 @@ class ItemRepositoryTest {
     }
 
     /**
+     * Update one entry editing different attributes and check if the fields are changed correctly
+     */
+    @Test
+    public void testUpdateItem() {
+        // get a item from the repository
+        Item savedItem = itemRepository.findById(dummyItems.get(0).getId()).get();
+
+        // change some attributes
+        savedItem.setQuantityPerUnit(2);
+        savedItem.setUnitPrice(BigDecimal.valueOf(34.99));
+
+        // update the item object
+        itemRepository.save(savedItem);
+        Item updatedItem = itemRepository.findById(savedItem.getId()).get();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedItem);
+        assertEquals(savedItem, updatedItem);
+        assertEquals(2, updatedItem.getQuantityPerUnit());
+        assertEquals(BigDecimal.valueOf(34.99), updatedItem.getUnitPrice());
+    }
+
+    /**
      * Throws an exception when attempting to create an item without mandatory attributes
      */
     @Test
@@ -146,4 +169,5 @@ class ItemRepositoryTest {
             itemRepository.saveAndFlush(invalidItem);
         });
     }
+
 }
