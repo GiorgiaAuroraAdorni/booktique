@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -204,5 +205,24 @@ class SupplierRepositoryTest {
             invalidSupplier.setPhoneNumber("01234567");
             supplierRepository.saveAndFlush(invalidSupplier);
         });
+    }
+
+    /**
+     * Delete an entry and check if it was removed correctly
+     */
+    @Test
+    public void testDeleteSupplier() {
+        // get a supplier from the repository
+        Supplier savedSupplier = supplierRepository.findById(dummySuppliers.get(1).getId()).get();
+
+        // delete the supplier object
+        supplierRepository.delete(savedSupplier);
+
+        // check that the supplier has been deleted correctly
+        assertEquals(supplierRepository.findById(dummySuppliers.get(1).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        supplierRepository.deleteAll();
+        assertTrue(supplierRepository.findAll().isEmpty());
     }
 }
