@@ -256,6 +256,7 @@ class AuthorRepositoryTest {
         invalidAuthor.setName("Kimmy");
         invalidAuthor.setSurname("Turner");
         invalidAuthor.setFiscalCode("TRNKMM90T04Z000A");
+
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidAuthor.setBiography("Julie is a friendly government politician. She has a post-graduate degree in " +
                     "philosophy, politics and economics. \n She is currently single. Her most recent romance was with a " +

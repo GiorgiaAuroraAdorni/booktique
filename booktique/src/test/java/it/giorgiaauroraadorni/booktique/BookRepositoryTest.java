@@ -6,6 +6,7 @@ import it.giorgiaauroraadorni.booktique.repository.AuthorRepository;
 import it.giorgiaauroraadorni.booktique.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -292,14 +293,6 @@ class BookRepositoryTest {
     }
 
     /**
-     * Update one entry deleting the author attribute and check if the fields are changed correctly
-     */
-    @Test
-    public void testUpdateBookAuthor() {
-        // FIXME: WIP: dont work
-    }
-
-    /**
      * Throws an exception when attempting to create a book without mandatory attributes
      */
     @Test
@@ -414,6 +407,23 @@ class BookRepositoryTest {
         assertNotEquals(bookSequel, bookPrequelAfterDel.getSequel());
     }
 
-    /* Allow update or insert of null attributes */
+    /**
+     * Throws an exception when attempting to delete an author if he has written a book.
+     */
+    @Test
+    public void testDeleteBookAuthor() {
+        // get a a pair book-authors from the repository
+        Book book = bookRepository.findById(dummyBooks.get(1).getId()).get();
+        Set<Author> authors = book.getAuthors();
 
+        // delete all the authors object
+        authorRepository.deleteAll();
+
+        // throws an exception when attempting to delete an author of a book
+        assertThrows(AssertionFailedError.class, () -> {
+            assertTrue(authorRepository.findAll().isEmpty());
+            assertNull(bookRepository.findById(book.getId()).get().getAuthors());
+            assertNotEquals(authors, bookRepository.findById(book.getId()).get().getAuthors());
+        }, "It's not possible to delete an author if he has written a book");
+    }
 }

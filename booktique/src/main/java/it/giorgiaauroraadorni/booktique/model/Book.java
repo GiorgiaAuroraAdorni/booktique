@@ -26,7 +26,8 @@ public class Book extends AuditModel implements Serializable {
     @Column(length = 100)
     private String subtitle;
 
-    @ManyToMany(fetch=FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY,
+                cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Author> authors;
 
     @Column(length = 30, nullable = false)
