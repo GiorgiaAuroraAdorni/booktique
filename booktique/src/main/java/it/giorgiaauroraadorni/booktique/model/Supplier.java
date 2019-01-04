@@ -19,9 +19,9 @@ public class Supplier extends AuditModel {
     @Pattern(regexp = "^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$")
     private String email;
 
-    // This is a phone number. It specifies a italian mobile phone numbers.
-    @Pattern(regexp = "^(\\((00|\\+)39\\)|(00|\\+)39)?(38[890]|34[7-90]|36[680]|33[3-90]|32[89])\\d{7}$")
-    private String mobilePhone;
+    // This is a phone number. It specifies a italian fixed telephone numbers.
+    @Pattern(regexp = "^0[0-9]{8,9}$")
+    private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
@@ -51,12 +51,12 @@ public class Supplier extends AuditModel {
         this.email = email;
     }
 
-    public String getMobilePhone() {
-        return mobilePhone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setMobilePhone(String phone) {
-        this.mobilePhone = mobilePhone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Address getAddress() {
