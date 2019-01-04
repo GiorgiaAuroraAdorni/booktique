@@ -161,4 +161,17 @@ class SupplierRepositoryTest {
             supplierRepository.saveAndFlush(invalidSupplier);
         });
     }
+
+    /**
+     * Throws an exception when attempting to create or update a supplier with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Supplier invalidSupplier = new Supplier();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidSupplier.setCompanyName("Centibook Fast Supplier S.r.l.s.");
+            supplierRepository.saveAndFlush(invalidSupplier);
+        });
+    }
 }
