@@ -44,7 +44,7 @@ public class Purchase extends AuditModel {
     private Purchase.Status status;
 
     @Embedded
-    private Payment payment;
+    private Payment paymentMethod;
 
     // Getters and Setters
     public Long getId() {
@@ -111,11 +111,11 @@ public class Purchase extends AuditModel {
         this.items = items;
     }
 
-    public Payment getPayment() {
-        return payment;
+    public Payment getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+    public void setPaymentMethod(Payment paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }
