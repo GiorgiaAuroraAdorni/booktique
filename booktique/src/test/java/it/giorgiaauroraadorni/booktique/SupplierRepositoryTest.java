@@ -59,7 +59,7 @@ class SupplierRepositoryTest {
     /**
      * Create a list of suppliers entities that will be use in the test
      */
-    private void createDummySuppliers() {
+    private void createDummySupplier() {
         dummySuppliers = IntStream
                 .range(0, 2)
                 .mapToObj(i -> new Supplier())
@@ -81,7 +81,7 @@ class SupplierRepositoryTest {
     @BeforeEach
     void createDummyEntities() {
         createDummyAddress();
-        createDummySuppliers();
+        createDummySupplier();
     }
 
     @Test
