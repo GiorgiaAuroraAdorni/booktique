@@ -335,9 +335,10 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Delete the supervisor and check if the employee was updated correctly. Throws an exception when attempting to
-     * access an employee object whose supervisor has been deleted, since it isn't allowed to delete a supervisor if
-     * he has submitted. The elimination of a supervisor is allowed only if the subordinates are first re-allocated.
+     * Delete the supervisor and check if the employee was updated correctly.
+     * Throws an exception when attempting to access an employee object whose supervisor has been deleted, since it
+     * isn't allowed to delete a supervisor if he has submitted.
+     * The elimination of a supervisor is allowed only if the subordinates are first re-allocated.
      */
     @Test
     public void testDeleteEmployeeSupervisor() {
