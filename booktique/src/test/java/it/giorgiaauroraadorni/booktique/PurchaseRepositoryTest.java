@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -391,5 +392,20 @@ class PurchaseRepositoryTest {
         // assertNotEquals(amount, updatedPurchase.getAmount()); //assertNotEquals not work
         assertNotEquals(0, updatedPurchase.getAmount());
     }
+
+    /**
+     * Throws an exception when attempting to create a purchase without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreatePurchase() {
+        Purchase invalidPurchase = new Purchase();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            purchaseRepository.saveAndFlush(invalidPurchase);
+        });
+    }
+
+
+
 
 }
