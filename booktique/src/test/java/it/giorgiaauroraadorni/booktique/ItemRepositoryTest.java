@@ -46,7 +46,7 @@ class ItemRepositoryTest {
      */
     private void createDummyBook() {
         dummyBooks = IntStream
-                .range(0, 2)
+                .range(0, 3)
                 .mapToObj(i -> new Book())
                 .collect(Collectors.toList());
 
@@ -64,6 +64,15 @@ class ItemRepositoryTest {
         dummyBooks.get(1).setLanguage("english");
         dummyBooks.get(1).setPublicationDate(LocalDate.of(1999, 1, 1));
 
+        dummyBooks.get(2).setIsbn("88-7782-702-6");
+        dummyBooks.get(2).setTitle("After Young In The West");
+        dummyBooks.get(2).setPublisher("Lyon Publishing");
+        dummyBooks.get(2).setBookFormat(Book.Format.hardcover);
+        dummyBooks.get(2).setEdition(1);
+        dummyBooks.get(2).setLanguage("english");
+        dummyBooks.get(2).setPublicationDate(LocalDate.of(2000, 1, 1));
+        dummyBooks.get(2).addPrequel(dummyBooks.get(2));
+
         // save the books in the repository
         dummyBooks = bookRepository.saveAll(dummyBooks);
     }
@@ -73,17 +82,19 @@ class ItemRepositoryTest {
      */
     private void createDummySupplier() {
         dummySuppliers = IntStream
-                .range(0, 2)
+                .range(0, 3)
                 .mapToObj(i -> new Supplier())
                 .collect(Collectors.toList());
 
-        // create a supplier with only the mandatory parameter
+        // create some suppliers
         dummySuppliers.get(0).setCompanyName("Centibook Supplier S.r.l.s.");
 
-        // create a supplier with all the attributes
         dummySuppliers.get(1).setCompanyName("Speed Book S.r.l.");
         dummySuppliers.get(1).setEmail("speedbook@srl.com");
         dummySuppliers.get(1).setPhoneNumber("026512158");
+
+        dummySuppliers.get(2).setCompanyName("Fast Book supplier S.r.l.");
+        dummySuppliers.get(2).setPhoneNumber("0465656565");
 
         // save the suppliers in the repository
         dummySuppliers = supplierRepository.saveAll(dummySuppliers);
