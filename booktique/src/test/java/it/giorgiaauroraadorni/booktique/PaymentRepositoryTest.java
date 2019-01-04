@@ -1,22 +1,18 @@
 package it.giorgiaauroraadorni.booktique;
 
-import it.giorgiaauroraadorni.booktique.model.Item;
 import it.giorgiaauroraadorni.booktique.model.Payment;
-import it.giorgiaauroraadorni.booktique.model.Purchase;
 import it.giorgiaauroraadorni.booktique.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -180,9 +176,64 @@ class PaymentRepositoryTest {
         invalidPayment.setCardholderName("Kaitlin Mitchell");
 
         assertThrows(ConstraintViolationException.class, () -> {
-            invalidPayment.setCVC("12356");
+            invalidPayment.setCVC("0O0");
             paymentRepository.saveAndFlush(invalidPayment);
         });
     }
 
+    /**
+     * Throws an exception when attempting to create or update a payment with illegal size for the attributes
+     */
+    @Test
+    public void testIllegalSizeAttributes() {
+        Payment invalidPayment = new Payment();
+
+        invalidPayment.setCardNumber("4643017337747076");
+        invalidPayment.setExpireDate(LocalDate.of(2025, 12, 1));
+        invalidPayment.setCardholderName("Kaitlin Mitchell");
+        invalidPayment.setCVC("123");
+
+        paymentRepository.save(invalidPayment);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidPayment.setCardNumber("46430173377470767");
+            paymentRepository.saveAndFlush(invalidPayment);
+        });
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidPayment.setCardNumber("464301733774707");
+            paymentRepository.saveAndFlush(invalidPayment);
+        });
+
+        //FIXME
+        assertThrows(JpaSystemException.class, () -> {
+            invalidPayment.setCVC("12345356");
+            paymentRepository.saveAndFlush(invalidPayment);
+        });
+
+        //FIXME
+        assertThrows(JpaSystemException.class, () -> {
+            invalidPayment.setCVC("1");
+            paymentRepository.saveAndFlush(invalidPayment);
+        });
+    }
+
+    /**
+     * Delete an entry and check if the payment was removed correctly
+     */
+    @Test
+    public void testDeleteCustomer() {
+        // get a payment from the repository
+        Payment savedPayment = paymentRepository.findById(dummyPayments.get(0).getId()).get();
+
+        // delete the payment object
+        paymentRepository.delete(savedPayment);
+
+        // check that the payment has been deleted correctly
+        assertEquals(paymentRepository.findById(dummyPayments.get(0).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        paymentRepository.deleteAll();
+        assertTrue(paymentRepository.findAll().isEmpty());
+    }
 }
