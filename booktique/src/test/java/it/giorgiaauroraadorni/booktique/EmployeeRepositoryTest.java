@@ -41,7 +41,7 @@ class EmployeeRepositoryTest {
      */
     private void createDummyAddress() {
         dummyAddresses = IntStream
-                .range(0, 3)
+                .range(0, 2)
                 .mapToObj(i -> new Address())
                 .collect(Collectors.toList());
 
@@ -60,14 +60,6 @@ class EmployeeRepositoryTest {
         dummyAddresses.get(1).setPostalCode("32349");
         dummyAddresses.get(1).setCountry("Italia");
         dummyAddresses.get(1).setBuilding("Appartamento 62 De Santis del friuli");
-
-        // create an addresses with all the possible attributes
-        dummyAddresses.get(2).setStreetAddress("Via Leone 1");
-        dummyAddresses.get(2).setCity("Milano");
-        dummyAddresses.get(2).setProvince("MI");
-        dummyAddresses.get(2).setPostalCode("41845");
-        dummyAddresses.get(2).setCountry("Italia");
-        dummyAddresses.get(2).setBuilding("Piano 8");
 
         // save the addresses in the repository
         dummyAddresses = addressRepository.saveAll(dummyAddresses);
