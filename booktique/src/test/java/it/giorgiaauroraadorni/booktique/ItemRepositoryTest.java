@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -199,24 +200,20 @@ class ItemRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to associate more books to a single bookItem, violating the unique
-     * constraint on One-To-One relationship
+     * Delete an entry and check if the item was removed correctly
      */
     @Test
-    public void testIllegalRelationshipItemBook() {
-        Item invalidItem = new Item();
+    public void testDeleteBook() {
+        // get a item from the repository
+        Item savedItem = itemRepository.findById(dummyItems.get(0).getId()).get();
 
-        invalidItem.setSupplier(supplierRepository.getOne(dummySuppliers.get(2).getId()));
-        invalidItem.setQuantityPerUnit(1);
-        invalidItem.setUnitPrice(BigDecimal.valueOf(7.49));
+        // delete the item object and check that the item has been deleted correctly
+        itemRepository.delete(savedItem);
+        assertEquals(itemRepository.findById(dummyItems.get(0).getId()), Optional.empty());
 
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidItem.setBookItem(bookRepository.getOne(dummyBooks.get(1).getId()));
-            itemRepository.saveAndFlush(invalidItem);
-        });
+        // delete all the entries verifying that the operation has been carried out correctly
+        itemRepository.deleteAll();
+        assertTrue(itemRepository.findAll().isEmpty());
     }
-
-    // violate one to one constraint
-    //Delete
 
 }
