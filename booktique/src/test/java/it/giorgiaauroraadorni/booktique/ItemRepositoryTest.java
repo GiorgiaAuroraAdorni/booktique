@@ -181,4 +181,21 @@ class ItemRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create or update an item with illegal precision-scale for the attribute UnitPrice
+     */
+    @Test
+    public void testIllegalUnitPriceFormat() {
+        Item invalidItem = new Item();
+
+        invalidItem.setBookItem(bookRepository.getOne(dummyBooks.get(2).getId()));
+        invalidItem.setSupplier(supplierRepository.getOne(dummySuppliers.get(2).getId()));
+        invalidItem.setQuantityPerUnit(1);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidItem.setUnitPrice(BigDecimal.valueOf(172345678900987.496));
+            itemRepository.saveAndFlush(invalidItem);
+        });
+    }
+
 }
