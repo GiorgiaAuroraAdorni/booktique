@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -148,6 +149,31 @@ class ItemRepositoryTest {
     }
 
     /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
+    @Test
+    public void testCreateItem() {
+        List<Item> savedItems = new ArrayList<>();
+
+        for (int i = 0; i < dummyItems.size(); i++) {
+            // check if the items id are correctly automatic generated
+            assertNotNull(itemRepository.getOne(dummyItems.get(i).getId()));
+            savedItems.add(itemRepository.getOne(dummyItems.get(i).getId()));
+
+            // check if the items contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedItems.get(i).getCreatedAt());
+            assertNotNull(savedItems.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedItems.get(i).getQuantityPerUnit(), dummyItems.get(i).getQuantityPerUnit());
+            assertEquals(savedItems.get(i).getUnitPrice(), dummyItems.get(i).getUnitPrice());
+            assertEquals(savedItems.get(i).getBookItem(), dummyItems.get(i).getBookItem());
+            assertEquals(savedItems.get(i).getSupplier(), dummyItems.get(i).getSupplier());
+            assertEquals(savedItems.get(i).getId(), dummyItems.get(i).getId());
+        }
+    }
+
+    /**
      * Update one entry editing different attributes and check if the fields are changed correctly
      */
     @Test
@@ -215,5 +241,4 @@ class ItemRepositoryTest {
         itemRepository.deleteAll();
         assertTrue(itemRepository.findAll().isEmpty());
     }
-
 }
