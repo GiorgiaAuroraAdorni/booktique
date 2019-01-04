@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -171,6 +172,21 @@ class SupplierRepositoryTest {
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidSupplier.setCompanyName("Centibook Fast Supplier S.r.l.s.");
+            supplierRepository.saveAndFlush(invalidSupplier);
+        });
+    }
+
+    /*
+     * Throws an exception when attempting to create a supplier with illegal email format type
+     */
+    @Test
+    public void testIllegalEmailFormat() {
+        Supplier invalidSupplier = new Supplier();
+
+        invalidSupplier.setCompanyName("Fast Supplier S.r.l.");
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidSupplier.setEmail("fastsupplier@srl@mail.com");
             supplierRepository.saveAndFlush(invalidSupplier);
         });
     }
