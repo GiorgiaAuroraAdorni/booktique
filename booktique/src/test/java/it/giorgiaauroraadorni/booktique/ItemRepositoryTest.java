@@ -7,15 +7,18 @@ import it.giorgiaauroraadorni.booktique.repository.BookRepository;
 import it.giorgiaauroraadorni.booktique.repository.ItemRepository;
 import it.giorgiaauroraadorni.booktique.repository.SupplierRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -116,5 +119,19 @@ class ItemRepositoryTest {
         createDummyItem();
     }
 
+    @Test
+    void repositoryLoads() {}
+
+    @Test
+    void repositoryFindAll() {
+        var savedBooks = bookRepository.findAll();
+        var savedSuppliers = supplierRepository.findAll();
+        var savedItems = itemRepository.findAll();
+
+        // check if all the items are correctly added to the repository
+        assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
+        assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
+        assertTrue(savedItems.containsAll(dummyItems), "findAll should fetch all dummy items");
+    }
 
 }
