@@ -198,4 +198,25 @@ class ItemRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to associate more books to a single bookItem, violating the unique
+     * constraint on One-To-One relationship
+     */
+    @Test
+    public void testIllegalRelationshipItemBook() {
+        Item invalidItem = new Item();
+
+        invalidItem.setSupplier(supplierRepository.getOne(dummySuppliers.get(2).getId()));
+        invalidItem.setQuantityPerUnit(1);
+        invalidItem.setUnitPrice(BigDecimal.valueOf(7.49));
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidItem.setBookItem(bookRepository.getOne(dummyBooks.get(1).getId()));
+            itemRepository.saveAndFlush(invalidItem);
+        });
+    }
+
+    // violate one to one constraint
+    //Delete
+
 }
