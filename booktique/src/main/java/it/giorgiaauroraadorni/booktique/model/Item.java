@@ -1,7 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
 
 @Entity
@@ -20,9 +19,8 @@ public class Item extends AuditModel {
     @JoinColumn(name = "supplier_id", unique = true)
     private Supplier supplier;
 
-    @Column(nullable = false)
-    // FIXME
-    @Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
+    @Column(nullable = false, precision = 10, scale = 2)
+    //@Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
     private BigDecimal unitPrice;
 
     @Column(nullable = false)
