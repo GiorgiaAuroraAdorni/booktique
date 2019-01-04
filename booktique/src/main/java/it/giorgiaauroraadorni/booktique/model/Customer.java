@@ -21,7 +21,7 @@ public class Customer extends Person {
     private String vatNumber;
 
     // This is a full postal address for the contact represented by this object.
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Address address;
 
     // Getters and Setters
