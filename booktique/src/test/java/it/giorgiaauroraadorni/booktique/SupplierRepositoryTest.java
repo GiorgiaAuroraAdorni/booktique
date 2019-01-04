@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -147,5 +148,17 @@ class SupplierRepositoryTest {
         assertEquals(savedSupplier, updatedSupplier);
         assertEquals("Centibook Supplier S.r.l.", updatedSupplier.getCompanyName());
         assertEquals("045612185", updatedSupplier.getPhoneNumber());
+    }
+
+    /**
+     * Throws an exception when attempting to create a supplier without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreateSupplier() {
+        Supplier invalidSupplier = new Supplier();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            supplierRepository.saveAndFlush(invalidSupplier);
+        });
     }
 }
