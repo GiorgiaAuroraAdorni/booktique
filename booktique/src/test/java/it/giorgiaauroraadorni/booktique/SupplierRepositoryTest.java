@@ -118,4 +118,11 @@ class SupplierRepositoryTest {
             assertEquals(savedSuppliers.get(i).getId(), dummySuppliers.get(i).getId());
         }
     }
+
+    @Test
+    public void testSupplierAddress() {
+        // check if the addresses are set correctly
+        assertNull(supplierRepository.findById(dummySuppliers.get(0).getId()).get().getAddress());
+        assertNotNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
+    }
 }
