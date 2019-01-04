@@ -267,7 +267,6 @@ class PurchaseRepositoryTest {
         dummyPurchases.get(0).setEmployee(dummyEmployees.get(0));
         Set<Item> itemsP1 = new HashSet<>();
         itemsP1.add(dummyItems.get(0));
-        itemsP1.add(dummyItems.get(1));
         dummyPurchases.get(0).setItems(itemsP1);
         dummyPurchases.get(0).setOrderDate(LocalDate.of(2019, 10, 10));
         dummyPurchases.get(0).setPaymentMethod(dummyPayments.get(0));
@@ -276,7 +275,7 @@ class PurchaseRepositoryTest {
         dummyPurchases.get(1).setCustomer(dummyCustomers.get(1));
         dummyPurchases.get(1).setEmployee(dummyEmployees.get(1));
         Set<Item> itemsP2 = new HashSet<>();
-        itemsP2.add(dummyItems.get(2));
+        itemsP2.add(dummyItems.get(1));
         dummyPurchases.get(1).setItems(itemsP2);
         dummyPurchases.get(1).setOrderDate(LocalDate.of(2019, 1, 5));
         dummyPurchases.get(1).setPaymentMethod(dummyPayments.get(1));
