@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -91,5 +92,30 @@ class SupplierRepositoryTest {
         // check if all the suppliers are correctly added to the repository
         assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
         assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
+    }
+
+    /**
+     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     */
+    @Test
+    public void testCreateSupplier() {
+        List<Supplier> savedSuppliers = new ArrayList<>();
+
+        for (int i = 0; i < dummySuppliers.size(); i++) {
+            // check if the suppliers id are correctly automatic generated
+            assertNotNull(supplierRepository.getOne(dummySuppliers.get(i).getId()));
+            savedSuppliers.add(supplierRepository.getOne(dummySuppliers.get(i).getId()));
+
+            // check if the suppliers contain the createdAt and updatedAt annotation that are automatically populate
+            assertNotNull(savedSuppliers.get(i).getCreatedAt());
+            assertNotNull(savedSuppliers.get(i).getUpdatedAt());
+
+            // check that all the attributes have been created correctly and contain the expected value
+            assertEquals(savedSuppliers.get(i).getCompanyName(), dummySuppliers.get(i).getCompanyName());
+            assertEquals(savedSuppliers.get(i).getEmail(), dummySuppliers.get(i).getEmail());
+            assertEquals(savedSuppliers.get(i).getPhoneNumber(), dummySuppliers.get(i).getPhoneNumber());
+            assertEquals(savedSuppliers.get(i).getAddress(), dummySuppliers.get(i).getAddress());
+            assertEquals(savedSuppliers.get(i).getId(), dummySuppliers.get(i).getId());
+        }
     }
 }
