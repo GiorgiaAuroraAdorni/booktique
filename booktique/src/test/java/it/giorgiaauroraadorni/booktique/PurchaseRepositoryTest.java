@@ -3,6 +3,7 @@ package it.giorgiaauroraadorni.booktique;
 import it.giorgiaauroraadorni.booktique.model.*;
 import it.giorgiaauroraadorni.booktique.repository.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -291,6 +294,29 @@ class PurchaseRepositoryTest {
         createDummySupplier();
         createDummyItem();
         createDummyPurchase();
+    }
+
+    @Test
+    void repositoryLoads() {}
+
+    @Test
+    void repositoryFindAll() {
+        var savedEmployees = employeeRepository.findAll();
+        var savedAddresses = addressRepository.findAll();
+        var savedCustomers = customerRepository.findAll();
+        var savedBooks = bookRepository.findAll();
+        var savedSuppliers = supplierRepository.findAll();
+        var savedItems = itemRepository.findAll();
+        var savedPurchases = purchaseRepository.findAll();
+
+        // check if all the purchases are correctly added to the repository
+        assertTrue(savedEmployees.containsAll(dummyEmployees), "findAll should fetch all dummy employees");
+        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
+        assertTrue(savedCustomers.containsAll(dummyCustomers), "findAll should fetch all dummy customers");
+        assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
+        assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
+        assertTrue(savedItems.containsAll(dummyItems), "findAll should fetch all dummy items");
+        assertTrue(savedPurchases.containsAll(dummyPurchases), "findAll should fetch all dummy purchases");
     }
 
 }
