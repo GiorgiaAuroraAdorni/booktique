@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -110,8 +111,18 @@ public class Purchase extends AuditModel {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
-        this.items = items;
+    /**
+     * Sets the items collection.
+     * setItems(null) or setItems(Collections.emptySet()) cause a warning and return an exception
+     * @param items
+     */
+    public void setItems(@NonNull Set<Item> items) {
+        //
+        if (items.isEmpty()) {
+            throw new DataIntegrityViolationException("Invalid puchase. No items have been added to the purchase.");
+        } else {
+            this.items = Objects.requireNonNull(items);
+        }
     }
 
     public Payment getPaymentDetails() {
