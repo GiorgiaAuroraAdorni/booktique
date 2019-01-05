@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -431,6 +432,22 @@ class PurchaseRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create a purchase with illegal status type
+     */
+    @Test
+    public void testIllegalPurchaseStatusFormat() {
+        Purchase invalidPurchase = new Purchase();
 
+        invalidPurchase.setCustomer(dummyCustomers.get(0));
+        invalidPurchase.setEmployee(dummyEmployees.get(0));
+        Set<Item> items = new HashSet<>();
+        items.add(dummyItems.get(2));
+        invalidPurchase.setItems(items);
+        invalidPurchase.setOrderDate(LocalDate.of(2019, 10, 10));
+        invalidPurchase.setPaymentDetails(dummyPayments.get(2));
 
+        assertThrows(IllegalArgumentException.class,
+                () -> invalidPurchase.setStatus(Purchase.Status.valueOf("Unknown")));
+    }
 }
