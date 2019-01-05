@@ -178,7 +178,9 @@ public class Book extends AuditModel implements Serializable {
     }
 
     /**
-     *
+     * Called before every deletion to update the prequel and sequel attributes of the book that needs to be deleted.
+     * The prequel sequel and the sequel prequel of the current book, which refer to the book that is being
+     * deleted, are set to null.
      */
     @PreRemove
     public void preRemoveBook() {
