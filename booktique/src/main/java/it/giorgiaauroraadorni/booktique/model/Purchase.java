@@ -107,11 +107,12 @@ public class Purchase extends AuditModel {
         this.items = items;
     }
 
-    public Payment getPaymentMethod() {
-        return paymentMethod;
+    public Payment getPaymentDetails() {
+        return paymentDetails;
     }
 
-    public void setPaymentMethod(Payment paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPaymentDetails(Payment paymentDetails) {
+        this.paymentDetails = paymentDetails;
+    }
     }
 }
