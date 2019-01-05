@@ -471,4 +471,23 @@ class PurchaseRepositoryTest {
             purchaseRepository.saveAndFlush(duplicatedPurchase);
         });
     }
+
+    /**
+     * Delete an entry and check if the purchase was removed correctly
+     */
+    @Test
+    public void testDeletePurchase() {
+        // get a purchase from the repository
+        Purchase savedPurchase = purchaseRepository.findById(dummyPurchases.get(0).getId()).get();
+
+        // delete the purchase object
+        purchaseRepository.delete(savedPurchase);
+
+        // check that the purchase has been deleted correctly
+        assertEquals(purchaseRepository.findById(dummyPurchases.get(0).getId()), Optional.empty());
+
+        // delete all the entries verifying that the operation has been carried out correctly
+        purchaseRepository.deleteAll();
+        assertTrue(purchaseRepository.findAll().isEmpty());
+    }
 }
