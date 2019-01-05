@@ -490,4 +490,28 @@ class PurchaseRepositoryTest {
         purchaseRepository.deleteAll();
         assertTrue(purchaseRepository.findAll().isEmpty());
     }
+
+    /**
+     * Throws exception when attempting to delete an item
+     */
+    @Test
+    public void testDeleteItem() {
+        // get a purchase from the repository
+        Purchase savedPurchase = purchaseRepository.findById(dummyPurchases.get(0).getId()).get();
+
+        // it isn't possible set items to null, java.util.Objects.requireNonNull
+        assertThrows(NullPointerException.class, () -> savedPurchase.setItems(null));
+
+        // it isn't possible set items to emptySet
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            savedPurchase.setItems(Collections.emptySet());
+            purchaseRepository.saveAndFlush(savedPurchase);
+        });
+
+        Purchase purchaseAfterDel = purchaseRepository.findById(savedPurchase.getId()).get();
+
+        // verifying that the purchase object hasn't been updated
+        assertNotEquals(purchaseAfterDel.getItems(), Collections.emptySet());
+        assertNotNull(purchaseAfterDel.getItems());
+    }
 }
