@@ -12,14 +12,14 @@ public class Purchase extends AuditModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Customer customer;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Employee employee;
 
-    @OneToMany
     private Set<Item> items;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 
     @Column(nullable = false)
     private LocalDate orderDate;
@@ -39,8 +39,9 @@ public class Purchase extends AuditModel {
     @Enumerated(EnumType.STRING)
     private Purchase.Status status;
 
-    @Embedded
-    private Payment paymentMethod;
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(unique = true)
+    private Payment paymentDetails;
 
     // Getters and Setters
     public Long getId() {
