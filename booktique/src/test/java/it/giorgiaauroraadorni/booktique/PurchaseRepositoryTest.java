@@ -418,6 +418,22 @@ class PurchaseRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create a purchase without items
+     */
+    @Test
+    public void testCreationDeniesWithoutItem() {
+        Purchase invalidPurchase = new Purchase();
+
+        invalidPurchase.setCustomer(dummyCustomers.get(0));
+        invalidPurchase.setEmployee(dummyEmployees.get(0));
+        invalidPurchase.setOrderDate(LocalDate.of(2019, 10, 10));
+        invalidPurchase.setPaymentDetails(dummyPayments.get(2));
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            purchaseRepository.saveAndFlush(invalidPurchase);
+        });
+    }
 
 
 
