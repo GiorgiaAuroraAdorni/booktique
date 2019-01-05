@@ -65,9 +65,12 @@ Between those entities ther's 14 relations, in particular:
 
 - two self-relations: the first one is a One-to-One relation between a book and his prequel, inand in the other between the book and his sequel; the second is a Many-to-One relation between employees and supervisor (each employee is associated with only one supervisor).
 - one relation Many-to-Many between books and authors, handled with lazy load. <!-- (spiegare dell'altra tabella generata)-->
-- one inheritance hierarchy that involves 4 entities:  the class person serves as a superclass for employee, author and customer subclass.
+- one inheritance hierarchy that involves 4 entities:  the class person serves as a superclass for employee, author and customer subclass.  
+  <!-- modified --> All entities will also inherit from a Auditable abstract class that provides the `createdDate` and `modifiedDate` attributes using **JPA Auditing**. This allows to track changes to the entities made from the Java application.
 
 ![alt text](images/BooktiqueDbVisualizer.png)
 
 <!--rigenerare l'immagine -->
+
+
 
