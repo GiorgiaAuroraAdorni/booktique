@@ -29,6 +29,9 @@ class PurchaseRepositoryTest {
     private PurchaseRepository purchaseRepository;
 
     @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
     private EmployeeRepository employeeRepository;
 
     @Autowired
@@ -236,7 +239,7 @@ class PurchaseRepositoryTest {
      */
     private void createDummyPayment() {
         dummyPayments = IntStream
-                .range(0, 2)
+                .range(0, 3)
                 .mapToObj(i -> new Payment())
                 .collect(Collectors.toList());
 
@@ -249,9 +252,17 @@ class PurchaseRepositoryTest {
         // create a payment with all the parameters
         dummyPayments.get(1).setCardNumber("9876543212346789");
         dummyPayments.get(1).setCardholderName("Morgan Davison");
-        dummyPayments.get(1).setExpireDate(LocalDate.of(2028, 6, 20));
+        dummyPayments.get(1).setExpireDate(LocalDate.of(2028, 6, 1));
         dummyPayments.get(1).setCVC("456");
         dummyPayments.get(1).setPaymentDate(LocalDate.now());
+
+        dummyPayments.get(2).setCardNumber("4539136506569726");
+        dummyPayments.get(2).setCardholderName("Jose Romaguera");
+        dummyPayments.get(2).setExpireDate(LocalDate.of(2020, 8, 1));
+        dummyPayments.get(2).setCVC("793");
+        dummyPayments.get(2).setPaymentDate(LocalDate.now());
+
+        dummyPayments = paymentRepository.saveAll(dummyPayments);
     }
 
     /**
@@ -270,7 +281,7 @@ class PurchaseRepositoryTest {
         itemsP1.add(dummyItems.get(0));
         dummyPurchases.get(0).setItems(itemsP1);
         dummyPurchases.get(0).setOrderDate(LocalDate.of(2019, 10, 10));
-        dummyPurchases.get(0).setPaymentMethod(dummyPayments.get(0));
+        dummyPurchases.get(0).setPaymentDetails(dummyPayments.get(0));
 
         // create a purchase with all the attributes
         dummyPurchases.get(1).setCustomer(dummyCustomers.get(1));
@@ -279,7 +290,7 @@ class PurchaseRepositoryTest {
         itemsP2.add(dummyItems.get(1));
         dummyPurchases.get(1).setItems(itemsP2);
         dummyPurchases.get(1).setOrderDate(LocalDate.of(2019, 1, 5));
-        dummyPurchases.get(1).setPaymentMethod(dummyPayments.get(1));
+        dummyPurchases.get(1).setPaymentDetails(dummyPayments.get(1));
         dummyPurchases.get(1).setShippingDate(LocalDate.of(2019, 1, 8));
         dummyPurchases.get(1).setStatus(Purchase.Status.shipped);
 
@@ -291,10 +302,10 @@ class PurchaseRepositoryTest {
         createDummyEmployee();
         createDummyAddress();
         createDummyCustomer();
-        createDummyPayment();
         createDummyBook();
         createDummySupplier();
         createDummyItem();
+        createDummyPayment();
         createDummyPurchase();
     }
 
@@ -309,6 +320,7 @@ class PurchaseRepositoryTest {
         var savedBooks = bookRepository.findAll();
         var savedSuppliers = supplierRepository.findAll();
         var savedItems = itemRepository.findAll();
+        var savedPayments = paymentRepository.findAll();
         var savedPurchases = purchaseRepository.findAll();
 
         // check if all the purchases are correctly added to the repository
@@ -318,6 +330,7 @@ class PurchaseRepositoryTest {
         assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
         assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
         assertTrue(savedItems.containsAll(dummyItems), "findAll should fetch all dummy items");
+        assertTrue(savedPayments.containsAll(dummyPayments), "findAll should fetch all dummy payments");
         assertTrue(savedPurchases.containsAll(dummyPurchases), "findAll should fetch all dummy purchases");
     }
 
@@ -346,7 +359,7 @@ class PurchaseRepositoryTest {
             assertEquals(savedPurchases.get(i).getEmployee(), dummyPurchases.get(i).getEmployee());
             assertEquals(savedPurchases.get(i).getItems(), dummyPurchases.get(i).getItems());
             assertEquals(savedPurchases.get(i).getOrderDate(), dummyPurchases.get(i).getOrderDate());
-            assertEquals(savedPurchases.get(i).getPaymentMethod(), dummyPurchases.get(i).getPaymentMethod());
+            assertEquals(savedPurchases.get(i).getPaymentDetails(), dummyPurchases.get(i).getPaymentDetails());
             assertEquals(savedPurchases.get(i).getShippingDate(), dummyPurchases.get(i).getShippingDate());
             assertEquals(savedPurchases.get(i).getStatus(), dummyPurchases.get(i).getStatus());
             assertEquals(savedPurchases.get(i).getAmount(), dummyPurchases.get(i).getAmount());
