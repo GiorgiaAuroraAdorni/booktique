@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.*;
 
 @Entity
 @Table(name = "purchases")
@@ -132,5 +133,19 @@ public class Purchase extends AuditModel {
     public void setPaymentDetails(Payment paymentDetails) {
         this.paymentDetails = paymentDetails;
     }
+
+    /**
+     * Called before every insertion and every update to check in the first case that at least one item has been added
+     * to the purchase, and in the second case to verify that all the items have not been deleted from the
+     * purchase.
+     * An exception is returned if one of the previous cases occurs in order to avoid the creation of empty orders.
+     * @throws DataIntegrityViolationException
+     */
+    @PrePersist
+    @PreUpdate
+    public void deniedEmptyPurchaseItems() throws DataIntegrityViolationException {
+        if (this.getItems().isEmpty()) {
+            throw new DataIntegrityViolationException("Invalid puchase. No items have been added to the purchase.");
+        }
     }
 }
