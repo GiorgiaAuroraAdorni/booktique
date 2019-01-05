@@ -1,5 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -99,6 +101,11 @@ public class Purchase extends AuditModel {
         this.status = status;
     }
 
+    /**
+     * Return the items that must be NonNull
+     * @return
+     */
+    @NonNull
     public Set<Item> getItems() {
         return items;
     }
