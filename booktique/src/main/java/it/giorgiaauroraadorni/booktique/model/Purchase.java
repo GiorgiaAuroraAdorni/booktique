@@ -3,7 +3,6 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "purchases")
@@ -18,8 +17,8 @@ public class Purchase extends AuditModel {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Employee employee;
 
-    private Set<Item> items;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Item> items = new HashSet<>();
 
     @Column(nullable = false)
     private LocalDate orderDate;
