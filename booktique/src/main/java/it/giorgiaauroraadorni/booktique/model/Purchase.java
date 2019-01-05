@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Table(name="purchases")
+@Table(name = "purchases")
 public class Purchase extends AuditModel {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

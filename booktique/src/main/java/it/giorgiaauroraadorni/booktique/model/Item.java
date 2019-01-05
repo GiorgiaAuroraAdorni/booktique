@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name="items")
+@Table(name = "items")
 public class Item extends AuditModel {
 
     @Id

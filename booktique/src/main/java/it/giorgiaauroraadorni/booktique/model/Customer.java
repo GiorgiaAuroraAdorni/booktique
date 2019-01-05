@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="customers")
+@Table(name = "customers")
 public class Customer extends Person {
 
     private Person customer;

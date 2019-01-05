@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
 @Entity
-@Table(name="authors")
+@Table(name = "authors")
 public class Author extends Person {
 
     private Person author;

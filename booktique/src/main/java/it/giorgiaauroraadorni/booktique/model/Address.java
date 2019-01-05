@@ -3,7 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="addresses")
+@Table(name = "addresses")
 public class Address extends AuditModel {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
