@@ -211,7 +211,6 @@ class BookRepositoryTest {
     public void testIllegalBookFormat() {
         Book invalidBook = new Book();
 
-        // set manually a new id in order to insert a new record and not for update an existing record
         invalidBook.setTitle("The Secret Of Book");
         invalidBook.setIsbn("9781234567897");
         invalidBook.setPublisher("GoldWrite Publishing");
