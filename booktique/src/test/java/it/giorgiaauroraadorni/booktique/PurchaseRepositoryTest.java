@@ -450,4 +450,25 @@ class PurchaseRepositoryTest {
         assertThrows(IllegalArgumentException.class,
                 () -> invalidPurchase.setStatus(Purchase.Status.valueOf("Unknown")));
     }
+
+    /**
+     * Throws an exception when attempting to create a purchase with the same payment details violating unique
+     * constraint
+     */
+    @Test
+    public void testUniquePaymentDetails() {
+        Purchase duplicatedPurchase = new Purchase();
+
+        duplicatedPurchase.setCustomer(dummyCustomers.get(0));
+        duplicatedPurchase.setEmployee(dummyEmployees.get(0));
+        duplicatedPurchase.setOrderDate(LocalDate.of(2019, 10, 10));
+        Set<Item> items = new HashSet<>();
+        items.add(dummyItems.get(2));
+        duplicatedPurchase.setItems(items);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedPurchase.setPaymentDetails(dummyPayments.get(1));
+            purchaseRepository.saveAndFlush(duplicatedPurchase);
+        });
+    }
 }
