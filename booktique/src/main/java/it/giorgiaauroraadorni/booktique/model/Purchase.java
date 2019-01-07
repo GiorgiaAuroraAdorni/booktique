@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import org.hibernate.annotations.Check;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.NonNull;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Entity
+@Check(constraints = "order_date <= shipping_date")
 @Table(name = "purchases")
 public class Purchase extends AuditModel {
     @Id

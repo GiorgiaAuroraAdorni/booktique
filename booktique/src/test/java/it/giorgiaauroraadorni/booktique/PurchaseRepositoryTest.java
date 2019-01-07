@@ -452,6 +452,23 @@ class PurchaseRepositoryTest {
     }
 
     /**
+     * Throws an exception when attempting to add an invalid shipping date to the purchase, in particular that
+     * precedes the order date
+     */
+    @Test
+    public void testIllegalShippingDate() {
+        // get a purchase from the repository
+        Purchase invalidPurchase = purchaseRepository.findById(dummyPurchases.get(0).getId()).get();
+
+        var orderDate = invalidPurchase.getOrderDate();
+
+        // set an invalid shipping date
+        invalidPurchase.setShippingDate(orderDate.minusDays(1));
+
+        assertThrows(DataIntegrityViolationException.class, () -> purchaseRepository.saveAndFlush(invalidPurchase));
+    }
+
+    /**
      * Throws an exception when attempting to create a purchase with the same payment details violating unique
      * constraint
      */
