@@ -1,4 +1,4 @@
-package it.giorgiaauroraadorni.booktique;
+package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.Item;

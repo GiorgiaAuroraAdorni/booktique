@@ -1,4 +1,4 @@
-package it.giorgiaauroraadorni.booktique;
+package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.*;
 import it.giorgiaauroraadorni.booktique.repository.*;
@@ -140,7 +140,7 @@ class PurchaseRepositoryTest {
         dummyCustomers.get(1).setPassword("C339c10A94nGmSvD");
         dummyCustomers.get(1).setDateOfBirth(LocalDate.of(1949, 1, 1));
         dummyCustomers.get(1).setEmail("MorganDavidson@mail.com");
-        dummyCustomers.get(1).setMobilePhone("+393733733730");
+        dummyCustomers.get(1).setMobilePhone("+393733744430");
 
         // save the customers in the repository
         dummyCustomers = customerRepository.saveAll(dummyCustomers);
