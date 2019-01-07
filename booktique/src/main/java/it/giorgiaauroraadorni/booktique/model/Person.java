@@ -29,10 +29,12 @@ public abstract class Person extends AuditModel {
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
     // that are less than 2 or more than 6 letters.
+    @Column(unique = true)
     @Pattern(regexp = "^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$")
     private String email;
 
     // This is a phone number. It specifies a italian mobile phone numbers.
+    @Column(unique = true)
     @Pattern(regexp = "^([+]39)?(3[1-9][0-9])([\\d]{7})$")
     private String mobilePhone;
 
