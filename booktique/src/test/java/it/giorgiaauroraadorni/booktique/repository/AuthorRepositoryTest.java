@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
-import it.giorgiaauroraadorni.booktique.repository.AuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Table;
 import javax.validation.ConstraintViolationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,71 +29,27 @@ class AuthorRepositoryTest {
 
     //private List<Author> dummyAuthors;
 
-    private List<Author> dummyAuthors;
+    private List<Author> dummyAuthors = new ArrayList<>();
 
-    /**
-     * Create a list of authors entities that will be use in the test
-     */
-//    @BeforeEach
-//    void createDummyAuthor() {
-//        dummyAuthors = IntStream
-//                .range(0, 3)
-//                .mapToObj(i -> new Author())
-//                .collect(Collectors.toList());
-//
-//        // create an author with only the mandatory parameter (inherited from person)
-//        dummyAuthors.get(0).setFiscalCode("ABCDEF12G24H567I");
-//        dummyAuthors.get(0).setName("John");
-//        dummyAuthors.get(0).setSurname("Cook");
-//
-//        // create an author with all the person attributes
-//        dummyAuthors.get(1).setFiscalCode("LMNOPQ89R10S111T");
-//        dummyAuthors.get(1).setName("Nathalie");
-//        dummyAuthors.get(1).setSurname("Russel");
-//        dummyAuthors.get(1).setDateOfBirth(LocalDate.of(1900, 1, 1));
-//        dummyAuthors.get(1).setEmail("NathalieRussel@mail.com");
-//        dummyAuthors.get(1).setMobilePhone("+393739739330");
-//
-//        // create an author with many attributes
-//        dummyAuthors.get(2).setFiscalCode("SMTJLU80T52F205H");
-//        dummyAuthors.get(2).setName("Julie");
-//        dummyAuthors.get(2).setSurname("Smith");
-//        dummyAuthors.get(2).setDateOfBirth(LocalDate.of(1980, 12, 12));
-//        dummyAuthors.get(2).setEmail("JulieSmith@mail.com");
-//        dummyAuthors.get(2).setMobilePhone("3263309610");
-//        dummyAuthors.get(2).setWebSiteURL("https://www.JulieSmith.org");
-//        dummyAuthors.get(2).setBiography("Julie is a friendly government politician. She has a post-graduate degree " +
-//                "in philosophy, politics and economics. \\n She is currently single. Her most recent romance was with" +
-//                " a sous chef called Walter Roland Campbell.\\n Julie has one child with Walter: Montgomery aged 4.");
-//
-//        // save the authors in the repository
-//        dummyAuthors = authorRepository.saveAll(dummyAuthors);
-//    }
+    @BeforeEach
+    void createDummyEntities() {
 
-//    @BeforeEach
-//    void createDummyEntities() {
-////        for (int idx = 0; idx <= 3; idx++) {
-////            dummyAuthors.add(authorFactory.createValidEntity(idx));
-////        }
-////
-////        dummyAuthors = authorRepository.saveAll(dummyAuthors);
-//
-//    }
+        for (int i = 0; i < 3; i++) {
+            dummyAuthors.add(authorFactory.createValidEntity(i));
+        }
+
+        authorRepository.saveAll(dummyAuthors);
+    }
 
     @Test
     void repositoryLoads() {}
 
     @Test
     void repositoryFindAll() {
-        var author = authorFactory.createValidEntity(0);
-        author = authorRepository.save(author);
-
-
         var savedAuthors = authorRepository.findAll();
 
         // check if all the authors are correctly added to the repository
-        assertTrue(savedAuthors.contains(author), "findAll should fetch all dummy authors");
-        //assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
+        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
     }
 
     /**
@@ -105,27 +57,30 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testCreateBook() {
-        List<Author> savedAuthors = new ArrayList<>();
+        //List<Author> dummyAuthors = new ArrayList<>();
 
         for (int i = 0; i < dummyAuthors.size(); i++) {
+
             // check if the authors id are correctly automatic generated
             assertNotNull(authorRepository.getOne(dummyAuthors.get(i).getId()));
-            savedAuthors.add(authorRepository.getOne(dummyAuthors.get(i).getId()));
+            assertNotNull(authorRepository.getOne(dummyAuthors.get(i).getId()));
+
+            var savedAuthor = authorRepository.getOne(dummyAuthors.get(i).getId());
 
             // check if the authors contain the createdAt and updatedAt annotation that are automatically populate
-            assertNotNull(savedAuthors.get(i).getCreatedAt());
-            assertNotNull(savedAuthors.get(i).getUpdatedAt());
+            assertNotNull(savedAuthor.getCreatedAt());
+            assertNotNull(savedAuthor.getUpdatedAt());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals(savedAuthors.get(i).getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
-            assertEquals(savedAuthors.get(i).getName(), dummyAuthors.get(i).getName());
-            assertEquals(savedAuthors.get(i).getSurname(), dummyAuthors.get(i).getSurname());
-            assertEquals(savedAuthors.get(i).getDateOfBirth(), dummyAuthors.get(i).getDateOfBirth());
-            assertEquals(savedAuthors.get(i).getEmail(), dummyAuthors.get(i).getEmail());
-            assertEquals(savedAuthors.get(i).getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
-            assertEquals(savedAuthors.get(i).getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
-            assertEquals(savedAuthors.get(i).getBiography(), dummyAuthors.get(i).getBiography());
-            assertEquals(savedAuthors.get(i).getId(), dummyAuthors.get(i).getId());
+            assertEquals(savedAuthor.getFiscalCode(), dummyAuthors.get(i).getFiscalCode());
+            assertEquals(savedAuthor.getName(), dummyAuthors.get(i).getName());
+            assertEquals(savedAuthor.getSurname(), dummyAuthors.get(i).getSurname());
+            assertEquals(savedAuthor.getDateOfBirth(), dummyAuthors.get(i).getDateOfBirth());
+            assertEquals(savedAuthor.getEmail(), dummyAuthors.get(i).getEmail());
+            assertEquals(savedAuthor.getMobilePhone(), dummyAuthors.get(i).getMobilePhone());
+            assertEquals(savedAuthor.getWebSiteURL(), dummyAuthors.get(i).getWebSiteURL());
+            assertEquals(savedAuthor.getBiography(), dummyAuthors.get(i).getBiography());
+            assertEquals(savedAuthor.getId(), dummyAuthors.get(i).getId());
         }
     }
 
@@ -136,13 +91,13 @@ class AuthorRepositoryTest {
      */
     @Test
     public void testUniqueAuthorIdentifier() {
-        Author duplicatedAuthor = new Author();
+        var duplicatedAuthor = authorFactory.createValidEntity(0);
 
         // set manually a new id in order to insert a new record and not for update an existing record
-        duplicatedAuthor.setId(9999l);
-        duplicatedAuthor.setFiscalCode("ABCDEF12G24H567I");
-        duplicatedAuthor.setName("John");
-        duplicatedAuthor.setSurname("Cook");
+        //duplicatedAuthor.setId(9999l);
+//        duplicatedAuthor.setFiscalCode("CGNNMO00T00L000");
+//        duplicatedAuthor.setName("John");
+//        duplicatedAuthor.setSurname("Cook");
 
         // save the author in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
