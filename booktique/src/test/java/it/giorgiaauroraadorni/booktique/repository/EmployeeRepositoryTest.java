@@ -372,7 +372,7 @@ class EmployeeRepositoryTest {
         assertEquals(foundEmployee.get(), dummyEmployees.get(0));
         assertEquals(foundEmployee.get().getId(), dummyEmployees.get(0).getId());
 
-        // try to search for an employee by an not existing id
+        // try to search for an employee by a not existing id
         var notFoundEmployee = employeeRepository.findById(999L);
 
         assertTrue(notFoundEmployee.isEmpty());
@@ -388,7 +388,7 @@ class EmployeeRepositoryTest {
             assertEquals(a.getName(), dummyEmployees.get(0).getName());
         }
 
-        // try to search for employees by an not existing name
+        // try to search for employees by a not existing name
         var notFoundEmployees = employeeRepository.findByName("Nome Inesistente");
 
         assertTrue(notFoundEmployees.isEmpty());
@@ -404,7 +404,7 @@ class EmployeeRepositoryTest {
             assertEquals(a.getSurname(), dummyEmployees.get(0).getSurname());
         }
 
-        // try to search for employees by an not existing surname
+        // try to search for employees by a not existing surname
         var notFoundEmployees = employeeRepository.findBySurname("Cognome Inesistente");
 
         assertTrue(notFoundEmployees.isEmpty());
@@ -419,7 +419,7 @@ class EmployeeRepositoryTest {
         assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
         assertEquals(foundEmployee.get(0).getFiscalCode(), dummyEmployees.get(0).getFiscalCode());
 
-        // try to search for an employee by an not existing fiscal code
+        // try to search for an employee by a not existing fiscal code
         var notFoundEmployee = employeeRepository.findByFiscalCode("AAAAAA00A00A000A");
 
         assertTrue(notFoundEmployee.isEmpty());
@@ -434,7 +434,7 @@ class EmployeeRepositoryTest {
         assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
         assertEquals(foundEmployee.get(0).getUsername(), dummyEmployees.get(0).getUsername());
 
-        // try to search for an employee by an not existing username
+        // try to search for an employee by a not existing username
         var notFoundEmployee = employeeRepository.findByUsername("User Inesistente");
 
         assertTrue(notFoundEmployee.isEmpty());
@@ -450,7 +450,7 @@ class EmployeeRepositoryTest {
             assertEquals(e.getSupervisor(), dummyEmployees.get(0).getSupervisor());
         }
 
-        // try to search for employees by an not existing supervisor
+        // try to search for employees by a not existing supervisor
         var newSupervisor = dummyEmployees.get(0);
         var notFoundEmployees = employeeRepository.findBySupervisor(newSupervisor);
 

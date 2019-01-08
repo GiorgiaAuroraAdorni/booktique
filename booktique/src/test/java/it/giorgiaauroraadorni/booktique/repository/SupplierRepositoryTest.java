@@ -260,7 +260,7 @@ class SupplierRepositoryTest {
         assertEquals(foundSupplier.get(), dummySuppliers.get(0));
         assertEquals(foundSupplier.get().getId(), dummySuppliers.get(0).getId());
 
-        // try to search for suppliers by an not existing id
+        // try to search for suppliers by a not existing id
         var notFoundSupplier = supplierRepository.findById(999L);
         assertTrue(notFoundSupplier.isEmpty());
     }
@@ -275,7 +275,7 @@ class SupplierRepositoryTest {
         assertTrue(foundSupplier.contains(dummySuppliers.get(0)));
         assertEquals(foundSupplier.get(0).getCompanyName(), dummySuppliers.get(0).getCompanyName());
 
-        // try to search for suppliers by an not existing company name
+        // try to search for suppliers by a not existing company name
         var notFoundSupplier = supplierRepository.findByCompanyName("Compagnia Inesistente");
         assertTrue(notFoundSupplier.isEmpty());
     }
@@ -290,7 +290,7 @@ class SupplierRepositoryTest {
         assertTrue(foundSupplier.contains(dummySuppliers.get(1)));
         assertEquals(foundSupplier.get(0).getEmail(), dummySuppliers.get(1).getEmail());
 
-        // try to search for suppliers by an not existing mail
+        // try to search for suppliers by a not existing mail
         var notFoundSupplier = supplierRepository.findByEmail("emailinesistente@mail.com");
         assertTrue(notFoundSupplier.isEmpty());
     }

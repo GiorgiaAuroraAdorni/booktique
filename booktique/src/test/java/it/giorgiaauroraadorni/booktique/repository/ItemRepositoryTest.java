@@ -251,7 +251,7 @@ class ItemRepositoryTest {
         assertEquals(foundItem.get(), dummyItems.get(0));
         assertEquals(foundItem.get().getId(), dummyItems.get(0).getId());
 
-        // try to search for an item by an not existing id
+        // try to search for an item by a not existing id
         var notFoundItem = itemRepository.findById(999L);
 
         assertTrue(notFoundItem.isEmpty());
@@ -267,7 +267,7 @@ class ItemRepositoryTest {
             assertEquals(i.getBookItem(), dummyItems.get(0).getBookItem());
         }
 
-        // try to search for items by an not existing book item
+        // try to search for items by a not existing book item
         var notFoundItems = itemRepository.findByBookItem(dummyBooks.get(2));
 
         assertTrue(notFoundItems.isEmpty());

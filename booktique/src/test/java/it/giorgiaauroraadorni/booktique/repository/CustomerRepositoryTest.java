@@ -310,7 +310,7 @@ class CustomerRepositoryTest {
         assertEquals(foundCustomer.get(), dummyCustomers.get(0));
         assertEquals(foundCustomer.get().getId(), dummyCustomers.get(0).getId());
 
-        // try to search for an customer by an not existing id
+        // try to search for an customer by a not existing id
         var notFoundCustomer = customerRepository.findById(999L);
 
         assertTrue(notFoundCustomer.isEmpty());
@@ -326,7 +326,7 @@ class CustomerRepositoryTest {
             assertEquals(c.getName(), dummyCustomers.get(0).getName());
         }
 
-        // try to search for customers by an not existing name
+        // try to search for customers by a not existing name
         var notFoundCustomers = customerRepository.findByName("Nome Inesistente");
 
         assertTrue(notFoundCustomers.isEmpty());
@@ -342,7 +342,7 @@ class CustomerRepositoryTest {
             assertEquals(c.getSurname(), dummyCustomers.get(0).getSurname());
         }
 
-        // try to search for customers by an not existing surname
+        // try to search for customers by a not existing surname
         var notFoundCustomers = customerRepository.findBySurname("Cognome Inesistente");
 
         assertTrue(notFoundCustomers.isEmpty());
@@ -357,7 +357,7 @@ class CustomerRepositoryTest {
         assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
         assertEquals(foundCustomer.get(0).getFiscalCode(), dummyCustomers.get(0).getFiscalCode());
 
-        // try to search for an customer by an not existing fiscal code
+        // try to search for an customer by a not existing fiscal code
         var notFoundCustomer = customerRepository.findByFiscalCode("AAAAAA00A00A000A");
 
         assertTrue(notFoundCustomer.isEmpty());
@@ -372,7 +372,7 @@ class CustomerRepositoryTest {
         assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
         assertEquals(foundCustomer.get(0).getUsername(), dummyCustomers.get(0).getUsername());
 
-        // try to search for an customer by an not existing username
+        // try to search for an customer by a not existing username
         var notFoundCustomer = customerRepository.findByUsername("User Inesistente");
 
         assertTrue(notFoundCustomer.isEmpty());

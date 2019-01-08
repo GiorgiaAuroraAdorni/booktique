@@ -248,7 +248,7 @@ class PaymentRepositoryTest {
         assertEquals(foundPayment.get(), dummyPayments.get(0));
         assertEquals(foundPayment.get().getId(), dummyPayments.get(0).getId());
 
-        // try to search for payments by an not existing id
+        // try to search for payments by a not existing id
         var notFoundPayment = paymentRepository.findById(999L);
 
         assertTrue(notFoundPayment.isEmpty());
@@ -264,7 +264,7 @@ class PaymentRepositoryTest {
             assertEquals(p.getCardholderName(), dummyPayments.get(0).getCardholderName());
         }
 
-        // try to search for payments by an not existing cardholder name
+        // try to search for payments by a not existing cardholder name
         var notFoundPayment = paymentRepository.findByCardholderName("Titolare Insesistente");
 
         assertTrue(notFoundPayment.isEmpty());
@@ -280,7 +280,7 @@ class PaymentRepositoryTest {
             assertEquals(p.getPaymentDate(), dummyPayments.get(1).getPaymentDate());
         }
 
-        // try to search for payments by an not existing payment date
+        // try to search for payments by a not existing payment date
         var notFoundPayment = paymentRepository.findByPaymentDate(LocalDate.now().minusYears(2));
 
         assertTrue(notFoundPayment.isEmpty());
