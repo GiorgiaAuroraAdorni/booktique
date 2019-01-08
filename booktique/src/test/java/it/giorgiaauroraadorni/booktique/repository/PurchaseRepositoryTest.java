@@ -535,4 +535,56 @@ class PurchaseRepositoryTest {
     }
 
     /* Test search operations */
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the purchase via findById
+        var foundPurchase = purchaseRepository.findById(dummyPurchases.get(0).getId());
+
+        assertEquals(foundPurchase.get(), dummyPurchases.get(0));
+        assertEquals(foundPurchase.get().getId(), dummyPurchases.get(0).getId());
+
+        // try to search for purchase by an not existing id
+        var notFoundPurchase = purchaseRepository.findById(999L);
+
+        assertTrue(notFoundPurchase.isEmpty());
+    }
+
+    @Test
+    public void testFindByOrderDate() {
+        // check the correct reading of all the purchases via findByOrderDate
+        var foundPurchases = purchaseRepository.findByOrderDate(dummyPurchases.get(0).getOrderDate());
+
+        assertTrue(foundPurchases.contains(dummyPurchases.get(0)));
+        for (Purchase p: foundPurchases) {
+            assertEquals(p.getOrderDate(), dummyPurchases.get(0).getOrderDate());
+        }
+
+        // try to search for purchases by an not existing order date
+        var notFoundPurchases = purchaseRepository.findByOrderDate(LocalDate.now().minusYears(2));
+
+        assertTrue(notFoundPurchases.isEmpty());
+    }
+
+    @Test
+    public void testFindByCustomer() {
+        // check the correct reading of all the purchases via findByCustomer
+        var foundPurchases = purchaseRepository.findByCustomer(dummyPurchases.get(0).getCustomer());
+
+        assertTrue(foundPurchases.contains(dummyPurchases.get(0)));
+        for (Purchase p: foundPurchases) {
+            assertEquals(p.getCustomer(), dummyPurchases.get(0).getCustomer());
+        }
+    }
+
+    @Test
+    public void testFindByEmployee() {
+        // check the correct reading of all the purchases via findByEmployee
+        var foundPurchases = purchaseRepository.findByEmployee(dummyPurchases.get(0).getEmployee());
+
+        assertTrue(foundPurchases.contains(dummyPurchases.get(0)));
+        for (Purchase p: foundPurchases) {
+            assertEquals(p.getEmployee(), dummyPurchases.get(0).getEmployee());
+        }
+    }
 }
