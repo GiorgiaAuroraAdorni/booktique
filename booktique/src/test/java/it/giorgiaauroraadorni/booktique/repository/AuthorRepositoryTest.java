@@ -328,32 +328,29 @@ class AuthorRepositoryTest {
     @Test
     public void findByFiscalCode() {
         // check the correct reading of  the author via findByFiscalCode
-        // the author found will be just one because the fiscal code is a natural id, therefore unique
         var foundAuthor = authorRepository.findByFiscalCode(dummyAuthors.get(0).getFiscalCode());
 
-        assertTrue(foundAuthor.size() == 1);
-        assertTrue(foundAuthor.contains(dummyAuthors.get(0)));
-        assertEquals(foundAuthor.get(0).getFiscalCode(), dummyAuthors.get(0).getFiscalCode());
+        assertEquals(foundAuthor, dummyAuthors.get(0));
+        assertEquals(foundAuthor.getFiscalCode(), dummyAuthors.get(0).getFiscalCode());
 
         // try to search for authors by an not existing fiscal code
         var notFoundAuthor = authorRepository.findByFiscalCode("AAAAAA00A00A000A");
 
-        assertTrue(notFoundAuthor.isEmpty());
+        assertNull(notFoundAuthor);
     }
 
     @Test
     public void findByEmail() {
         // check the correct reading of all the authors via findByEmail
-        // the author found will be just one because the email is saved as unique
         var foundAuthor = authorRepository.findByEmail(dummyAuthors.get(2).getEmail());
 
-        assertTrue(foundAuthor.size() == 1);
-        assertTrue(foundAuthor.contains(dummyAuthors.get(2)));
-        assertEquals(foundAuthor.get(0).getEmail(), dummyAuthors.get(2).getEmail());
+        assertEquals(foundAuthor, dummyAuthors.get(2));
+        assertEquals(foundAuthor.getEmail(), dummyAuthors.get(2).getEmail());
+
 
         // try to search for authors by an not existing email
         var notFoundAuthor = authorRepository.findByEmail("emailinesistente@mail.com");
 
-        assertTrue(notFoundAuthor.isEmpty());
+        assertNull(notFoundAuthor);
     }
 }

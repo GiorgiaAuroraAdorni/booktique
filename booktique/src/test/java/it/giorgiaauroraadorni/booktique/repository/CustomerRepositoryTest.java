@@ -351,30 +351,28 @@ class CustomerRepositoryTest {
     @Test
     public void testFindByFiscalCode() {
         // check the correct reading of the customer via findByFiscalCode
-        // the employee found will be just one because the fiscal code is a natural id, therefore unique
         var foundCustomer = customerRepository.findByFiscalCode(dummyCustomers.get(0).getFiscalCode());
 
-        assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
-        assertEquals(foundCustomer.get(0).getFiscalCode(), dummyCustomers.get(0).getFiscalCode());
+        assertEquals(foundCustomer, dummyCustomers.get(0));
+        assertEquals(foundCustomer.getFiscalCode(), dummyCustomers.get(0).getFiscalCode());
 
         // try to search for an customer by a not existing fiscal code
         var notFoundCustomer = customerRepository.findByFiscalCode("AAAAAA00A00A000A");
 
-        assertTrue(notFoundCustomer.isEmpty());
+        assertNull(notFoundCustomer);
     }
 
     @Test
     public void testFindByUsername() {
         // check the correct reading of the customer via findByUsername
-        // the employee found will be just one because the username is unique
         var foundCustomer = customerRepository.findByUsername(dummyCustomers.get(0).getUsername());
 
-        assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
-        assertEquals(foundCustomer.get(0).getUsername(), dummyCustomers.get(0).getUsername());
+        assertEquals(foundCustomer, dummyCustomers.get(0));
+        assertEquals(foundCustomer.getUsername(), dummyCustomers.get(0).getUsername());
 
         // try to search for an customer by a not existing username
         var notFoundCustomer = customerRepository.findByUsername("User Inesistente");
 
-        assertTrue(notFoundCustomer.isEmpty());
+        assertNull(notFoundCustomer);
     }
 }

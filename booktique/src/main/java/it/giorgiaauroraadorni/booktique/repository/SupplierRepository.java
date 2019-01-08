@@ -9,7 +9,8 @@ import java.util.List;
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     // implements search operations
-    List<Supplier> findByCompanyName(String companyName);
 
-    List<Supplier> findByEmail(String email);
+    Supplier findByCompanyName(String companyName);
+
+    Supplier findByEmail(String email);
 }

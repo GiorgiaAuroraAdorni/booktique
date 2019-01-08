@@ -413,31 +413,29 @@ class EmployeeRepositoryTest {
     @Test
     public void testFindByFiscalCode() {
         // check the correct reading of the employee via findByFiscalCode
-        // the employee found will be just one because the fiscal code is a natural id, therefore unique
         var foundEmployee = employeeRepository.findByFiscalCode(dummyEmployees.get(0).getFiscalCode());
 
-        assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
-        assertEquals(foundEmployee.get(0).getFiscalCode(), dummyEmployees.get(0).getFiscalCode());
+        assertEquals(foundEmployee, dummyEmployees.get(0));
+        assertEquals(foundEmployee.getFiscalCode(), dummyEmployees.get(0).getFiscalCode());
 
         // try to search for an employee by a not existing fiscal code
         var notFoundEmployee = employeeRepository.findByFiscalCode("AAAAAA00A00A000A");
 
-        assertTrue(notFoundEmployee.isEmpty());
+        assertNull(notFoundEmployee);
     }
 
     @Test
     public void testFindByUsername() {
         // check the correct reading of the employee via findByUsername
-        // the employee found will be just one because the username is unique
         var foundEmployee = employeeRepository.findByUsername(dummyEmployees.get(0).getUsername());
 
-        assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
-        assertEquals(foundEmployee.get(0).getUsername(), dummyEmployees.get(0).getUsername());
+        assertEquals(foundEmployee, dummyEmployees.get(0));
+        assertEquals(foundEmployee.getUsername(), dummyEmployees.get(0).getUsername());
 
         // try to search for an employee by a not existing username
         var notFoundEmployee = employeeRepository.findByUsername("User Inesistente");
 
-        assertTrue(notFoundEmployee.isEmpty());
+        assertNull(notFoundEmployee);
     }
 
     @Test

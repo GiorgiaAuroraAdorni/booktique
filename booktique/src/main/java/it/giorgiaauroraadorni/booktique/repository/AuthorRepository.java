@@ -13,7 +13,9 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     List<Author> findBySurname(String surname);
 
-    List<Author> findByFiscalCode(String fiscalCode);
+    // the author found will be just one (or nobody) because the fiscal code is a natural id, therefore unique
+    Author findByFiscalCode(String fiscalCode);
 
-    List<Author> findByEmail(String email);
+    // the author found will be just one (or nobody) because the email is saved as unique
+    Author findByEmail(String email);
 }

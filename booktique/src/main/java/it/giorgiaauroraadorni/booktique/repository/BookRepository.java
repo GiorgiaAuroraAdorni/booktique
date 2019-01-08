@@ -13,7 +13,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     // implements search operations
     List<Book> findByTitle(String title);
 
-    List<Book> findByIsbn(String isbn);
+    // the book found will be just one because the isbn is a natural id, therefore unique
+    Book findByIsbn(String isbn);
 
     List<Book> findByAuthorsIn(Set<Author> authors);
 }

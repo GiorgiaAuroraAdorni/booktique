@@ -9,11 +9,14 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     // implements search operations
+
     List<Customer> findByName(String name);
 
     List<Customer> findBySurname(String surname);
 
-    List<Customer> findByFiscalCode(String fiscalCode);
+    // the customer found will be just one because the fiscal code is a natural id, therefore unique
+    Customer findByFiscalCode(String fiscalCode);
 
-    List<Customer> findByUsername(String username);
+    // the customer found will be just one because the username is saved as unique
+    Customer findByUsername(String username);
 }

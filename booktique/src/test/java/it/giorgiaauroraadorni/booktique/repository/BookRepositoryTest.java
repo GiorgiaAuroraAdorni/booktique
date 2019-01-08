@@ -461,17 +461,15 @@ class BookRepositoryTest {
     @Test
     public void testFindByIsbn() {
         // check the correct reading of all the books via findByIsbn
-        var foundBooks = bookRepository.findByIsbn(dummyBooks.get(0).getIsbn());
+        var foundBook = bookRepository.findByIsbn(dummyBooks.get(0).getIsbn());
 
-        assertTrue(foundBooks.contains(dummyBooks.get(0)));
-        for (Book a: foundBooks) {
-            assertEquals(a.getIsbn(), dummyBooks.get(0).getIsbn());
-        }
+        assertEquals(foundBook, dummyBooks.get(0));
+        assertEquals(foundBook.getIsbn(), dummyBooks.get(0).getIsbn());
 
-        // try to search for books by a not existing isbn
+        // try to search for book by a not existing isbn
         var notFoundBooks = bookRepository.findByIsbn("978-11-11-11111-1");
 
-        assertTrue(notFoundBooks.isEmpty());
+        assertNull(notFoundBooks);
     }
 
     @Test
@@ -484,4 +482,11 @@ class BookRepositoryTest {
             assertEquals(a.getAuthors(), dummyBooks.get(1).getAuthors());
         }
 
+        // FIXME
+        // try to search for books by a not existing authors
+//        var nonExistentAuthor =
+//        var notFoundBooks = bookRepository.findByAuthors();
+//
+//        assertTrue(notFoundBooks.isEmpty());
+    }
 }
