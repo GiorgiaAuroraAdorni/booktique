@@ -116,6 +116,8 @@ class EmployeeRepositoryTest {
         createDummyEmployee();
     }
 
+    // Test CRUD operations
+
     @Test
     void repositoryLoads() {}
 
@@ -288,6 +290,7 @@ class EmployeeRepositoryTest {
             invalidEmployee.setUsername("ChristieCarlsonClark15gennaio1983");
             employeeRepository.saveAndFlush(invalidEmployee);
         });
+        //FIXME: solve isolating test
 
         assertThrows(ConstraintViolationException.class, () -> {
             invalidEmployee.setUsername("Chri");
@@ -360,4 +363,100 @@ class EmployeeRepositoryTest {
         assertNull(employeeAftersupervisorDel.getSupervisor());
         assertNotEquals(supervisor, employeeAftersupervisorDel.getSupervisor());
     }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the employee via findById
+        var foundEmployee = employeeRepository.findById(dummyEmployees.get(0).getId());
+
+        assertEquals(foundEmployee.get(), dummyEmployees.get(0));
+        assertEquals(foundEmployee.get().getId(), dummyEmployees.get(0).getId());
+
+        // try to search for an employee by an not existing id
+        var notFoundEmployee = employeeRepository.findById(999L);
+
+        assertTrue(notFoundEmployee.isEmpty());
+    }
+
+    @Test
+    public void testFindByName() {
+        // check the correct reading of all the employees via findByName
+        var foundEmployees = employeeRepository.findByName(dummyEmployees.get(0).getName());
+
+        assertTrue(foundEmployees.contains(dummyEmployees.get(0)));
+        for (Employee a: foundEmployees) {
+            assertEquals(a.getName(), dummyEmployees.get(0).getName());
+        }
+
+        // try to search for employees by an not existing name
+        var notFoundEmployees = employeeRepository.findByName("Nome Inesistente");
+
+        assertTrue(notFoundEmployees.isEmpty());
+    }
+
+    @Test
+    public void testFindBySurname() {
+        // check the correct reading of all the employees via findBySurname
+        var foundEmployees = employeeRepository.findBySurname(dummyEmployees.get(0).getSurname());
+
+        assertTrue(foundEmployees.contains(dummyEmployees.get(0)));
+        for (Employee a: foundEmployees) {
+            assertEquals(a.getSurname(), dummyEmployees.get(0).getSurname());
+        }
+
+        // try to search for employees by an not existing surname
+        var notFoundEmployees = employeeRepository.findBySurname("Cognome Inesistente");
+
+        assertTrue(notFoundEmployees.isEmpty());
+    }
+
+    @Test
+    public void testFindByFiscalCode() {
+        // check the correct reading of the employee via findByFiscalCode
+        // the employee found will be just one because the fiscal code is a natural id, therefore unique
+        var foundEmployee = employeeRepository.findByFiscalCode(dummyEmployees.get(0).getFiscalCode());
+
+        assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
+        assertEquals(foundEmployee.get(0).getFiscalCode(), dummyEmployees.get(0).getFiscalCode());
+
+        // try to search for an employee by an not existing id
+        var notFoundEmployee = employeeRepository.findByFiscalCode("AAAAAA00A00A000A");
+
+        assertTrue(notFoundEmployee.isEmpty());
+    }
+
+    @Test
+    public void testFindByUsername() {
+        // check the correct reading of the employee via findByUsername
+        // the employee found will be just one because the username is unique
+        var foundEmployee = employeeRepository.findByUsername(dummyEmployees.get(0).getUsername());
+
+        assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
+        assertEquals(foundEmployee.get(0).getUsername(), dummyEmployees.get(0).getUsername());
+
+        // try to search for an employee by an not existing username
+        var notFoundEmployee = employeeRepository.findByUsername("User Inesistente");
+
+        assertTrue(notFoundEmployee.isEmpty());
+    }
+
+    @Test
+    public void testFindBySupervisor() {
+        // check the correct reading of all the employees via findBySupervisor
+        var foundEmployees = employeeRepository.findBySupervisor(dummyEmployees.get(0).getSupervisor());
+
+        assertTrue(foundEmployees.contains(dummyEmployees.get(0)));
+        for (Employee a: foundEmployees) {
+            assertEquals(a.getSupervisor(), dummyEmployees.get(0).getSupervisor());
+        }
+
+        // try to search for employees by an not existing supervisor
+        var newSupervisor = dummyEmployees.get(0);
+        var notFoundEmployees = employeeRepository.findBySupervisor(newSupervisor);
+
+        assertTrue(notFoundEmployees.isEmpty());
+    }
+
 }
