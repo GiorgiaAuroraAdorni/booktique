@@ -20,9 +20,9 @@ public class Employee extends Person {
 
     private LocalDate hireDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Address address;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Employee supervisor;
 

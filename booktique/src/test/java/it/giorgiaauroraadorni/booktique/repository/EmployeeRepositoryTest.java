@@ -9,9 +9,9 @@ import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,24 +36,18 @@ class EmployeeRepositoryTest {
     private EntityTestFactory<Address> addressFactory;
 
     private List<Employee> dummyEmployees;
-    private List<Address> dummyAddresses = new ArrayList<>();
 
     @BeforeEach
     void createDummyEmployees() {
         // create a list of valid employees entities
         dummyEmployees = employeeFactory.createValidEntities(2);
-        var address = addressFactory.createValidEntity();
-        dummyAddresses.add(address);
 
         // add the same address and the same supervisor to all the employees
         for (Employee e: dummyEmployees) {
-            e.setAddress(dummyAddresses.get(0));
             e.setSupervisor(dummyEmployees.get(0));
         }
 
-        // save the created entities in the employeeRepository
-        // persist the insertion of addresses in the addressesRepository
-        dummyAddresses = addressRepository.saveAll(dummyAddresses);
+        // save the created entities in the employeeRepository and persist addresses
         dummyEmployees = employeeRepository.saveAll(dummyEmployees);
     }
 
@@ -61,16 +55,6 @@ class EmployeeRepositoryTest {
 
     @Test
     void repositoryLoads() {}
-
-    @Test
-    void repositoryFindAll() {
-        var savedEmployees = employeeRepository.findAll();
-        var savedAddresses = addressRepository.findAll();
-
-        // check if all the employees are correctly added to the repository
-        assertTrue(savedEmployees.containsAll(dummyEmployees), "findAll should fetch all dummy employees");
-        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
-    }
 
     /**
      * Insert many entries in the repository and check if these are readable and the attributes are correct
@@ -128,18 +112,16 @@ class EmployeeRepositoryTest {
         // get a employees from the repository
         Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
 
-        var newAddress = addressFactory.createValidEntity();
-        newAddress = addressRepository.save(newAddress);
-
         // change some attributes
+        Address newAddress = addressFactory.createValidEntity(1);
+        savedEmployee.setAddress(newAddress);
         savedEmployee.setName("Terry");
         savedEmployee.setUsername("TerryMitchell83");
         savedEmployee.setPassword("W422g31C38rRtCtM");
-        savedEmployee.setAddress(newAddress);
         savedEmployee.setSupervisor(dummyEmployees.get(1));
 
         // update the employee object
-        savedEmployee = employeeRepository.save(savedEmployee);
+        savedEmployee = employeeRepository.saveAndFlush(savedEmployee);
         Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
@@ -183,42 +165,40 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update an employee with illegal size for the attributes
+     * Throws an exception when attempting to create or update a employee with illegal size for the username attribute
      */
     @Test
-    public void testIllegalSizeAttributes() {
-        Employee invalidEmployee = new Employee();
-
-        invalidEmployee.setFiscalCode("CRLCHR83C13G224W");
-        invalidEmployee.setName("Christie");
-        invalidEmployee.setSurname("Carlson");
-        invalidEmployee.setSupervisor(employeeRepository.getOne(dummyEmployees.get(0).getId()));
-        invalidEmployee.setUsername("ChristieCarlson83");
-        invalidEmployee.setPassword("W422g31C38rHcLrC");
-
-        employeeRepository.save(invalidEmployee);
+    public void testIllegalUsernameSize() {
+        var invalidEmployee = employeeFactory.createValidEntity();
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidEmployee.setUsername("ChristieCarlsonClark15gennaio1983");
             employeeRepository.saveAndFlush(invalidEmployee);
-        });
-        //FIXME: solve isolating test
+        }, "Username cannot be longer than 32 characters");
 
-        assertThrows(ConstraintViolationException.class, () -> {
-            invalidEmployee.setUsername("Chri");
+        assertThrows(JpaSystemException.class, () -> {
+            invalidEmployee.setUsername("User");
             employeeRepository.saveAndFlush(invalidEmployee);
-        });
+        }, "Username must be at least 5 characters long");
+    }
 
-        assertThrows(ConstraintViolationException.class, () -> {
+    /**
+     * Throws an exception when attempting to create or update an employee  with illegal size for the password attribute
+     */
+    @Test
+    public void testIllegalPasswordSize() {
+        var invalidEmployee = employeeFactory.createValidEntity();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
             invalidEmployee.setPassword("-X2LPM4r`2.SJn)nGxW3Dt}4$C+z??\"d7np=fHWDTB`y2ye:w2>\\5Kf,}\\Ks?*NBq7FG./Qp" +
                     "(>uxFtfs~U(A!tLHSGk>a5bhue^2wq#~3K9mc2[P(J:]c&hez(Jm&F?j2");
             employeeRepository.saveAndFlush(invalidEmployee);
-        });
+        }, "Password cannot be longer than 128 characters");
 
-        assertThrows(ConstraintViolationException.class, () -> {
-            invalidEmployee.setPassword("Chris83");
+        assertThrows(JpaSystemException.class, () -> {
+            invalidEmployee.setPassword("Qwerty12");
             employeeRepository.saveAndFlush(invalidEmployee);
-        });
+        }, "Password must be at least 8 characters long");
     }
 
     /**
@@ -277,7 +257,7 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Delete the employee address and check if the supplier was updated correctly
+     * Delete the employee address and check if the employee was updated correctly
      */
     @Test
     public void testDeleteEmployeeAddress() {
@@ -309,6 +289,19 @@ class EmployeeRepositoryTest {
     }
 
     /* Test search operations */
+
+    @Test
+    void repositoryFindAll() {
+        var savedEmployees = employeeRepository.findAll();
+        var savedAddresses = addressRepository.findAll();
+
+        // check if all the employees are correctly added to the repository
+        assertTrue(savedEmployees.containsAll(dummyEmployees), "findAll should fetch all dummy employees");
+        assertFalse(savedAddresses.isEmpty());
+        for (Employee e: dummyEmployees) {
+            assertTrue(savedAddresses.contains(e.getAddress()), "findAll should fetch all dummy addresses");
+        }
+    }
 
     @Test
     public void testFindById() {
@@ -399,5 +392,4 @@ class EmployeeRepositoryTest {
 
         assertTrue(notFoundEmployees.isEmpty());
     }
-
 }
