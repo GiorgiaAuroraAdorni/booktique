@@ -54,6 +54,8 @@ class PaymentRepositoryTest {
         dummyPayments = paymentRepository.saveAll(dummyPayments);
     }
 
+    // Test CRUD operations
+
     @Test
     void repositoryLoads() {}
 
@@ -235,5 +237,50 @@ class PaymentRepositoryTest {
         // delete all the entries verifying that the operation has been carried out correctly
         paymentRepository.deleteAll();
         assertTrue(paymentRepository.findAll().isEmpty());
+    }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the payment via findById
+        var foundPayment = paymentRepository.findById(dummyPayments.get(0).getId());
+
+        assertEquals(foundPayment.get(), dummyPayments.get(0));
+        assertEquals(foundPayment.get().getId(), dummyPayments.get(0).getId());
+
+        // try to search for payments by an not existing id
+        var notFoundPayment = paymentRepository.findById(999L);
+
+        assertTrue(notFoundPayment.isEmpty());
+    }
+
+    @Test
+    public void testFindByCardholderName() {
+        var foundPayments = paymentRepository.findByCardholderName(dummyPayments.get(0).getCardholderName());
+
+        // check the correct reading of all the payments via findByCardholderName
+        assertTrue(foundPayments.contains(dummyPayments.get(0)));
+        assertEquals(foundPayments.get(0).getCardholderName(), dummyPayments.get(0).getCardholderName());
+
+        // try to search for payments by an not existing cardholder name
+        var notFoundPayment = paymentRepository.findByCardholderName("Titolare Insesistente");
+
+        assertTrue(notFoundPayment.isEmpty());
+    }
+
+    @Test
+    public void testFindByPaymentDate() {
+        var foundPayments = paymentRepository.findByPaymentDate(dummyPayments.get(1).getPaymentDate());
+
+        // check the correct reading of all the payments via findByPaymentDate
+        assertTrue(foundPayments.size() == 1);
+        assertTrue(foundPayments.contains(dummyPayments.get(1)));
+        assertEquals(foundPayments.get(0).getPaymentDate(), dummyPayments.get(1).getPaymentDate());
+
+        // try to search for payments by an not existing payment date
+        var notFoundPayment = paymentRepository.findByPaymentDate(LocalDate.now().minusYears(2));
+
+        assertTrue(notFoundPayment.isEmpty());
     }
 }
