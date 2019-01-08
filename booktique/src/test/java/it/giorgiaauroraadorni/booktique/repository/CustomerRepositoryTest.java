@@ -122,6 +122,8 @@ class CustomerRepositoryTest {
         createDummyCustomer();
     }
 
+    // Test CRUD operations
+
     @Test
     void repositoryLoads() {}
 
@@ -298,5 +300,83 @@ class CustomerRepositoryTest {
         // delete all the entries verifying that the operation has been carried out correctly
         customerRepository.deleteAll();
         assertTrue(customerRepository.findAll().isEmpty());
+    }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the customer via findById
+        var foundCustomer = customerRepository.findById(dummyCustomers.get(0).getId());
+
+        assertEquals(foundCustomer.get(), dummyCustomers.get(0));
+        assertEquals(foundCustomer.get().getId(), dummyCustomers.get(0).getId());
+
+        // try to search for an customer by an not existing id
+        var notFoundCustomer = customerRepository.findById(999L);
+
+        assertTrue(notFoundCustomer.isEmpty());
+    }
+
+    @Test
+    public void testFindByName() {
+        // check the correct reading of all the customers via findByName
+        var foundCustomers = customerRepository.findByName(dummyCustomers.get(0).getName());
+
+        assertTrue(foundCustomers.contains(dummyCustomers.get(0)));
+        for (Customer a: foundCustomers) {
+            assertEquals(a.getName(), dummyCustomers.get(0).getName());
+        }
+
+        // try to search for customers by an not existing name
+        var notFoundCustomers = customerRepository.findByName("Nome Inesistente");
+
+        assertTrue(notFoundCustomers.isEmpty());
+    }
+
+    @Test
+    public void testFindBySurname() {
+        // check the correct reading of all the customers via findBySurname
+        var foundCustomers = customerRepository.findBySurname(dummyCustomers.get(0).getSurname());
+
+        assertTrue(foundCustomers.contains(dummyCustomers.get(0)));
+        for (Customer a: foundCustomers) {
+            assertEquals(a.getSurname(), dummyCustomers.get(0).getSurname());
+        }
+
+        // try to search for customers by an not existing surname
+        var notFoundCustomers = customerRepository.findBySurname("Cognome Inesistente");
+
+        assertTrue(notFoundCustomers.isEmpty());
+    }
+
+    @Test
+    public void testFindByFiscalCode() {
+        // check the correct reading of the customer via findByFiscalCode
+        // the employee found will be just one because the fiscal code is a natural id, therefore unique
+        var foundCustomer = customerRepository.findByFiscalCode(dummyCustomers.get(0).getFiscalCode());
+
+        assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
+        assertEquals(foundCustomer.get(0).getFiscalCode(), dummyCustomers.get(0).getFiscalCode());
+
+        // try to search for an customer by an not existing fiscal code
+        var notFoundCustomer = customerRepository.findByFiscalCode("AAAAAA00A00A000A");
+
+        assertTrue(notFoundCustomer.isEmpty());
+    }
+
+    @Test
+    public void testFindByUsername() {
+        // check the correct reading of the customer via findByUsername
+        // the employee found will be just one because the username is unique
+        var foundCustomer = customerRepository.findByUsername(dummyCustomers.get(0).getUsername());
+
+        assertEquals(foundCustomer.get(0), dummyCustomers.get(0));
+        assertEquals(foundCustomer.get(0).getUsername(), dummyCustomers.get(0).getUsername());
+
+        // try to search for an customer by an not existing username
+        var notFoundCustomer = customerRepository.findByUsername("User Inesistente");
+
+        assertTrue(notFoundCustomer.isEmpty());
     }
 }
