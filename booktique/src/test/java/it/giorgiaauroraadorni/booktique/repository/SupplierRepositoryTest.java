@@ -259,10 +259,14 @@ class SupplierRepositoryTest {
         // check the correct reading of the supplier via findById
         assertEquals(foundSupplier.get(), dummySuppliers.get(0));
         assertEquals(foundSupplier.get().getId(), dummySuppliers.get(0).getId());
+
+        // try to search for suppliers by an not existing id
+        var notFoundSupplier = supplierRepository.findById(999L);
+        assertTrue(notFoundSupplier.isEmpty());
     }
 
     @Test
-    public void testByCompanyName() {
+    public void testFindByCompanyName() {
         var foundSupplier = supplierRepository.findByCompanyName(dummySuppliers.get(0).getCompanyName());
 
         // check the correct reading of the supplier via findByCompanyName
@@ -270,10 +274,14 @@ class SupplierRepositoryTest {
         assertTrue(foundSupplier.size() == 1);
         assertTrue(foundSupplier.contains(dummySuppliers.get(0)));
         assertEquals(foundSupplier.get(0).getCompanyName(), dummySuppliers.get(0).getCompanyName());
+
+        // try to search for suppliers by an not existing company name
+        var notFoundSupplier = supplierRepository.findByCompanyName("Compagnia Inesistente");
+        assertTrue(notFoundSupplier.isEmpty());
     }
 
     @Test
-    public void findByEmail() {
+    public void testFindByEmail() {
         var foundSupplier = supplierRepository.findByEmail(dummySuppliers.get(1).getEmail());
 
         // check the correct reading of the supplier via findByEmail
@@ -281,6 +289,10 @@ class SupplierRepositoryTest {
         assertTrue(foundSupplier.size() == 1);
         assertTrue(foundSupplier.contains(dummySuppliers.get(1)));
         assertEquals(foundSupplier.get(0).getEmail(), dummySuppliers.get(1).getEmail());
+
+        // try to search for suppliers by an not existing mail
+        var notFoundSupplier = supplierRepository.findByEmail("emailinesistente@mail.com");
+        assertTrue(notFoundSupplier.isEmpty());
     }
 
 }
