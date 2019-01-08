@@ -355,11 +355,11 @@ class EmployeeRepositoryTest {
         employee.setSupervisor(null);
         employeeRepository.save(employee);
 
-        Employee employeeAftersupervisorDel = employeeRepository.findById(employee.getId()).get();
+        Employee employeeAfterSupervisorDel = employeeRepository.findById(employee.getId()).get();
 
         // check if the supervisor field is correctly update
-        assertNull(employeeAftersupervisorDel.getSupervisor());
-        assertNotEquals(supervisor, employeeAftersupervisorDel.getSupervisor());
+        assertNull(employeeAfterSupervisorDel.getSupervisor());
+        assertNotEquals(supervisor, employeeAfterSupervisorDel.getSupervisor());
     }
 
     /* Test search operations */
