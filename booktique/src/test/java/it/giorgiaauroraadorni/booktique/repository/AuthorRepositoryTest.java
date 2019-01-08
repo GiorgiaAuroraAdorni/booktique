@@ -27,13 +27,13 @@ class AuthorRepositoryTest {
     @Autowired
     private EntityTestFactory<Author> authorFactory;
 
-    private List<Author> dummyAuthors = new ArrayList<>();
+    private List<Author> dummyAuthors;
 
     @BeforeEach
     void createDummyEntities() {
-
+        // create a list of valid authors entities
         dummyAuthors = (authorFactory.createValidEntities(3));
-
+        // save the created entities in the authorRepository
         dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
