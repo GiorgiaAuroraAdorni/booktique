@@ -1,7 +1,7 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
-import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
+import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,36 +23,17 @@ class AddressRepositoryTest {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private EntityTestFactory<Address> addressFactory;
+
     private List<Address> dummyAddresses;
 
-    /**
-     * Create a list of addresses entities that will be use in the test
-     */
     @BeforeEach
-    void createDummyAddress() {
-        dummyAddresses = IntStream
-                .range(0, 2)
-                .mapToObj(i -> new Address())
-                .collect(Collectors.toList());
-
-        // create a addresses with only the mandatory parameter
-        dummyAddresses.get(0).setStreetAddress("Via Vinicio 59");
-        dummyAddresses.get(0).setCity("Montecassiano");
-        dummyAddresses.get(0).setProvince("MC");
-        dummyAddresses.get(0).setPostalCode("04017");
-        dummyAddresses.get(0).setCountry("Italia");
-
-        // create an addresses with all the possible attributes
-        dummyAddresses.get(1).setStreetAddress("Via Tancredi 96");
-        dummyAddresses.get(1).setCity("Fonteblanda");
-        dummyAddresses.get(1).setProvince("GR");
-        dummyAddresses.get(1).setRegion("Toscana");
-        dummyAddresses.get(1).setPostalCode("32349");
-        dummyAddresses.get(1).setCountry("Italia");
-        dummyAddresses.get(1).setBuilding("Appartamento 62 De Santis del friuli");
-
-        // save the addresses in the repository
-        addressRepository.saveAll(dummyAddresses);
+    void createDummyAddresses() {
+        // create a list of valid address entities
+        dummyAddresses = (addressFactory.createValidEntities(3));
+        // save the created entities in the addressRepository
+        dummyAddresses = addressRepository.saveAll(dummyAddresses);
     }
 
     @Test
