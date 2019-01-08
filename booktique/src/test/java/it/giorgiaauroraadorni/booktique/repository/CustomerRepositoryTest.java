@@ -2,8 +2,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
 import it.giorgiaauroraadorni.booktique.model.Customer;
-import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
-import it.giorgiaauroraadorni.booktique.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -324,8 +322,8 @@ class CustomerRepositoryTest {
         var foundCustomers = customerRepository.findByName(dummyCustomers.get(0).getName());
 
         assertTrue(foundCustomers.contains(dummyCustomers.get(0)));
-        for (Customer a: foundCustomers) {
-            assertEquals(a.getName(), dummyCustomers.get(0).getName());
+        for (Customer c: foundCustomers) {
+            assertEquals(c.getName(), dummyCustomers.get(0).getName());
         }
 
         // try to search for customers by an not existing name
@@ -340,8 +338,8 @@ class CustomerRepositoryTest {
         var foundCustomers = customerRepository.findBySurname(dummyCustomers.get(0).getSurname());
 
         assertTrue(foundCustomers.contains(dummyCustomers.get(0)));
-        for (Customer a: foundCustomers) {
-            assertEquals(a.getSurname(), dummyCustomers.get(0).getSurname());
+        for (Customer c: foundCustomers) {
+            assertEquals(c.getSurname(), dummyCustomers.get(0).getSurname());
         }
 
         // try to search for customers by an not existing surname

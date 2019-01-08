@@ -1,7 +1,6 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Payment;
-import it.giorgiaauroraadorni.booktique.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,11 +256,13 @@ class PaymentRepositoryTest {
 
     @Test
     public void testFindByCardholderName() {
+        // check the correct reading of all the payments via findByCardholderName
         var foundPayments = paymentRepository.findByCardholderName(dummyPayments.get(0).getCardholderName());
 
-        // check the correct reading of all the payments via findByCardholderName
         assertTrue(foundPayments.contains(dummyPayments.get(0)));
-        assertEquals(foundPayments.get(0).getCardholderName(), dummyPayments.get(0).getCardholderName());
+        for (Payment p: foundPayments) {
+            assertEquals(p.getCardholderName(), dummyPayments.get(0).getCardholderName());
+        }
 
         // try to search for payments by an not existing cardholder name
         var notFoundPayment = paymentRepository.findByCardholderName("Titolare Insesistente");
@@ -271,12 +272,13 @@ class PaymentRepositoryTest {
 
     @Test
     public void testFindByPaymentDate() {
+        // check the correct reading of all the payments via findByPaymentDate
         var foundPayments = paymentRepository.findByPaymentDate(dummyPayments.get(1).getPaymentDate());
 
-        // check the correct reading of all the payments via findByPaymentDate
-        assertTrue(foundPayments.size() == 1);
         assertTrue(foundPayments.contains(dummyPayments.get(1)));
-        assertEquals(foundPayments.get(0).getPaymentDate(), dummyPayments.get(1).getPaymentDate());
+        for (Payment p: foundPayments) {
+            assertEquals(p.getPaymentDate(), dummyPayments.get(1).getPaymentDate());
+        }
 
         // try to search for payments by an not existing payment date
         var notFoundPayment = paymentRepository.findByPaymentDate(LocalDate.now().minusYears(2));

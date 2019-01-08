@@ -2,8 +2,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
 import it.giorgiaauroraadorni.booktique.model.Employee;
-import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
-import it.giorgiaauroraadorni.booktique.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -421,7 +419,7 @@ class EmployeeRepositoryTest {
         assertEquals(foundEmployee.get(0), dummyEmployees.get(0));
         assertEquals(foundEmployee.get(0).getFiscalCode(), dummyEmployees.get(0).getFiscalCode());
 
-        // try to search for an employee by an not existing id
+        // try to search for an employee by an not existing fiscal code
         var notFoundEmployee = employeeRepository.findByFiscalCode("AAAAAA00A00A000A");
 
         assertTrue(notFoundEmployee.isEmpty());
@@ -448,8 +446,8 @@ class EmployeeRepositoryTest {
         var foundEmployees = employeeRepository.findBySupervisor(dummyEmployees.get(0).getSupervisor());
 
         assertTrue(foundEmployees.contains(dummyEmployees.get(0)));
-        for (Employee a: foundEmployees) {
-            assertEquals(a.getSupervisor(), dummyEmployees.get(0).getSupervisor());
+        for (Employee e: foundEmployees) {
+            assertEquals(e.getSupervisor(), dummyEmployees.get(0).getSupervisor());
         }
 
         // try to search for employees by an not existing supervisor

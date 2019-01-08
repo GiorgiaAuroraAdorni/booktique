@@ -304,7 +304,7 @@ class AuthorRepositoryTest {
         }
 
         // try to search for authors by an not existing name
-        var notFoundAuthor = authorRepository.findByName("Autore Inesistente");
+        var notFoundAuthor = authorRepository.findByName("Nome Inesistente");
 
         assertTrue(notFoundAuthor.isEmpty());
     }
