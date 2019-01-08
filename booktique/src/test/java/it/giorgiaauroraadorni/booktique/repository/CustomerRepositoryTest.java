@@ -120,7 +120,7 @@ class CustomerRepositoryTest {
         createDummyCustomer();
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -300,7 +300,7 @@ class CustomerRepositoryTest {
         assertTrue(customerRepository.findAll().isEmpty());
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {

@@ -8,7 +8,8 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    // implements search operations
+    /* implements search operations */
+
     List<Employee> findByName(String name);
 
     List<Employee> findBySurname(String surname);

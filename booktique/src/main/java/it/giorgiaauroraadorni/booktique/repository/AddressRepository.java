@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    // no search operations implemented for this entity
+    /* no search operations were implemented for this entity */
 }

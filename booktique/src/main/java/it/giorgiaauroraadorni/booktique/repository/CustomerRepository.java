@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    // implements search operations
+    /* implements search operations */
 
     List<Customer> findByName(String name);
 

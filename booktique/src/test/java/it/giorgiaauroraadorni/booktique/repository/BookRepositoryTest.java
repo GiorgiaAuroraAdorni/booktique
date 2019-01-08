@@ -106,7 +106,7 @@ class BookRepositoryTest {
         createDummyBook();
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -426,7 +426,7 @@ class BookRepositoryTest {
         }, "It's not possible to delete an author if he has written a book");
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {

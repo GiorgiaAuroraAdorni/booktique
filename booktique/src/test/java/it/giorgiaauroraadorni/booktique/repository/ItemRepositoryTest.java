@@ -130,7 +130,7 @@ class ItemRepositoryTest {
         createDummyItem();
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -241,7 +241,7 @@ class ItemRepositoryTest {
         assertTrue(itemRepository.findAll().isEmpty());
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {

@@ -114,7 +114,7 @@ class EmployeeRepositoryTest {
         createDummyEmployee();
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -362,7 +362,7 @@ class EmployeeRepositoryTest {
         assertNotEquals(supervisor, employeeAftersupervisorDel.getSupervisor());
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {

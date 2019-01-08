@@ -84,7 +84,7 @@ class SupplierRepositoryTest {
         createDummySupplier();
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -250,13 +250,13 @@ class SupplierRepositoryTest {
         assertNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {
+        // check the correct reading of the supplier via findById
         var foundSupplier = supplierRepository.findById(dummySuppliers.get(0).getId());
 
-        // check the correct reading of the supplier via findById
         assertEquals(foundSupplier.get(), dummySuppliers.get(0));
         assertEquals(foundSupplier.get().getId(), dummySuppliers.get(0).getId());
 
@@ -267,32 +267,27 @@ class SupplierRepositoryTest {
 
     @Test
     public void testFindByCompanyName() {
+        // check the correct reading of the supplier via findByCompanyName
         var foundSupplier = supplierRepository.findByCompanyName(dummySuppliers.get(0).getCompanyName());
 
-        // check the correct reading of the supplier via findByCompanyName
-        // the supplier found will be just one because the company name is unique
-        assertTrue(foundSupplier.size() == 1);
-        assertTrue(foundSupplier.contains(dummySuppliers.get(0)));
-        assertEquals(foundSupplier.get(0).getCompanyName(), dummySuppliers.get(0).getCompanyName());
+        assertEquals(foundSupplier, dummySuppliers.get(0));
+        assertEquals(foundSupplier.getCompanyName(), dummySuppliers.get(0).getCompanyName());
 
         // try to search for suppliers by a not existing company name
         var notFoundSupplier = supplierRepository.findByCompanyName("Compagnia Inesistente");
-        assertTrue(notFoundSupplier.isEmpty());
+        assertNull(notFoundSupplier);
     }
 
     @Test
     public void testFindByEmail() {
+        // check the correct reading of the supplier via findByEmail
         var foundSupplier = supplierRepository.findByEmail(dummySuppliers.get(1).getEmail());
 
-        // check the correct reading of the supplier via findByEmail
-        // the supplier found will be just one because the email is saved as unique
-        assertTrue(foundSupplier.size() == 1);
-        assertTrue(foundSupplier.contains(dummySuppliers.get(1)));
-        assertEquals(foundSupplier.get(0).getEmail(), dummySuppliers.get(1).getEmail());
+        assertEquals(foundSupplier, dummySuppliers.get(1));
+        assertEquals(foundSupplier.getEmail(), dummySuppliers.get(1).getEmail());
 
         // try to search for suppliers by a not existing mail
         var notFoundSupplier = supplierRepository.findByEmail("emailinesistente@mail.com");
-        assertTrue(notFoundSupplier.isEmpty());
+        assertNull(notFoundSupplier);
     }
-
 }

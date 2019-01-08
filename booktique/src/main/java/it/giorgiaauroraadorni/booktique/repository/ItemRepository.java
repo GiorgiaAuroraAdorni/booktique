@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    // implements search operations
+    /* implements search operations */
+
     List<Item> findByBookItem(Book bookItem);
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
-    // implements search operations
+    /* implements search operations */
 
     Supplier findByCompanyName(String companyName);
 

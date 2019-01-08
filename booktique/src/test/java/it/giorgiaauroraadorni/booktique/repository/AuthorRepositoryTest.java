@@ -37,7 +37,7 @@ class AuthorRepositoryTest {
         dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
-    // Test CRUD operations
+    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
@@ -277,7 +277,7 @@ class AuthorRepositoryTest {
         assertTrue(authorRepository.findAll().isEmpty());
     }
 
-    // Test search operations
+    /* Test search operations */
 
     @Test
     public void testFindById() {

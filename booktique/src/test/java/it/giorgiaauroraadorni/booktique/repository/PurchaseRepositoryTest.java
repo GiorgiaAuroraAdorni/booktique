@@ -306,6 +306,8 @@ class PurchaseRepositoryTest {
         createDummyPurchase();
     }
 
+    /* Test CRUD operations */
+
     @Test
     void repositoryLoads() {}
 
@@ -531,4 +533,6 @@ class PurchaseRepositoryTest {
         assertNotEquals(purchaseAfterDel.getItems(), Collections.emptySet());
         assertNotNull(purchaseAfterDel.getItems());
     }
+
+    /* Test search operations */
 }

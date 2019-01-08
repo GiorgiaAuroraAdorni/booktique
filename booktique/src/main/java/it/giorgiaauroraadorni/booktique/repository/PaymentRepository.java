@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    // implements search operations
+    /* implements search operations */
+
     List<Payment> findByCardholderName(String cardholderName);
 
     List<Payment> findByPaymentDate(LocalDate paymentDate);
