@@ -84,6 +84,8 @@ class SupplierRepositoryTest {
         createDummySupplier();
     }
 
+    // Test CRUD operations
+
     @Test
     void repositoryLoads() {}
 
@@ -247,4 +249,38 @@ class SupplierRepositoryTest {
         assertNotEquals(supplierAddress, supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
         assertNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
     }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        var foundSupplier = supplierRepository.findById(dummySuppliers.get(0).getId());
+
+        // check the correct reading of the supplier via findById
+        assertEquals(foundSupplier.get(), dummySuppliers.get(0));
+        assertEquals(foundSupplier.get().getId(), dummySuppliers.get(0).getId());
+    }
+
+    @Test
+    public void testByCompanyName() {
+        var foundSupplier = supplierRepository.findByCompanyName(dummySuppliers.get(0).getCompanyName());
+
+        // check the correct reading of the supplier via findByCompanyName
+        // the supplier found will be just one because the company name is unique
+        assertTrue(foundSupplier.size() == 1);
+        assertTrue(foundSupplier.contains(dummySuppliers.get(0)));
+        assertEquals(foundSupplier.get(0).getCompanyName(), dummySuppliers.get(0).getCompanyName());
+    }
+
+    @Test
+    public void findByEmail() {
+        var foundSupplier = supplierRepository.findByEmail(dummySuppliers.get(1).getEmail());
+
+        // check the correct reading of the supplier via findByEmail
+        // the supplier found will be just one because the email is saved as unique
+        assertTrue(foundSupplier.size() == 1);
+        assertTrue(foundSupplier.contains(dummySuppliers.get(1)));
+        assertEquals(foundSupplier.get(0).getEmail(), dummySuppliers.get(1).getEmail());
+    }
+
 }
