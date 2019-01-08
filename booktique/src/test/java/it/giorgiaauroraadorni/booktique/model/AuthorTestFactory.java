@@ -14,10 +14,10 @@ public class AuthorTestFactory implements EntityTestFactory<Author> {
         // mandatory attribute (inherits from person)
         author.setFiscalCode("CGNNMO00T00L00" + idx + "S");
         author.setName("Nome" + idx);
-        author.setSurname("Cognome" +idx);
+        author.setSurname("Cognome" + idx);
 
         // other attributes
-        author.setDateOfBirth(LocalDate.now().minusYears(10 + idx));
+        author.setDateOfBirth(LocalDate.now().minusYears(35 + idx));
         author.setEmail(author.getName() + author.getSurname() + "@mail.com");
         author.setMobilePhone("333333333" + idx);
         author.setWebSiteURL("https://www." + author.getName() + author.getSurname() + ".org");
