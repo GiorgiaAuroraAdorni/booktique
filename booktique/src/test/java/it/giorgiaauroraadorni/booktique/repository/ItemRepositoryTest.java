@@ -3,9 +3,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.Item;
 import it.giorgiaauroraadorni.booktique.model.Supplier;
-import it.giorgiaauroraadorni.booktique.repository.BookRepository;
-import it.giorgiaauroraadorni.booktique.repository.ItemRepository;
-import it.giorgiaauroraadorni.booktique.repository.SupplierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +130,8 @@ class ItemRepositoryTest {
         createDummyItem();
     }
 
+    // Test CRUD operations
+
     @Test
     void repositoryLoads() {}
 
@@ -240,5 +239,37 @@ class ItemRepositoryTest {
         // delete all the entries verifying that the operation has been carried out correctly
         itemRepository.deleteAll();
         assertTrue(itemRepository.findAll().isEmpty());
+    }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the item via findById
+        var foundItem = itemRepository.findById(dummyItems.get(0).getId());
+
+        assertEquals(foundItem.get(), dummyItems.get(0));
+        assertEquals(foundItem.get().getId(), dummyItems.get(0).getId());
+
+        // try to search for an item by an not existing id
+        var notFoundItem = itemRepository.findById(999L);
+
+        assertTrue(notFoundItem.isEmpty());
+    }
+
+    @Test
+    public void testFindByBookItem() {
+        // check the correct reading of all the items via findByBookItem
+        var foundItems = itemRepository.findByBookItem(dummyItems.get(0).getBookItem());
+
+        assertTrue(foundItems.contains(dummyItems.get(0)));
+        for (Item i: foundItems) {
+            assertEquals(i.getBookItem(), dummyItems.get(0).getBookItem());
+        }
+
+        // try to search for items by an not existing book item
+        var notFoundItems = itemRepository.findByBookItem(dummyBooks.get(2));
+
+        assertTrue(notFoundItems.isEmpty());
     }
 }
