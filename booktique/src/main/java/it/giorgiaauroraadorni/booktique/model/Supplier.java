@@ -25,7 +25,7 @@ public class Supplier extends AuditModel {
     @Pattern(regexp = "^0[0-9]{8,9}$")
     private String phoneNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Address address;
 
     // Getters and Setters

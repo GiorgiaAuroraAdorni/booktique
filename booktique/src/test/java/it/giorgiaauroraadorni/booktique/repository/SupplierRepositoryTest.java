@@ -237,17 +237,30 @@ class SupplierRepositoryTest {
         Supplier savedSupplier = supplierRepository.findById(dummySuppliers.get(1).getId()).get();
         Address supplierAddress = savedSupplier.getAddress();
 
-        // delete all the addresses, set null the supplier address and verify the operation has been carried out
-        // correctly
+        // delete the address object
+        addressRepository.delete(supplierAddress);
+
+        // check that the address has been deleted correctly
+        assertEquals(addressRepository.findById(supplierAddress.getId()), Optional.empty());
+
+        // throws an exception when attempting to access to a supplier object whose address has been deleted
+        assertThrows(AssertionFailedError.class, () -> {
+            assertNull(supplierRepository.findById(savedSupplier.getId()).get().getAddress());
+            assertNotEquals(supplierAddress, supplierRepository.findById(savedSupplier.getId()).get().getAddress());
+        }, "It's not possible to eliminate an address if his supplier haven't been first updated");
+
+
+        // update the supplier setting null the supplier address
         savedSupplier.setAddress(null);
         supplierRepository.save(savedSupplier);
-        addressRepository.deleteAll();
 
-        assertTrue(addressRepository.findAll().isEmpty());
+        Supplier supplierAfterAddressDel = supplierRepository.findById(savedSupplier.getId()).get();
+
+        addressRepository.findAll().isEmpty();
 
         // check that the supplier has been updated correctly
-        assertNotEquals(supplierAddress, supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
-        assertNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
+        assertNull(supplierAfterAddressDel.getAddress());
+        assertNotEquals(supplierAddress, supplierAfterAddressDel.getAddress());
     }
 
     /* Test search operations */
