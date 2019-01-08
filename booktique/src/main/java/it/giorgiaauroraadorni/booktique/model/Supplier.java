@@ -11,15 +11,17 @@ public class Supplier extends AuditModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = false, unique = true)
     private String companyName;
 
     // This is an email address. The format allow numbers in the domain name and doesn't allow for top level domains
     // that are less than 2 or more than 6 letters.
+    @Column(unique = true)
     @Pattern(regexp = "^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$")
     private String email;
 
     // This is a phone number. It specifies a italian fixed telephone numbers.
+    @Column(unique = true)
     @Pattern(regexp = "^0[0-9]{8,9}$")
     private String phoneNumber;
 
