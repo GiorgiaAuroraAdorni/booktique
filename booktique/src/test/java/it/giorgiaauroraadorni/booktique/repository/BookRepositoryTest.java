@@ -2,8 +2,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.Book;
-import it.giorgiaauroraadorni.booktique.repository.AuthorRepository;
-import it.giorgiaauroraadorni.booktique.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -107,6 +105,8 @@ class BookRepositoryTest {
         createDummyAuthor();
         createDummyBook();
     }
+
+    // Test CRUD operations
 
     @Test
     void repositoryLoads() {}
@@ -419,10 +419,69 @@ class BookRepositoryTest {
         authorRepository.deleteAll();
 
         // throws an exception when attempting to delete an author of a book
-        assertThrows(AssertionFailedError.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             assertTrue(authorRepository.findAll().isEmpty());
             assertNull(bookRepository.findById(book.getId()).get().getAuthors());
             assertNotEquals(authors, bookRepository.findById(book.getId()).get().getAuthors());
         }, "It's not possible to delete an author if he has written a book");
     }
+
+    // Test search operations
+
+    @Test
+    public void testFindById() {
+        // check the correct reading of the book via findById
+        var foundBook = bookRepository.findById(dummyBooks.get(0).getId());
+
+        assertEquals(foundBook.get(), dummyBooks.get(0));
+        assertEquals(foundBook.get().getId(), dummyBooks.get(0).getId());
+
+        // try to search for an book by a not existing id
+        var notFoundBook = bookRepository.findById(999L);
+
+        assertTrue(notFoundBook.isEmpty());
+    }
+
+    @Test
+    public void testFindByTitle() {
+        // check the correct reading of all the books via findByTitle
+        var foundBooks = bookRepository.findByTitle(dummyBooks.get(0).getTitle());
+
+        assertTrue(foundBooks.contains(dummyBooks.get(0)));
+        for (Book b: foundBooks) {
+            assertEquals(b.getTitle(), dummyBooks.get(0).getTitle());
+        }
+
+        // try to search for books by a not existing title
+        var notFoundBooks = bookRepository.findByTitle("Titolo Inesistente");
+
+        assertTrue(notFoundBooks.isEmpty());
+    }
+
+    @Test
+    public void testFindByIsbn() {
+        // check the correct reading of all the books via findByIsbn
+        var foundBooks = bookRepository.findByIsbn(dummyBooks.get(0).getIsbn());
+
+        assertTrue(foundBooks.contains(dummyBooks.get(0)));
+        for (Book a: foundBooks) {
+            assertEquals(a.getIsbn(), dummyBooks.get(0).getIsbn());
+        }
+
+        // try to search for books by a not existing isbn
+        var notFoundBooks = bookRepository.findByIsbn("978-11-11-11111-1");
+
+        assertTrue(notFoundBooks.isEmpty());
+    }
+
+    @Test
+    public void testFindByAuthors() {
+        // check the correct reading of all the books via findByAuthors
+        var foundBooks = bookRepository.findByAuthorsIn(dummyBooks.get(1).getAuthors());
+
+        assertTrue(foundBooks.contains(dummyBooks.get(1)));
+        for (Book a: foundBooks) {
+            assertEquals(a.getAuthors(), dummyBooks.get(1).getAuthors());
+        }
+
 }
