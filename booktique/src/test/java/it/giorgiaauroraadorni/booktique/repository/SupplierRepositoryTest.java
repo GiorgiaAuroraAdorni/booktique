@@ -1,11 +1,11 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
+import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import it.giorgiaauroraadorni.booktique.model.Supplier;
-import it.giorgiaauroraadorni.booktique.repository.AddressRepository;
-import it.giorgiaauroraadorni.booktique.repository.SupplierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,8 +15,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,57 +29,32 @@ class SupplierRepositoryTest {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private EntityTestFactory<Supplier> supplierFactory;
+
+    @Autowired
+    private EntityTestFactory<Address> addressFactory;
+
     private List<Supplier> dummySuppliers;
 
-    private List<Address> dummyAddresses;
-
-    /**
-     * Create a list of addresses entities that will be use in the test
-     */
-    private void createDummyAddress() {
-        dummyAddresses = IntStream
-                .range(0, 1)
-                .mapToObj(i -> new Address())
-                .collect(Collectors.toList());
-
-        dummyAddresses.get(0).setStreetAddress("Via Tancredi 96");
-        dummyAddresses.get(0).setCity("Fonteblanda");
-        dummyAddresses.get(0).setProvince("GR");
-        dummyAddresses.get(0).setRegion("Toscana");
-        dummyAddresses.get(0).setPostalCode("32349");
-        dummyAddresses.get(0).setCountry("Italia");
-        dummyAddresses.get(0).setBuilding("Appartamento 62 De Santis del friuli");
-
-        // save the addresses in the repository
-        dummyAddresses = addressRepository.saveAll(dummyAddresses);
-    }
-
-    /**
-     * Create a list of suppliers entities that will be use in the test
-     */
-    private void createDummySupplier() {
-        dummySuppliers = IntStream
-                .range(0, 2)
-                .mapToObj(i -> new Supplier())
-                .collect(Collectors.toList());
-
-        // create a supplier with only the mandatory parameter
-        dummySuppliers.get(0).setCompanyName("Centibook Supplier S.r.l.s.");
-
-        // create a supplier with all the attributes
-        dummySuppliers.get(1).setCompanyName("Speed Book S.r.l.");
-        dummySuppliers.get(1).setAddress(dummyAddresses.get(0));
-        dummySuppliers.get(1).setEmail("speedbook@srl.com");
-        dummySuppliers.get(1).setPhoneNumber("026512158");
-
-        // save the suppliers in the repository
-        dummySuppliers = supplierRepository.saveAll(dummySuppliers);
-    }
+    private List<Address> dummyAddresses = new ArrayList<>();
 
     @BeforeEach
     void createDummyEntities() {
-        createDummyAddress();
-        createDummySupplier();
+        // create a list of valid suppliers entities
+        dummySuppliers = supplierFactory.createValidEntities(3);
+        var address = addressFactory.createValidEntity();
+        dummyAddresses.add(address);
+
+        // add the same address to all the suppliers
+        for (Supplier s: dummySuppliers) {
+            s.setAddress(dummyAddresses.get(0));
+        }
+
+        // save the created entities in the supplierRepository
+        // persist the insertion of addresses in the addressesRepository
+        dummyAddresses = addressRepository.saveAll(dummyAddresses);
+        dummySuppliers = supplierRepository.saveAll(dummySuppliers);
     }
 
     /* Test CRUD operations */
@@ -127,9 +100,11 @@ class SupplierRepositoryTest {
     @Test
     public void testSupplierAddress() {
         // check if the addresses are set correctly
-        assertNull(supplierRepository.findById(dummySuppliers.get(0).getId()).get().getAddress());
-        assertNotNull(supplierRepository.findById(dummySuppliers.get(1).getId()).get().getAddress());
+        for (Supplier s: dummySuppliers) {
+            assertNotNull(supplierRepository.findById(s.getId()).get().getAddress());
+        }
     }
+    // FIXME test supplier senza address valido
 
     /**
      * Update one entry partially, edit different attributes and check if the fields are changed correctly
