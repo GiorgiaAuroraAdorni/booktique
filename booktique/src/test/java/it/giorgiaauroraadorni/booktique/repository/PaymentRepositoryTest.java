@@ -1,6 +1,8 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
+import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import it.giorgiaauroraadorni.booktique.model.Payment;
+import org.hibernate.boot.archive.scan.spi.PackageInfoArchiveEntryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,31 +25,16 @@ class PaymentRepositoryTest {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private EntityTestFactory<Payment> paymentFactory;
+
     private List<Payment> dummyPayments;
 
-    /**
-     * Create a list of payments entities that will be use in the test
-     */
     @BeforeEach
-    void createDummyPayment() {
-        dummyPayments = IntStream
-                .range(0, 2)
-                .mapToObj(i -> new Payment())
-                .collect(Collectors.toList());
-
-        // create a payment with only the mandatory parameters
-        dummyPayments.get(0).setCardNumber("4643417337747076");
-        dummyPayments.get(0).setCardholderName("Kaitlin Mitchell");
-        dummyPayments.get(0).setExpireDate(LocalDate.of(2025, 12, 1));
-        dummyPayments.get(0).setCVC("123");
-
-        // create a payment with all the parameters
-        dummyPayments.get(1).setCardNumber("9876543212346789");
-        dummyPayments.get(1).setCardholderName("Morgan Davison");
-        dummyPayments.get(1).setExpireDate(LocalDate.of(2028, 6, 20));
-        dummyPayments.get(1).setCVC("456");
-        dummyPayments.get(1).setPaymentDate(LocalDate.now());
-
+    void createDummyPayments() {
+        // create a list of valid address entities
+        dummyPayments = (paymentFactory.createValidEntities(3));
+        // save the created entities in the addressRepository
         dummyPayments = paymentRepository.saveAll(dummyPayments);
     }
 
