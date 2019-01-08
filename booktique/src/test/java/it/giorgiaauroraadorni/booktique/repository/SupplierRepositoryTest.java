@@ -37,23 +37,12 @@ class SupplierRepositoryTest {
 
     private List<Supplier> dummySuppliers;
 
-    private List<Address> dummyAddresses = new ArrayList<>();
-
     @BeforeEach
     void createDummySuppliers() {
         // create a list of valid suppliers entities
         dummySuppliers = supplierFactory.createValidEntities(3);
-        var address = addressFactory.createValidEntity();
-        dummyAddresses.add(address);
 
-        // add the same address to all the suppliers
-        for (Supplier s: dummySuppliers) {
-            s.setAddress(dummyAddresses.get(0));
-        }
-
-        // save the created entities in the supplierRepository
-        // persist the insertion of addresses in the addressesRepository
-        dummyAddresses = addressRepository.saveAll(dummyAddresses);
+        // save the created entities in the supplierRepository and persist address
         dummySuppliers = supplierRepository.saveAll(dummySuppliers);
     }
 
@@ -61,16 +50,6 @@ class SupplierRepositoryTest {
 
     @Test
     void repositoryLoads() {}
-
-    @Test
-    void repositoryFindAll() {
-        var savedSuppliers = supplierRepository.findAll();
-        var savedAddresses = addressRepository.findAll();
-
-        // check if all the suppliers are correctly added to the repository
-        assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
-        assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
-    }
 
     /**
      * Insert many entries in the repository and check if these are readable and the attributes are correct
@@ -104,7 +83,6 @@ class SupplierRepositoryTest {
             assertNotNull(supplierRepository.findById(s.getId()).get().getAddress());
         }
     }
-    // FIXME test supplier senza address valido
 
     /**
      * Update one entry partially, edit different attributes and check if the fields are changed correctly
@@ -115,18 +93,22 @@ class SupplierRepositoryTest {
         Supplier savedSupplier = supplierRepository.findById(dummySuppliers.get(0).getId()).get();
 
         // change some attributes
+        Address newAddress = addressFactory.createValidEntity(1);
+        savedSupplier.setAddress(newAddress);
         savedSupplier.setCompanyName("Centibook Supplier S.r.l.");
         savedSupplier.setPhoneNumber("045612185");
 
         // update the supplier object
-        supplierRepository.save(savedSupplier);
+        savedSupplier = supplierRepository.save(savedSupplier);
         Supplier updatedSupplier = supplierRepository.findById(savedSupplier.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
         assertNotNull(updatedSupplier);
+        assertNotNull(updatedSupplier.getAddress());
         assertEquals(savedSupplier, updatedSupplier);
         assertEquals("Centibook Supplier S.r.l.", updatedSupplier.getCompanyName());
         assertEquals("045612185", updatedSupplier.getPhoneNumber());
+        assertEquals(newAddress, updatedSupplier.getAddress());
     }
 
     /**
@@ -237,6 +219,19 @@ class SupplierRepositoryTest {
     }
 
     /* Test search operations */
+
+    @Test
+    void repositoryFindAll() {
+        var savedSuppliers = supplierRepository.findAll();
+        var savedAddresses = addressRepository.findAll();
+
+        // check if all the suppliers are correctly added to the repository
+        assertTrue(savedSuppliers.containsAll(dummySuppliers), "findAll should fetch all dummy suppliers");
+        assertFalse(savedAddresses.isEmpty());
+        for (Supplier s : dummySuppliers) {
+            assertTrue(savedAddresses.contains(s.getAddress()), "findAll should fetch all dummy addresses");
+        }
+    }
 
     @Test
     public void testFindById() {
