@@ -32,11 +32,9 @@ class AuthorRepositoryTest {
     @BeforeEach
     void createDummyEntities() {
 
-        for (int i = 0; i < 3; i++) {
-            dummyAuthors.add(authorFactory.createValidEntity(i));
-        }
+        dummyAuthors = (authorFactory.createValidEntities(3));
 
-        authorRepository.saveAll(dummyAuthors);
+        dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
     // Test CRUD operations
