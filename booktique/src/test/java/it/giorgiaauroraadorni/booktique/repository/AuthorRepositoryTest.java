@@ -27,8 +27,6 @@ class AuthorRepositoryTest {
     @Autowired
     private EntityTestFactory<Author> authorFactory;
 
-    //private List<Author> dummyAuthors;
-
     private List<Author> dummyAuthors = new ArrayList<>();
 
     @BeforeEach
@@ -40,6 +38,8 @@ class AuthorRepositoryTest {
 
         authorRepository.saveAll(dummyAuthors);
     }
+
+    // Test CRUD operations
 
     @Test
     void repositoryLoads() {}
@@ -278,6 +278,8 @@ class AuthorRepositoryTest {
         authorRepository.deleteAll();
         assertTrue(authorRepository.findAll().isEmpty());
     }
+
+    // Test search operations
 
     @Test
     public void testFindById() {
