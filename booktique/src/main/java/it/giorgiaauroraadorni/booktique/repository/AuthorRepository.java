@@ -8,12 +8,12 @@ import java.util.List;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
-
+    // implements search operations
     List<Author> findByName(String name);
 
     List<Author> findBySurname(String surname);
 
     List<Author> findByFiscalCode(String fiscalCode);
 
-    List<Author> findByEmail(String fiscalCode);
+    List<Author> findByEmail(String email);
 }
