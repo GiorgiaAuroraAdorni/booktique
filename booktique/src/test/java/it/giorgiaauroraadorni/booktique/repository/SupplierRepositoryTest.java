@@ -40,7 +40,7 @@ class SupplierRepositoryTest {
     private List<Address> dummyAddresses = new ArrayList<>();
 
     @BeforeEach
-    void createDummyEntities() {
+    void createDummySuppliers() {
         // create a list of valid suppliers entities
         dummySuppliers = supplierFactory.createValidEntities(3);
         var address = addressFactory.createValidEntity();
@@ -230,8 +230,6 @@ class SupplierRepositoryTest {
         supplierRepository.save(savedSupplier);
 
         Supplier supplierAfterAddressDel = supplierRepository.findById(savedSupplier.getId()).get();
-
-        addressRepository.findAll().isEmpty();
 
         // check that the supplier has been updated correctly
         assertNull(supplierAfterAddressDel.getAddress());

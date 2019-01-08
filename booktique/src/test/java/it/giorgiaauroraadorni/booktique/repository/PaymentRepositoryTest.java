@@ -87,12 +87,12 @@ class PaymentRepositoryTest {
 
         // change some attributes
         var oldPaymentDate = savedPayment.getPaymentDate();
-        savedPayment.setPaymentDate(LocalDate.now());
+        savedPayment.setPaymentDate(LocalDate.now().minusDays(1));
         var oldCVC = savedPayment.getCVC();
         savedPayment.setCVC("120");
 
         // update the payment object
-        paymentRepository.save(savedPayment);
+        savedPayment = paymentRepository.save(savedPayment);
         Payment updatedPayment = paymentRepository.findById(savedPayment.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
@@ -100,7 +100,7 @@ class PaymentRepositoryTest {
         assertEquals(savedPayment, updatedPayment);
         assertNotEquals(oldPaymentDate, updatedPayment.getPaymentDate());
         assertNotEquals(oldCVC, updatedPayment.getCVC());
-        assertEquals(LocalDate.now(), updatedPayment.getPaymentDate());
+        assertEquals(LocalDate.now().minusDays(1), updatedPayment.getPaymentDate());
         assertEquals("120", updatedPayment.getCVC());
     }
 
