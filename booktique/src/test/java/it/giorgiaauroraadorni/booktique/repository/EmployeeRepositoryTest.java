@@ -2,6 +2,7 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
 import it.giorgiaauroraadorni.booktique.model.Employee;
+import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -11,12 +12,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,87 +29,32 @@ class EmployeeRepositoryTest {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private EntityTestFactory<Employee> employeeFactory;
+
+    @Autowired
+    private EntityTestFactory<Address> addressFactory;
+
     private List<Employee> dummyEmployees;
-    private List<Address> dummyAddresses;
-
-    /**
-     * Create a list of addresses entities that will be use in the test
-     */
-    private void createDummyAddress() {
-        dummyAddresses = IntStream
-                .range(0, 2)
-                .mapToObj(i -> new Address())
-                .collect(Collectors.toList());
-
-        // create a addresses with only the mandatory parameter
-        dummyAddresses.get(0).setStreetAddress("Via Vinicio 59");
-        dummyAddresses.get(0).setCity("Montecassiano");
-        dummyAddresses.get(0).setProvince("MC");
-        dummyAddresses.get(0).setPostalCode("04017");
-        dummyAddresses.get(0).setCountry("Italia");
-
-        // create an addresses with all the possible attributes
-        dummyAddresses.get(1).setStreetAddress("Via Tancredi 96");
-        dummyAddresses.get(1).setCity("Fonteblanda");
-        dummyAddresses.get(1).setProvince("GR");
-        dummyAddresses.get(1).setRegion("Toscana");
-        dummyAddresses.get(1).setPostalCode("32349");
-        dummyAddresses.get(1).setCountry("Italia");
-        dummyAddresses.get(1).setBuilding("Appartamento 62 De Santis del friuli");
-
-        // save the addresses in the repository
-        dummyAddresses = addressRepository.saveAll(dummyAddresses);
-    }
-
-    /**
-     * Create a list of employees entities that will be use in the test
-     */
-    private void createDummyEmployee() {
-        dummyEmployees = IntStream
-                .range(0, 3)
-                .mapToObj(i -> new Employee())
-                .collect(Collectors.toList());
-
-        // create an employee with only the mandatory parameter (inherited from person)
-        dummyEmployees.get(0).setFiscalCode("GRGBVR75C13G224W");
-        dummyEmployees.get(0).setName("Beverley");
-        dummyEmployees.get(0).setSurname("Gregory");
-        dummyEmployees.get(0).setUsername("BeverleyGregory75");
-        dummyEmployees.get(0).setSupervisor(dummyEmployees.get(1));
-        dummyEmployees.get(0).setPassword("yJmKKSjRJX4HZXrvxjBs");
-
-        // create an employee with all the person attributes
-        dummyEmployees.get(1).setFiscalCode("STNPTR70A11C933C");
-        dummyEmployees.get(1).setName("Peter");
-        dummyEmployees.get(1).setSurname("Stone");
-        dummyEmployees.get(1).setUsername("PeterStone70");
-        dummyEmployees.get(1).setPassword("XxzNh9jMkfWaHhzG2YVG");
-        dummyEmployees.get(1).setSupervisor(dummyEmployees.get(1));
-        dummyEmployees.get(1).setDateOfBirth(LocalDate.of(1970, 11, 3));
-        dummyEmployees.get(1).setEmail("peter.stone40@example.com");
-        dummyEmployees.get(1).setMobilePhone("+393733733730");
-
-        // create an employee with many attributes
-        dummyEmployees.get(2).setFiscalCode("STWJSP77T12A271K");
-        dummyEmployees.get(2).setName("Josephine");
-        dummyEmployees.get(2).setSurname("Stewart");
-        dummyEmployees.get(2).setAddress(dummyAddresses.get(0));
-        dummyEmployees.get(2).setDateOfBirth(LocalDate.of(1977, 1, 10));
-        dummyEmployees.get(2).setEmail("josephine.stewart85@mail.com");
-        dummyEmployees.get(2).setMobilePhone("3263261001");
-        dummyEmployees.get(2).setUsername("JosephineStewart");
-        dummyEmployees.get(2).setPassword("QQP6XH67PRNV42UZYPEM");
-        dummyEmployees.get(2).setSupervisor(dummyEmployees.get(1));
-        dummyEmployees.get(2).setHireDate(LocalDate.of(1997, 2, 1));
-
-        // save the employees in the repository
-        dummyEmployees = employeeRepository.saveAll(dummyEmployees);
-    }
+    private List<Address> dummyAddresses = new ArrayList<>();
 
     @BeforeEach
-    void createDummyEntities() {
-        createDummyAddress();
-        createDummyEmployee();
+    void createDummyEmployees() {
+        // create a list of valid employees entities
+        dummyEmployees = employeeFactory.createValidEntities(2);
+        var address = addressFactory.createValidEntity();
+        dummyAddresses.add(address);
+
+        // add the same address and the same supervisor to all the employees
+        for (Employee e: dummyEmployees) {
+            e.setAddress(dummyAddresses.get(0));
+            e.setSupervisor(dummyEmployees.get(0));
+        }
+
+        // save the created entities in the employeeRepository
+        // persist the insertion of addresses in the addressesRepository
+        dummyAddresses = addressRepository.saveAll(dummyAddresses);
+        dummyEmployees = employeeRepository.saveAll(dummyEmployees);
     }
 
     /* Test CRUD operations */
@@ -164,10 +107,9 @@ class EmployeeRepositoryTest {
     @Test
     public void testEmployeeAddress() {
         // check if the addresses are set correctly
-        assertNull(employeeRepository.findById(dummyEmployees.get(0).getId()).get().getAddress());
-        assertNull(employeeRepository.findById(dummyEmployees.get(1).getId()).get().getAddress());
-        assertNotNull(employeeRepository.findById(dummyEmployees.get(2).getId()).get().getAddress());
-
+        for (Employee e: dummyEmployees) {
+            assertNotNull(employeeRepository.findById(e.getId()).get().getAddress());
+        }
     }
 
     @Test
@@ -186,51 +128,31 @@ class EmployeeRepositoryTest {
         // get a employees from the repository
         Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
 
+        var newAddress = addressFactory.createValidEntity();
+        newAddress = addressRepository.save(newAddress);
+
         // change some attributes
         savedEmployee.setName("Terry");
-        savedEmployee.setFiscalCode("MTCTRR83C13G224W");
         savedEmployee.setUsername("TerryMitchell83");
         savedEmployee.setPassword("W422g31C38rRtCtM");
-        savedEmployee.setAddress(dummyAddresses.get(1));
-        savedEmployee.setSupervisor(dummyEmployees.get(2));
+        savedEmployee.setAddress(newAddress);
+        savedEmployee.setSupervisor(dummyEmployees.get(1));
 
         // update the employee object
-        employeeRepository.save(savedEmployee);
+        savedEmployee = employeeRepository.save(savedEmployee);
         Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
         assertNotNull(updatedEmployee);
+        assertNotNull(updatedEmployee.getAddress());
+        assertNotNull(updatedEmployee.getSupervisor());
         assertEquals(savedEmployee, updatedEmployee);
         assertEquals("Terry", updatedEmployee.getName());
-        assertEquals("MTCTRR83C13G224W", updatedEmployee.getFiscalCode());
         assertEquals("TerryMitchell83", updatedEmployee.getUsername());
         assertEquals("W422g31C38rRtCtM", updatedEmployee.getPassword());
-        assertEquals(addressRepository.getOne(dummyAddresses.get(1).getId()), updatedEmployee.getAddress());
-        assertEquals(employeeRepository.getOne(dummyEmployees.get(2).getId()), updatedEmployee.getSupervisor());
-    }
-
-    /**
-     * Update the supervisor of an entry and check if the fields of the parents are changed correctly
-     */
-    @Test
-    public void testUpdateEmployeeSupervisor() {
-        // get a supervisor from the repository
-        Employee employee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
-        Employee supervisor = employee.getSupervisor();
-
-        // change the supervisor and update the employee object
-        employee.setSupervisor(employeeRepository.findById(dummyEmployees.get(0).getId()).get());
-        employeeRepository.save(employee);
-
-        Employee updatedEmployee = employeeRepository.findById(employee.getId()).get();
-
-        // check that the employees exist and that the supervisor attribute has been updated correctly and contain
-        // the expected value
-        assertNotNull(employee);
-        assertNotNull(updatedEmployee);
-        assertNotNull(updatedEmployee.getSupervisor());
-        assertEquals(employee, updatedEmployee.getSupervisor());
-        assertNotEquals(supervisor, updatedEmployee.getSupervisor());
+        assertEquals(newAddress, updatedEmployee.getAddress());
+        assertNotNull(addressRepository.getOne(newAddress.getId()));
+        assertEquals(dummyEmployees.get(1), updatedEmployee.getSupervisor());
     }
 
     /**
@@ -239,19 +161,11 @@ class EmployeeRepositoryTest {
      */
     @Test
     public void testUniqueEmployeeUsernameIdentifier() {
-        Employee duplicatedEmployee = new Employee();
-
-        // set manually a new id in order to insert a new record and not for update an existing record
-        duplicatedEmployee.setId(9999l);
-        duplicatedEmployee.setFiscalCode("MTCKLN83C18G224W");
-        duplicatedEmployee.setName("Kaitlin Josephine");
-        duplicatedEmployee.setSurname("Mitchell Stewart");
-        duplicatedEmployee.setAddress(dummyAddresses.get(0));
-        duplicatedEmployee.setPassword("W422g31C38nLkCtM");
+        Employee duplicatedEmployee = employeeFactory.createValidEntity();
 
         // save the employee in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
-            duplicatedEmployee.setUsername("JosephineStewart");
+            duplicatedEmployee.setUsername("UserNo1");
             employeeRepository.saveAndFlush(duplicatedEmployee);
         });
     }
@@ -313,13 +227,13 @@ class EmployeeRepositoryTest {
     @Test
     public void testDeleteEmployee() {
         // get a employee from the repository
-        Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+        Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(1).getId()).get();
 
         // delete the employee object
         employeeRepository.delete(savedEmployee);
 
         // check that the employee has been deleted correctly
-        assertEquals(employeeRepository.findById(dummyEmployees.get(0).getId()), Optional.empty());
+        assertEquals(employeeRepository.findById(dummyEmployees.get(1).getId()), Optional.empty());
 
         // delete all the entries verifying that the operation has been carried out correctly
         employeeRepository.deleteAll();
@@ -336,7 +250,7 @@ class EmployeeRepositoryTest {
     @Test
     public void testDeleteEmployeeSupervisor() {
         // get a a pair employee-supervisor from the repository
-        Employee employee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+        Employee employee = employeeRepository.findById(dummyEmployees.get(1).getId()).get();
         Employee supervisor = employee.getSupervisor();
 
         // delete the supervisor object
@@ -360,6 +274,38 @@ class EmployeeRepositoryTest {
         // check if the supervisor field is correctly update
         assertNull(employeeAfterSupervisorDel.getSupervisor());
         assertNotEquals(supervisor, employeeAfterSupervisorDel.getSupervisor());
+    }
+
+    /**
+     * Delete the employee address and check if the supplier was updated correctly
+     */
+    @Test
+    public void testDeleteEmployeeAddress() {
+        // get a employee and his address from the repository
+        Employee savedEmployee = employeeRepository.findById(dummyEmployees.get(0).getId()).get();
+        Address employeeAddress = savedEmployee.getAddress();
+
+        // delete the address object
+        addressRepository.delete(employeeAddress);
+
+        // check that the address has been deleted correctly
+        assertEquals(addressRepository.findById(employeeAddress.getId()), Optional.empty());
+
+        // throws an exception when attempting to access to an employee object whose address has been deleted
+        assertThrows(AssertionFailedError.class, () -> {
+            assertNull(employeeRepository.findById(savedEmployee.getId()).get().getAddress());
+            assertNotEquals(employeeAddress, employeeRepository.findById(savedEmployee.getId()).get().getAddress());
+        }, "It's not possible to eliminate an address if his employee haven't been first updated");
+
+        // update the employee setting null the supplier address
+        savedEmployee.setAddress(null);
+        employeeRepository.save(savedEmployee);
+
+        Employee employeeAfterAddressDel = employeeRepository.findById(savedEmployee.getId()).get();
+
+        // check that the employee has been updated correctly
+        assertNull(employeeAfterAddressDel.getAddress());
+        assertNotEquals(employeeAddress, employeeAfterAddressDel.getAddress());
     }
 
     /* Test search operations */
@@ -441,16 +387,15 @@ class EmployeeRepositoryTest {
     @Test
     public void testFindBySupervisor() {
         // check the correct reading of all the employees via findBySupervisor
-        var foundEmployees = employeeRepository.findBySupervisor(dummyEmployees.get(0).getSupervisor());
+        var foundEmployees = employeeRepository.findBySupervisor(dummyEmployees.get(1).getSupervisor());
 
-        assertTrue(foundEmployees.contains(dummyEmployees.get(0)));
+        assertTrue(foundEmployees.contains(dummyEmployees.get(1)));
         for (Employee e: foundEmployees) {
-            assertEquals(e.getSupervisor(), dummyEmployees.get(0).getSupervisor());
+            assertEquals(e.getSupervisor(), dummyEmployees.get(1).getSupervisor());
         }
 
         // try to search for employees by a not existing supervisor
-        var newSupervisor = dummyEmployees.get(0);
-        var notFoundEmployees = employeeRepository.findBySupervisor(newSupervisor);
+        var notFoundEmployees = employeeRepository.findBySupervisor(dummyEmployees.get(1));
 
         assertTrue(notFoundEmployees.isEmpty());
     }
