@@ -1,6 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -17,11 +18,13 @@ public class Customer extends Person {
     @Size(min = 8)
     private String password;
 
-    @Column(length = 11)
+    // This is an italian vat number.
+    @Column(length = 13)
+    @Pattern(regexp = "^(IT)?[0-9]{11}$")
     private String vatNumber;
 
     // This is a full postal address for the contact represented by this object.
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private Address address;
 
     // Getters and Setters
