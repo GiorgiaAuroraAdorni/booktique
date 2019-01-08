@@ -21,13 +21,13 @@ public class EmployeeTestFactory implements EntityTestFactory<Employee> {
         employee.setSurname("Cognome" +idx);
         employee.setUsername("UserNo" + idx);
         employee.setPassword("Qwerty1234");
-        employee.setAddress(address);
 
         // other attributes
         employee.setDateOfBirth(LocalDate.now().minusYears(30 + idx));
         employee.setEmail(employee.getName() + employee.getSurname() + "@mail.com");
         employee.setMobilePhone("333000000" + idx);
         employee.setHireDate(LocalDate.now().minusYears(5).plusMonths(idx));
+        employee.setAddress(address);
 
         // the self-association with the supervisor isn't created, so the attribute is initially null
 

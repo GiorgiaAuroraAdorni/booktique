@@ -121,7 +121,7 @@ class EmployeeRepositoryTest {
         savedEmployee.setSupervisor(dummyEmployees.get(1));
 
         // update the employee object
-        savedEmployee = employeeRepository.saveAndFlush(savedEmployee);
+        savedEmployee = employeeRepository.save(savedEmployee);
         Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value

@@ -106,7 +106,7 @@ class CustomerRepositoryTest {
         savedCustomer.setPassword("W422g31C38rRtCtM");
 
         // update the Customer object
-        savedCustomer = customerRepository.saveAndFlush(savedCustomer);
+        savedCustomer = customerRepository.save(savedCustomer);
         Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
 
         // check that all the attributes have been updated correctly and contain the expected value
