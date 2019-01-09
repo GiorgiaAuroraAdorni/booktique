@@ -11,14 +11,13 @@ public class Item extends AuditModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Book bookItem;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Supplier supplier;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    //@Digits(integer = 10 /*precision*/, fraction = 2 /*scale*/)
     private BigDecimal unitPrice;
 
     @Column(nullable = false)
