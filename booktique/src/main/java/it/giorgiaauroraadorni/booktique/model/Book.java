@@ -17,6 +17,7 @@ public class Book extends AuditModel implements Serializable {
 
     // The ISBN is a sequence of 10/13 digits start with only 978.
     @NaturalId
+    // FIXME: create a method that remove "-" from the isbn and check the uniqueness
     @Pattern(regexp = "^((978[\\--– ])?[0-9][0-9\\--– ]{10}[\\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])$")
     private String isbn;
 
@@ -26,8 +27,7 @@ public class Book extends AuditModel implements Serializable {
     @Column(length = 100)
     private String subtitle;
 
-    @ManyToMany(fetch=FetchType.LAZY,
-                cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Author> authors;
 
     @Column(length = 30, nullable = false)
