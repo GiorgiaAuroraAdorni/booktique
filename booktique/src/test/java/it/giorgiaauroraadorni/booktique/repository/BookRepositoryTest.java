@@ -2,6 +2,7 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.Book;
+import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -11,10 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,100 +26,38 @@ class BookRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;
 
-    private List<Author> dummyAuthors;
+    @Autowired
+    private EntityTestFactory<Book> bookFactory;
+
+    @Autowired
+    private EntityTestFactory<Author> authorFactory;
+
     private List<Book> dummyBooks;
 
-    /**
-     * Create a list of authors entities that will be use in the test
-     */
-    private void createDummyAuthor() {
-        dummyAuthors = IntStream
-                .range(0, 2)
-                .mapToObj(i -> new Author())
-                .collect(Collectors.toList());
-
-        dummyAuthors.get(0).setFiscalCode("ABCDEF12G24H567I");
-        dummyAuthors.get(0).setName("John");
-        dummyAuthors.get(0).setSurname("Cook");
-
-        dummyAuthors.get(1).setFiscalCode("LMNOPQ89R10S111T");
-        dummyAuthors.get(1).setName("Nathalie");
-        dummyAuthors.get(1).setSurname("Russel");
-
-        // save the authors in the repository
-        dummyAuthors = authorRepository.saveAll(dummyAuthors);
-    }
-
-    /**
-     * Create a list of books entities that will be use in the test
-     */
-    private void createDummyBook() {
-        dummyBooks = IntStream
-                .range(0, 4)
-                .mapToObj(i -> new Book())
-                .collect(Collectors.toList());
-
-        // Create a book with only the mandatory parameter
-        dummyBooks.get(0).setIsbn("978-84-08-04364-5");
-        dummyBooks.get(0).setTitle("Mountain Of Dreams");
-        dummyBooks.get(0).setPublisher("Adventure Publications");
-
-        // Create a book with two authors
-        Set<Author> authors = new HashSet<>();
-        authors.add(authorRepository.getOne(dummyAuthors.get(0).getId()));
-        authors.add(authorRepository.getOne(dummyAuthors.get(1).getId()));
-        dummyBooks.get(1).setIsbn("9788408081180");
-        dummyBooks.get(1).setTitle("Witches And Rebels");
-        dummyBooks.get(1).setPublisher("Lincoln Publishing");
-        dummyBooks.get(1).setAuthors(authors);
-
-        // Create a book with many attributes
-        dummyBooks.get(2).setIsbn("88-7782-702-5");
-        dummyBooks.get(2).setTitle("Young In The West");
-        dummyBooks.get(2).setSubtitle("The A - Z Guide");
-        dummyBooks.get(2).setPublisher("Lyon Publishing");
-        dummyBooks.get(2).setAuthors(authors);
-        dummyBooks.get(2).setBookFormat(Book.Format.hardcover);
-        dummyBooks.get(2).setEdition(1);
-        dummyBooks.get(2).setLanguage("english");
-        dummyBooks.get(2).setPublicationDate(LocalDate.of(1999, 1, 1));
-
-        // Create a book with a prequel
-        dummyBooks.get(3).setIsbn("88-7782-702-6");
-        dummyBooks.get(3).setTitle("After Young In The West");
-        dummyBooks.get(3).setPublisher("Lyon Publishing");
-        dummyBooks.get(3).setBookFormat(Book.Format.hardcover);
-        dummyBooks.get(3).setEdition(1);
-        dummyBooks.get(3).setLanguage("english");
-        dummyBooks.get(3).setPublicationDate(LocalDate.of(2000, 1, 1));
-        dummyBooks.get(3).addPrequel(dummyBooks.get(2));
-
-        // save the books in the repository
-        dummyBooks = bookRepository.saveAll(dummyBooks);
-    }
-
     @BeforeEach
-    void createDummyEntities() {
-        createDummyAuthor();
-        createDummyBook();
+    void createDummyBooks() {
+        // create a list of valid books entities
+        dummyBooks = bookFactory.createValidEntities(2);
+
+        // add the author
+        var author = authorFactory.createValidEntity(0);
+        Set<Author> authors = new HashSet<>();
+        authors.add(author);
+        for (Book b: dummyBooks) {
+            b.setAuthors(authors);
+        }
+
+        // add the first book as prequel for the second one
+        dummyBooks.get(1).addPrequel(dummyBooks.get(0));
+
+        // save the created entities in the bookRepository
+        dummyBooks = bookRepository.saveAll(dummyBooks);
     }
 
     /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
-
-    @Test
-    void repositoryFindAll() {
-        var savedAuthors = authorRepository.findAll();
-        var savedBooks = bookRepository.findAll();
-
-        // check if all the authors are correctly added to the repository
-        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
-
-        // check if all the books are correctly added to the repository
-        assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
-    }
 
     /**
      * Insert many entries in the repository and check if these are readable and the attributes are correct
@@ -158,29 +94,24 @@ class BookRepositoryTest {
     @Test
     public void testBookAuthors() {
         // check if the authors are set correctly
-        assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getAuthors());
-        assertNotNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getAuthors());
-        assertNotNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getAuthors());
-        assertNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getAuthors());
+        for (int i = 0; i < dummyBooks.size(); i++) {
+            assertNotNull(bookRepository.findById(dummyBooks.get(i).getId()).get().getAuthors());
+        }
     }
 
     @Test
     public void testBookPrequel() {
         // check if the books prequels are set correctly
         assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getPrequel());
-        assertNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getPrequel());
-        assertNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getPrequel());
-        assertNotNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getPrequel());
-        assertEquals(bookRepository.getOne(dummyBooks.get(2).getId()),
-                bookRepository.getOne(dummyBooks.get(3).getId()).getPrequel());
+        assertNotNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getPrequel());
+        assertEquals(bookRepository.getOne(dummyBooks.get(0).getId()),
+                bookRepository.getOne(dummyBooks.get(1).getId()).getPrequel());
 
         // check if the books sequels are set correctly
-        assertNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getSequel());
+        assertNotNull(bookRepository.findById(dummyBooks.get(0).getId()).get().getSequel());
         assertNull(bookRepository.findById(dummyBooks.get(1).getId()).get().getSequel());
-        assertNotNull(bookRepository.findById(dummyBooks.get(2).getId()).get().getSequel());
-        assertNull(bookRepository.findById(dummyBooks.get(3).getId()).get().getSequel());
-        assertEquals(bookRepository.getOne(dummyBooks.get(3).getId()),
-                bookRepository.getOne(dummyBooks.get(2).getId()).getSequel());
+        assertEquals(bookRepository.getOne(dummyBooks.get(1).getId()),
+                bookRepository.getOne(dummyBooks.get(0).getId()).getSequel());
     }
 
     /**
@@ -190,13 +121,10 @@ class BookRepositoryTest {
      */
     @Test
     public void testUniqueBookIdentifier() {
-        Book duplicatedBook = new Book();
+        Book duplicatedBook = bookFactory.createValidEntity();
 
         // set manually a new id in order to insert a new record and not for update an existing record
-        duplicatedBook.setId(9999l);
-        duplicatedBook.setIsbn("978-84-08-04364-5");
-        duplicatedBook.setTitle("Mountain Of Dreams");
-        duplicatedBook.setPublisher("Adventure Publications");
+        duplicatedBook.setIsbn("978-00-00-00000-0");
 
         // save the book in the repository
         assertThrows(DataIntegrityViolationException.class, () -> {
@@ -209,11 +137,8 @@ class BookRepositoryTest {
      */
     @Test
     public void testIllegalBookFormat() {
-        Book invalidBook = new Book();
+        Book invalidBook = bookFactory.createValidEntity();
 
-        invalidBook.setTitle("The Secret Of Book");
-        invalidBook.setIsbn("9781234567897");
-        invalidBook.setPublisher("GoldWrite Publishing");
         assertThrows(IllegalArgumentException.class, () -> invalidBook.setBookFormat(Book.Format.valueOf("AudioBook")));
     }
 
@@ -225,32 +150,65 @@ class BookRepositoryTest {
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
 
-        // change author name
-        Author author = authorRepository.getOne(dummyAuthors.get(0).getId());
-        author.setName("Tom");
+        var initialAuthors = savedBook.getAuthors();
 
-        // update the Author object
-        authorRepository.save(author);
+        // change some attributes
+        Author author = authorFactory.createValidEntity(1);
 
-        // add author to book
-        Set<Author> authors = new HashSet<>();
-        savedBook.setAuthors(authors);
+        Set<Author> newAuthors = new HashSet<>();
+        newAuthors.add(author);
 
-        // add a subtitle
+        savedBook.setAuthors(newAuthors);
         savedBook.setSubtitle("The Secret Of The Dreams");
 
         // update the Book object
-        bookRepository.save(savedBook);
+        savedBook = bookRepository.save(savedBook);
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
+        Set<Author> updatedBookAuthors = updatedBook.getAuthors();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        assertNotNull(updatedBook);
+        assertNotNull(updatedBook.getAuthors());
+        assertEquals(savedBook, updatedBook);
+        assertEquals(newAuthors, updatedBook.getAuthors());
+        assertEquals("The Secret Of The Dreams", updatedBook.getSubtitle());
+        assertNotEquals(initialAuthors, updatedBookAuthors);
+        var storedAuthors = authorRepository.findAll();
+        assertNotNull(storedAuthors.containsAll(updatedBookAuthors));
+    }
+
+    /**
+     * Update the author of an entry and check if the book have been updated correctly
+     */
+    @Test
+    public void testUpdateBookAuthors() {
+        // get a Book from the repository
+        Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
+        Set<Author> savedBookAuthors = savedBook.getAuthors();
+
+        // change author attributes
+        for (Author a: savedBookAuthors) {
+            a.setName("Tom");
+            a.setSurname("Cook");
+        }
+
+        // update the book object
+        savedBook.setAuthors(savedBookAuthors);
+        savedBook = bookRepository.save(savedBook);
+
+        Book updatedBook = bookRepository.findById(savedBook.getId()).get();
+        Set<Author> updatedBookAuthors = updatedBook.getAuthors();
 
         // check that all the attributes have been updated correctly and contain the expected value
         assertNotNull(updatedBook);
         assertEquals(savedBook, updatedBook);
-        assertEquals(authors, updatedBook.getAuthors());
-        for (Author a: updatedBook.getAuthors()) {
+        assertEquals(savedBookAuthors, updatedBookAuthors);
+        for (Author a: updatedBookAuthors) {
             assertEquals("Tom", a.getName());
+            assertEquals("Cook", a.getSurname());
         }
-        assertEquals("The Secret Of The Dreams", updatedBook.getSubtitle());
+        var storedAuthors = authorRepository.findAll();
+        assertNotNull(storedAuthors.containsAll(updatedBookAuthors));
     }
 
     /**
@@ -259,36 +217,39 @@ class BookRepositoryTest {
     @Test
     public void testUpdateBookPrequel() {
         // get a Book from the repository
-        Book sequelBook = bookRepository.findById(dummyBooks.get(3).getId()).get();
+        Book sequelBook = bookRepository.findById(dummyBooks.get(1).getId()).get();
         Book initialPrequelBook = sequelBook.getPrequel();
 
         // change the book prequel and set null the sequel of the initial prequel
-        sequelBook.addPrequel(bookRepository.findById(dummyBooks.get(1).getId()).get());
+        Book newPrequelBook = bookFactory.createValidEntity();
+        sequelBook.addPrequel(newPrequelBook);
         initialPrequelBook.addSequel(null);
 
         // update the book object
-        bookRepository.save(sequelBook);
+        newPrequelBook = bookRepository.save(newPrequelBook);
+        sequelBook = bookRepository.save(sequelBook);
 
         Book updatedSequelBook = bookRepository.findById(sequelBook.getId()).get();
-        Book newPrequelBook = sequelBook.getPrequel();
+        Book updatedPrequelBook = updatedSequelBook.getPrequel();
 
         // check that all book exist
         assertNotNull(updatedSequelBook);
         assertNotNull(initialPrequelBook);
         assertNotNull(newPrequelBook);
+        assertNotNull(updatedPrequelBook);
 
         // check that the sequel book attributes have been updated correctly and contain the expected value
-        assertNull(updatedSequelBook.getSequel());
         assertEquals(sequelBook, updatedSequelBook);
-        assertEquals(newPrequelBook, updatedSequelBook.getPrequel());
-        assertNotEquals(initialPrequelBook, updatedSequelBook.getPrequel());
+        assertEquals(newPrequelBook, updatedPrequelBook);
+        assertNotEquals(initialPrequelBook, updatedPrequelBook);
 
         // check that the initial prequel book attributes have been updated correctly and contain the expected value
         assertNull(initialPrequelBook.getSequel());
         assertNotEquals(updatedSequelBook, initialPrequelBook.getSequel());
 
         // check that the new prequel book attributes have been updated correctly and contain the expected value
-        assertEquals(updatedSequelBook, newPrequelBook.getSequel());
+        assertNotNull(updatedPrequelBook.getSequel());
+        assertEquals(updatedPrequelBook, newPrequelBook);
     }
 
     /**
@@ -368,7 +329,7 @@ class BookRepositoryTest {
     @Test
     public void testDeleteBookPrequel() {
         // get a Book from the repository
-        Book bookPrequel = bookRepository.findById(dummyBooks.get(2).getId()).get();
+        Book bookPrequel = bookRepository.findById(dummyBooks.get(0).getId()).get();
         Book bookSequel = bookPrequel.getSequel();
 
         // delete the Book object
@@ -377,7 +338,7 @@ class BookRepositoryTest {
         Book bookSequelAfterDel = bookRepository.findById(bookSequel.getId()).get();
 
         // check that the book has been deleted correctly
-        assertEquals(bookRepository.findById(dummyBooks.get(2).getId()), Optional.empty());
+        assertEquals(bookRepository.findById(dummyBooks.get(0).getId()), Optional.empty());
         // check if the prequel field is correctly update
         assertNotNull(bookSequelAfterDel);
         assertNull(bookSequelAfterDel.getPrequel());
@@ -390,7 +351,7 @@ class BookRepositoryTest {
     @Test
     public void testDeleteBookSequel() {
         // get a Book from the repository
-        Book bookSequel = bookRepository.findById(dummyBooks.get(3).getId()).get();
+        Book bookSequel = bookRepository.findById(dummyBooks.get(1).getId()).get();
         Book bookPrequel = bookSequel.getPrequel();
 
         // delete the Book object
@@ -399,7 +360,7 @@ class BookRepositoryTest {
         Book bookPrequelAfterDel = bookRepository.findById(bookPrequel.getId()).get();
 
         // check that the book has been deleted correctly
-        assertEquals(bookRepository.findById(dummyBooks.get(3).getId()), Optional.empty());
+        assertEquals(bookRepository.findById(dummyBooks.get(1).getId()), Optional.empty());
         // check if the sequel field is correctly update
         assertNotNull(bookPrequelAfterDel);
         assertNull(bookPrequelAfterDel.getSequel());
@@ -419,7 +380,7 @@ class BookRepositoryTest {
         authorRepository.deleteAll();
 
         // throws an exception when attempting to delete an author of a book
-        assertThrows(DataIntegrityViolationException.class, () -> {
+        assertThrows(AssertionFailedError.class, () -> {
             assertTrue(authorRepository.findAll().isEmpty());
             assertNull(bookRepository.findById(book.getId()).get().getAuthors());
             assertNotEquals(authors, bookRepository.findById(book.getId()).get().getAuthors());
@@ -427,6 +388,20 @@ class BookRepositoryTest {
     }
 
     /* Test search operations */
+
+    @Test
+    void repositoryFindAll() {
+        var savedBooks = bookRepository.findAll();
+        var savedAuthors = authorRepository.findAll();
+
+        // check if all the books are correctly added to the repository
+        assertTrue(savedBooks.containsAll(dummyBooks), "findAll should fetch all dummy books");
+
+        assertFalse(savedAuthors.isEmpty());
+        for (Book b: dummyBooks) {
+            assertTrue(savedAuthors.containsAll(b.getAuthors()), "findAll should fetch all dummy authors");
+        }
+    }
 
     @Test
     public void testFindById() {
