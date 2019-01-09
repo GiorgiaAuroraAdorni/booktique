@@ -473,20 +473,22 @@ class BookRepositoryTest {
     }
 
     @Test
-    public void testFindByAuthors() {
-        // check the correct reading of all the books via findByAuthors
-        var foundBooks = bookRepository.findByAuthorsIn(dummyBooks.get(1).getAuthors());
+    public void testFindByAuthorName() {
+        // check the correct reading of all the books via findByAuthors_Name
+        for (Author a: dummyBooks.get(0).getAuthors()) {
+            var foundBooks = bookRepository.findByAuthors_Name(a.getName());
+            assertTrue(foundBooks.contains(dummyBooks.get(0)));
 
-        assertTrue(foundBooks.contains(dummyBooks.get(1)));
-        for (Book a: foundBooks) {
-            assertEquals(a.getAuthors(), dummyBooks.get(1).getAuthors());
+            for (Book b: foundBooks) {
+                for (Author ba : b.getAuthors()) {
+                    assertEquals(a.getName(), ba.getName());
+                }
+            }
         }
 
-        // FIXME
-        // try to search for books by a not existing authors
-//        var nonExistentAuthor =
-//        var notFoundBooks = bookRepository.findByAuthors();
-//
-//        assertTrue(notFoundBooks.isEmpty());
+        // try to search for books by a not existing author name
+        var notFoundBooks = bookRepository.findByAuthors_Name("Nome inesistente");
+
+        assertTrue(notFoundBooks.isEmpty());
     }
 }
