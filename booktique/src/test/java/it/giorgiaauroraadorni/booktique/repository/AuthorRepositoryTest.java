@@ -30,9 +30,9 @@ class AuthorRepositoryTest {
     private List<Author> dummyAuthors;
 
     @BeforeEach
-    void createDummyEntities() {
+    void createDummyAuthors() {
         // create a list of valid authors entities
-        dummyAuthors = (authorFactory.createValidEntities(3));
+        dummyAuthors = authorFactory.createValidEntities(3);
         // save the created entities in the authorRepository
         dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }

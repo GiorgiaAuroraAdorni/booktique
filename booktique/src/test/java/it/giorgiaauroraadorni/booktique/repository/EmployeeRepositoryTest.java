@@ -42,7 +42,7 @@ class EmployeeRepositoryTest {
         // create a list of valid employees entities
         dummyEmployees = employeeFactory.createValidEntities(2);
 
-        // add the same address and the same supervisor to all the employees
+        // add the dummyEmployees.get(0) as supervisor for all the employees
         for (Employee e: dummyEmployees) {
             e.setSupervisor(dummyEmployees.get(0));
         }
@@ -133,7 +133,7 @@ class EmployeeRepositoryTest {
         assertEquals("TerryMitchell83", updatedEmployee.getUsername());
         assertEquals("W422g31C38rRtCtM", updatedEmployee.getPassword());
         assertEquals(newAddress, updatedEmployee.getAddress());
-        assertNotNull(addressRepository.getOne(newAddress.getId()));
+        assertNotNull(addressRepository.findAll().contains(newAddress));
         assertEquals(dummyEmployees.get(1), updatedEmployee.getSupervisor());
     }
 

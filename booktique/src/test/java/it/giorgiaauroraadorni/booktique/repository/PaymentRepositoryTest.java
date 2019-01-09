@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
 import it.giorgiaauroraadorni.booktique.model.Payment;
-import org.hibernate.boot.archive.scan.spi.PackageInfoArchiveEntryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

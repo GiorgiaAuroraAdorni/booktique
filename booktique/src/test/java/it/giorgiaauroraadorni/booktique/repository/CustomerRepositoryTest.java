@@ -98,6 +98,7 @@ class CustomerRepositoryTest {
         // get a customer from the repository
         Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
 
+        var address = savedCustomer.getAddress();
         // change some attributes
         Address newAddress = addressFactory.createValidEntity(1);
         savedCustomer.setAddress(newAddress);
@@ -117,6 +118,8 @@ class CustomerRepositoryTest {
         assertEquals("TerryMitchell83", updatedCustomer.getUsername());
         assertEquals("W422g31C38rRtCtM", updatedCustomer.getPassword());
         assertEquals(newAddress, updatedCustomer.getAddress());
+        assertNotEquals(address, updatedCustomer.getAddress());
+        assertTrue(addressRepository.findAll().contains(updatedCustomer.getAddress()));
     }
 
     /**
