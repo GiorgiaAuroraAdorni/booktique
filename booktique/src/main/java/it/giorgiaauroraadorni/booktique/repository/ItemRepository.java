@@ -12,4 +12,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     /* implements search operations */
 
     List<Item> findByBookItem(Book bookItem);
+
+    List<Item> findByBookItem_Title(String title);
 }

@@ -195,4 +195,19 @@ class ItemRepositoryTest {
         assertTrue(notFoundItems.isEmpty());
     }
 
+    @Test
+    public void testFindByBookItemTitle() {
+        // check the correct reading of all the items via findByBook_Title
+        var foundItems = itemRepository.findByBookItem_Title(dummyItems.get(0).getBookItem().getTitle());
+
+        assertTrue(foundItems.contains(dummyItems.get(0)));
+        for (Item i: foundItems) {
+            assertEquals(i.getBookItem().getTitle(), dummyItems.get(0).getBookItem().getTitle());
+        }
+
+        // try to search for items by a not existing book title
+        var notFoundItems = itemRepository.findByBookItem_Title("Titolo inesistente");
+
+        assertTrue(notFoundItems.isEmpty());
+    }
 }
