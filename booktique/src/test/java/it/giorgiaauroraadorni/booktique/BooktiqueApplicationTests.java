@@ -1,4 +1,4 @@
-package it.giorgiaauroraadorni.booktique.repository;
+package it.giorgiaauroraadorni.booktique;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
