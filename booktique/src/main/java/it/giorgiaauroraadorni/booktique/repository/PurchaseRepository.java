@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
