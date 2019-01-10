@@ -24,7 +24,13 @@ public class AddressTestFactory implements EntityTestFactory<Address> {
     }
 
     @Override
-    public void updateValidEntity(Address entity) {
-
+    public void updateValidEntity(Address address) {
+        address.setStreetAddress("Largo Nomelargo 100");
+        address.setCity("Nuova Città");
+        address.setProvince("NC");
+        address.setPostalCode("11111");
+        address.setRegion("Nuova Regione");
+        address.setCountry("Nuovo Stato");
+        address.setBuilding("Edificio 1");
     }
 }

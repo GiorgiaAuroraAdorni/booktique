@@ -81,22 +81,24 @@ class AddressRepositoryTest {
     @Test
     public void testUpdateAddress() {
         // get an Address from the repository
-        Address savedAddress = addressRepository.getOne(dummyAddresses.get(0).getId());
+        Address savedAddress = addressRepository.findById(dummyAddresses.get(0).getId()).get();
 
-        // change attributes
-        savedAddress.setRegion("Marche");
-        savedAddress.setPostalCode("62100");
-
-        // update the address object
-        addressRepository.save(savedAddress);
-
-        Address updatedAddress = addressRepository.findById(savedAddress.getId()).get();
+        // change attributes and update the address object
+        addressFactory.updateValidEntity(savedAddress);
+        savedAddress = addressRepository.save(savedAddress);
 
         // check that all the attributes have been updated correctly and contain the expected value
+        Address updatedAddress = addressRepository.getOne(savedAddress.getId());
+        assertTrue(addressRepository.existsById(savedAddress.getId()));
         assertNotNull(updatedAddress);
-        assertEquals(savedAddress, updatedAddress);
-        assertEquals("Marche", updatedAddress.getRegion());
-        assertEquals("62100", updatedAddress.getPostalCode());
+
+        assertEquals("Largo Nomelargo 100", updatedAddress.getStreetAddress());
+        assertEquals("Nuova Città", updatedAddress.getCity());
+        assertEquals("NC", updatedAddress.getProvince());
+        assertEquals("11111", updatedAddress.getPostalCode());
+        assertEquals("Nuova Regione", updatedAddress.getRegion());
+        assertEquals("Nuovo Stato", updatedAddress.getCountry());
+        assertEquals("Edificio 1", updatedAddress.getBuilding());
     }
 
     /**
