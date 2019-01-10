@@ -11,7 +11,7 @@ public class AuthorTestFactory implements EntityTestFactory<Author> {
     public Author createValidEntity(int idx) {
         var author = new Author();
 
-        // mandatory attribute (inherits from person)
+        // mandatory attributes (inherit from person)
         author.setFiscalCode("CGNNMO00T00L00" + idx + "S");
         author.setName("Nome" + idx);
         author.setSurname("Cognome" + idx);

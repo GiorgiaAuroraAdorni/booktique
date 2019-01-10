@@ -15,12 +15,14 @@ public class CustomerTestFactory implements EntityTestFactory<Customer> {
         var customer = new Customer();
         var address = addressFactory.createValidEntity();
 
-        // mandatory attribute
+        // mandatory attributes
         customer.setFiscalCode("CGNNMO00T00L00" + idx + "S");
         customer.setName("Nome" + idx);
         customer.setSurname("Cognome" +idx);
         customer.setUsername("UserNo" + idx);
         customer.setPassword("Qwerty1234");
+
+        // mandatory association
         customer.setAddress(address);
 
         // other attributes

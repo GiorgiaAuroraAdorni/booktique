@@ -7,21 +7,11 @@ import java.math.BigDecimal;
 
 @Component
 public class ItemTestFactory implements EntityTestFactory<Item> {
-
+    @Autowired
     private EntityTestFactory<Book> bookFactory;
-    private EntityTestFactory<Supplier> supplierFactory;
-
-//    private Book book;
-//    private Supplier supplier;
 
     @Autowired
-    public ItemTestFactory(EntityTestFactory<Supplier> supplierFactory, EntityTestFactory<Book> bookFactory) {
-        this.bookFactory = bookFactory;
-        this.supplierFactory = supplierFactory;
-
-//        var book = bookFactory.createValidEntity(0);
-//        var supplier = supplierFactory.createValidEntity(0);
-    }
+    private EntityTestFactory<Supplier> supplierFactory;
 
     @Override
     public Item createValidEntity(int idx) {
@@ -30,10 +20,12 @@ public class ItemTestFactory implements EntityTestFactory<Item> {
         var supplier = supplierFactory.createValidEntity(idx);
 
         // attributes
-        item.setBookItem(book);
-        item.setSupplier(supplier);
         item.setUnitPrice(BigDecimal.valueOf(13.49));
         item.setQuantityPerUnit(1);
+
+        // associations
+        item.setBookItem(book);
+        item.setSupplier(supplier);
 
         return item;
     }

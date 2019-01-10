@@ -29,11 +29,13 @@ public class PurchaseTestFactory implements EntityTestFactory<Purchase> {
         var payment = paymentFactory.createValidEntity(idx);
 
         // mandatory attribute
+        purchase.setOrderDate(LocalDate.now().minusDays(idx));
+
+        // mandatory associations
         purchase.setCustomer(customer);
         purchase.setEmployee(employee);
-        Set<Item> items = Set.of(item); // FIXME
+        Set<Item> items = Set.of(item);
         purchase.setItems(items);
-        purchase.setOrderDate(LocalDate.now().minusDays(idx));
         purchase.setPaymentDetails(payment);
 
         // other attributes

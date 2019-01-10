@@ -10,7 +10,7 @@ public class PaymentTestFactory implements EntityTestFactory<Payment> {
     public Payment createValidEntity(int idx) {
         var payment = new Payment();
 
-        // mandatory attribute
+        // mandatory attributes
         payment.setCardNumber("0000000000000000");
         payment.setCardholderName("Nome Cognome");
         payment.setExpireDate(LocalDate.now().plusYears(5));

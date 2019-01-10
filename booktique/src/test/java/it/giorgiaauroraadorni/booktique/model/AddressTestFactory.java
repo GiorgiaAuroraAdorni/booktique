@@ -9,7 +9,7 @@ public class AddressTestFactory implements EntityTestFactory<Address> {
     public Address createValidEntity(int idx) {
         var address = new Address();
 
-        // mandatory attribute
+        // mandatory attributes
         address.setStreetAddress("Via Nomevia 99");
         address.setCity("Città");
         address.setProvince("CT");

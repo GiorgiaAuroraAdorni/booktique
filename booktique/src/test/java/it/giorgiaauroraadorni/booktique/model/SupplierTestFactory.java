@@ -19,6 +19,8 @@ public class SupplierTestFactory implements EntityTestFactory<Supplier> {
         // other attributes
         supplier.setEmail(supplier.getCompanyName() + "@mail.com");
         supplier.setPhoneNumber("02000000" + idx);
+
+        // association with address
         supplier.setAddress(address);
 
         return supplier;

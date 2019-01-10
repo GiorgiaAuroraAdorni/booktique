@@ -15,7 +15,7 @@ public class EmployeeTestFactory implements EntityTestFactory<Employee> {
         var employee = new Employee();
         var address = addressFactory.createValidEntity();
 
-        // mandatory attribute
+        // mandatory attributes
         employee.setFiscalCode("CGNNMO00T00L00" + idx + "S");
         employee.setName("Nome" + idx);
         employee.setSurname("Cognome" +idx);

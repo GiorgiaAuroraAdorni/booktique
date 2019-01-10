@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Component
 public class BookTestFactory implements EntityTestFactory<Book> {
@@ -13,7 +14,7 @@ public class BookTestFactory implements EntityTestFactory<Book> {
     @Override
     public Book createValidEntity(int idx) {
         var book = new Book();
-        //var author = authorFactory.createValidEntity();
+        var author = authorFactory.createValidEntity(idx);
 
         // mandatory attribute
         book.setIsbn("978-00-00-00000-" + idx);
@@ -21,17 +22,18 @@ public class BookTestFactory implements EntityTestFactory<Book> {
         book.setPublisher("Editore");
 
         // other attributes
-//        Set<Author> authors = new HashSet<>();
-//        authors.add(author);
-//        book.setAuthors(authors);
+        book.setSubtitle("Sottotitolo");
         book.setBookFormat(Book.Format.hardcover);
         book.setEdition(1);
         book.setLanguage("Lingua");
         book.setPublicationDate(LocalDate.of(1999, 1, 1));
 
-        // the bidirectional self-association between prequel and sequel isn't created, so the attribute is initially null
-        // the association with the authors isn't created, so the attribute is initially null
+        // association withs authors
+        Set<Author> authors = Set.of(author);
+        book.setAuthors(authors);
 
+        // the bidirectional self-association between prequel and sequel isn't created, so the attribute is initially null
+        
         return book;
     }
 
