@@ -32,7 +32,7 @@ class PaymentRepositoryTest {
     @BeforeEach
     void createDummyPayments() {
         // create a list of valid address entities
-        dummyPayments = (paymentFactory.createValidEntities(3));
+        dummyPayments = (paymentFactory.createValidEntities(2));
         // save the created entities in the addressRepository
         dummyPayments = paymentRepository.saveAll(dummyPayments);
     }
@@ -167,18 +167,11 @@ class PaymentRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update a payment with illegal size for the attributes
+     * Throws an exception when attempting to create or update a payment with illegal size for the Card Number attribute
      */
     @Test
-    public void testIllegalSizeAttributes() {
-        Payment invalidPayment = new Payment();
-
-        invalidPayment.setCardNumber("4643017337747076");
-        invalidPayment.setExpireDate(LocalDate.of(2025, 12, 1));
-        invalidPayment.setCardholderName("Kaitlin Mitchell");
-        invalidPayment.setCVC("123");
-
-        paymentRepository.save(invalidPayment);
+    public void testIllegalCardNumberSize() {
+        Payment invalidPayment = paymentFactory.createValidEntity(2);
 
         assertThrows(ConstraintViolationException.class, () -> {
             invalidPayment.setCardNumber("46430173377470767");
@@ -189,15 +182,21 @@ class PaymentRepositoryTest {
             invalidPayment.setCardNumber("464301733774707");
             paymentRepository.saveAndFlush(invalidPayment);
         });
+    }
 
-        //FIXME
-        assertThrows(JpaSystemException.class, () -> {
+    /**
+     * Throws an exception when attempting to create or update a payment with illegal size for the CVC attribute
+     */
+    @Test
+    public void testIllegalCVCSize() {
+        Payment invalidPayment = paymentFactory.createValidEntity(2);
+
+        assertThrows(ConstraintViolationException.class, () -> {
             invalidPayment.setCVC("12345356");
             paymentRepository.saveAndFlush(invalidPayment);
         });
 
-        //FIXME
-        assertThrows(JpaSystemException.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             invalidPayment.setCVC("1");
             paymentRepository.saveAndFlush(invalidPayment);
         });
@@ -207,7 +206,7 @@ class PaymentRepositoryTest {
      * Delete an entry and check if the payment was removed correctly
      */
     @Test
-    public void testDeleteCustomer() {
+    public void testDeletePayment() {
         // get a payment from the repository
         Payment savedPayment = paymentRepository.findById(dummyPayments.get(0).getId()).get();
 

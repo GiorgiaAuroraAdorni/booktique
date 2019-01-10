@@ -14,7 +14,6 @@ public class Payment extends AuditModel {
 
     // This is a Card Number. The format allows 16 numbers in groups of 4 separated by -, ,or nothing.
     @Column(nullable = false, length = 16)
-    @Size(min = 16)
     @Pattern(regexp = "^(\\d{4}-){3}\\d{4}$|^(\\d{4} ){3}\\d{4}$|^\\d{16}$")
     private String cardNumber;
 
@@ -27,7 +26,6 @@ public class Payment extends AuditModel {
 
     // This is a Card Verification Codes. The format allows 3 or 4 numerical digits.
     @Column(nullable = false, length = 4)
-    @Size(min = 3)
     @Pattern(regexp = "\\d{3,4}$")
     private String CVC;
 
