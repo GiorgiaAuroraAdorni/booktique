@@ -39,14 +39,6 @@ class BookRepositoryTest {
         // create a list of valid books entities
         dummyBooks = bookFactory.createValidEntities(2);
 
-        // add the author
-        var author = authorFactory.createValidEntity(0);
-        Set<Author> authors = new HashSet<>();
-        authors.add(author);
-        for (Book b: dummyBooks) {
-            b.setAuthors(authors);
-        }
-
         // add the first book as prequel for the second one
         dummyBooks.get(1).addPrequel(dummyBooks.get(0));
 
