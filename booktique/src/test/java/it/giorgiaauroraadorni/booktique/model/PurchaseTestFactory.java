@@ -39,7 +39,7 @@ public class PurchaseTestFactory implements EntityTestFactory<Purchase> {
         purchase.setPaymentDetails(payment);
 
         // other attributes
-        purchase.setStatus(Purchase.Status.inProduction);
+        purchase.setStatus(Purchase.Status.IN_PRODUCTION);
 
         return purchase;
     }

@@ -39,9 +39,9 @@ public class Book extends AuditModel implements Serializable {
     private String language;
 
     public enum Format {
-        digital,
-        paperback,
-        hardcover
+        DIGITAL,
+        PAPERBACK,
+        HARDCOVER
     }
 
     @Enumerated(EnumType.STRING)

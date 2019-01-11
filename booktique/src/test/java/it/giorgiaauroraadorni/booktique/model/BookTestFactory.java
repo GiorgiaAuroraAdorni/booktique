@@ -23,7 +23,7 @@ public class BookTestFactory implements EntityTestFactory<Book> {
 
         // other attributes
         book.setSubtitle("Sottotitolo");
-        book.setBookFormat(Book.Format.hardcover);
+        book.setBookFormat(Book.Format.HARDCOVER);
         book.setEdition(1);
         book.setLanguage("Lingua");
         book.setPublicationDate(LocalDate.of(1999, 1, 1));

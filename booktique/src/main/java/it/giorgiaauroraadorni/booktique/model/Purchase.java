@@ -32,13 +32,13 @@ public class Purchase extends AuditModel {
     private LocalDate shippingDate;
 
     public enum Status {
-        canceled,
-        completed,
-        pendingPayment,
-        processing,
-        inProduction,
-        paymentReview,
-        shipped
+        CANCELED,
+        COMPLETED,
+        PENDING_PAYMENT,
+        PROCESSING,
+        IN_PRODUCTION,
+        PAYMENT_REVIEW,
+        SHIPPED
     }
 
     @Enumerated(EnumType.STRING)
