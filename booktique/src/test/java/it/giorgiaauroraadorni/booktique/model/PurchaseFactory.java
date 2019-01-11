@@ -24,7 +24,7 @@ public class PurchaseFactory implements EntityFactory<Purchase> {
     public Purchase createValidEntity(int idx) {
         var purchase = new Purchase();
         var employee = employeeFactory.createValidEntity(idx);
-        var customer = customerFactory.createValidEntity(idx + 2);
+        var customer = customerFactory.createValidEntity(idx);
         var item = itemFactory.createValidEntity(idx);
         var payment = paymentFactory.createValidEntity(idx);
 

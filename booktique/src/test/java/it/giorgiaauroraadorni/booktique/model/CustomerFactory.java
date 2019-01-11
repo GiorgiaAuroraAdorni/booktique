@@ -16,10 +16,10 @@ public class CustomerFactory implements EntityFactory<Customer> {
         var address = addressFactory.createValidEntity();
 
         // mandatory attributes
-        customer.setFiscalCode("CGNNMO00T00L00" + idx + "S");
+        customer.setFiscalCode("CGNNMO00T00L00" + idx + "C");
         customer.setName("Nome" + idx);
         customer.setSurname("Cognome" +idx);
-        customer.setUsername("UserNo" + idx);
+        customer.setUsername("CUserNo" + idx);
         customer.setPassword("Qwerty1234");
 
         // mandatory association
@@ -27,7 +27,7 @@ public class CustomerFactory implements EntityFactory<Customer> {
 
         // other attributes
         customer.setDateOfBirth(LocalDate.now().minusYears(20 + idx));
-        customer.setEmail(customer.getName() + customer.getSurname() + "@mail.com");
+        customer.setEmail(customer.getName() + customer.getSurname() + "@customer-mail.com");
         customer.setMobilePhone("333111111" + idx);
         customer.setVatNumber("IT10000000000");
 

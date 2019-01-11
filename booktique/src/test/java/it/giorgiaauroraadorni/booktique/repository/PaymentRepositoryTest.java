@@ -1,13 +1,12 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import it.giorgiaauroraadorni.booktique.model.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
@@ -25,7 +24,7 @@ class PaymentRepositoryTest {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private EntityTestFactory<Payment> paymentFactory;
+    private EntityFactory<Payment> paymentFactory;
 
     private List<Payment> dummyPayments;
 

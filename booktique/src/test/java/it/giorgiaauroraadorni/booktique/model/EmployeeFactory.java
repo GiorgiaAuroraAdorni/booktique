@@ -16,15 +16,15 @@ public class EmployeeFactory implements EntityFactory<Employee> {
         var address = addressFactory.createValidEntity();
 
         // mandatory attributes
-        employee.setFiscalCode("CGNNMO00T00L00" + idx + "S");
+        employee.setFiscalCode("CGNNMO00T00L00" + idx + "E");
         employee.setName("Nome" + idx);
         employee.setSurname("Cognome" +idx);
-        employee.setUsername("UserNo" + idx);
+        employee.setUsername("EUserNo" + idx);
         employee.setPassword("Qwerty1234");
 
         // other attributes
         employee.setDateOfBirth(LocalDate.now().minusYears(30 + idx));
-        employee.setEmail(employee.getName() + employee.getSurname() + "@mail.com");
+        employee.setEmail(employee.getName() + employee.getSurname() + "@employee-mail.com");
         employee.setMobilePhone("333000000" + idx);
         employee.setHireDate(LocalDate.now().minusYears(5).plusMonths(idx));
         employee.setAddress(address);
