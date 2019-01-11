@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class CustomerTestFactory implements EntityTestFactory<Customer> {
+public class CustomerFactory implements EntityFactory<Customer> {
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     @Override
     public Customer createValidEntity(int idx) {
@@ -32,10 +32,5 @@ public class CustomerTestFactory implements EntityTestFactory<Customer> {
         customer.setVatNumber("IT10000000000");
 
         return customer;
-    }
-
-    @Override
-    public void updateValidEntity(Customer entity) {
-
     }
 }

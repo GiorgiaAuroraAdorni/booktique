@@ -7,18 +7,18 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Component
-public class PurchaseTestFactory implements EntityTestFactory<Purchase> {
+public class PurchaseFactory implements EntityFactory<Purchase> {
     @Autowired
-    private EntityTestFactory<Employee> employeeFactory;
+    private EntityFactory<Employee> employeeFactory;
 
     @Autowired
-    private EntityTestFactory<Customer> customerFactory;
+    private EntityFactory<Customer> customerFactory;
 
     @Autowired
-    private EntityTestFactory<Item> itemFactory;
+    private EntityFactory<Item> itemFactory;
 
     @Autowired
-    private EntityTestFactory<Payment> paymentFactory;
+    private EntityFactory<Payment> paymentFactory;
 
     @Override
     public Purchase createValidEntity(int idx) {
@@ -42,10 +42,5 @@ public class PurchaseTestFactory implements EntityTestFactory<Purchase> {
         purchase.setStatus(Purchase.Status.IN_PRODUCTION);
 
         return purchase;
-    }
-
-    @Override
-    public void updateValidEntity(Purchase entity) {
-
     }
 }

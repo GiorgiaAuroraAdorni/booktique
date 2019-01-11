@@ -34,19 +34,19 @@ class PurchaseRepositoryTest {
     private ItemRepository itemRepository;
 
     @Autowired
-    private EntityTestFactory<Purchase> purchaseFactory;
+    private EntityFactory<Purchase> purchaseFactory;
 
     @Autowired
-    private EntityTestFactory<Item> itemFactory;
+    private EntityFactory<Item> itemFactory;
 
     @Autowired
-    private EntityTestFactory<Employee> employeeFactory;
+    private EntityFactory<Employee> employeeFactory;
 
     @Autowired
-    private EntityTestFactory<Customer> customerFactory;
+    private EntityFactory<Customer> customerFactory;
 
     @Autowired
-    private EntityTestFactory<Payment> paymentFactory;
+    private EntityFactory<Payment> paymentFactory;
 
     private List<Purchase> dummyPurchases;
 

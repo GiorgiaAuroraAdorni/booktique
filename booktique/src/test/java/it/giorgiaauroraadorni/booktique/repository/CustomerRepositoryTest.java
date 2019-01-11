@@ -2,7 +2,7 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
 import it.giorgiaauroraadorni.booktique.model.Customer;
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -30,10 +30,10 @@ class CustomerRepositoryTest {
     private AddressRepository addressRepository;
 
     @Autowired
-    private EntityTestFactory<Customer> customerFactory;
+    private EntityFactory<Customer> customerFactory;
 
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     private List<Customer> dummyCustomers;
 

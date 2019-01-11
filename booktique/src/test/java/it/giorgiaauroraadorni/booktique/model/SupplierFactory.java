@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SupplierTestFactory implements EntityTestFactory<Supplier> {
+public class SupplierFactory implements EntityFactory<Supplier> {
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     @Override
     public Supplier createValidEntity(int idx) {
@@ -24,10 +24,5 @@ public class SupplierTestFactory implements EntityTestFactory<Supplier> {
         supplier.setAddress(address);
 
         return supplier;
-    }
-
-    @Override
-    public void updateValidEntity(Supplier entity) {
-
     }
 }

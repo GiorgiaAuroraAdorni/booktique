@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class ItemTestFactory implements EntityTestFactory<Item> {
+public class ItemFactory implements EntityFactory<Item> {
     @Autowired
-    private EntityTestFactory<Book> bookFactory;
+    private EntityFactory<Book> bookFactory;
 
     @Autowired
-    private EntityTestFactory<Supplier> supplierFactory;
+    private EntityFactory<Supplier> supplierFactory;
 
     @Override
     public Item createValidEntity(int idx) {
@@ -28,10 +28,5 @@ public class ItemTestFactory implements EntityTestFactory<Item> {
         item.setSupplier(supplier);
 
         return item;
-    }
-
-    @Override
-    public void updateValidEntity(Item entity) {
-
     }
 }

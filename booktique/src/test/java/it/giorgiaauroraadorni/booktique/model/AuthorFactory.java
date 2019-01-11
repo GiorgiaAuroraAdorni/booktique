@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class AuthorTestFactory implements EntityTestFactory<Author> {
+public class AuthorFactory implements EntityFactory<Author> {
 
     @Override
     public Author createValidEntity(int idx) {
@@ -26,10 +26,5 @@ public class AuthorTestFactory implements EntityTestFactory<Author> {
                 author.getSurname() + " by visit the website " + author.getWebSiteURL() + " !");
 
         return author;
-    }
-
-    @Override
-    public void updateValidEntity(Author entity) {
-
     }
 }

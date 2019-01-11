@@ -1,7 +1,7 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ class AuthorRepositoryTest {
     private AuthorRepository authorRepository;
 
     @Autowired
-    private EntityTestFactory<Author> authorFactory;
+    private EntityFactory<Author> authorFactory;
 
     private List<Author> dummyAuthors;
 

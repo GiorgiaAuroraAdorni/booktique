@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class PaymentTestFactory implements EntityTestFactory<Payment> {
+public class PaymentFactory implements EntityFactory<Payment> {
     @Override
     public Payment createValidEntity(int idx) {
         var payment = new Payment();
@@ -20,10 +20,5 @@ public class PaymentTestFactory implements EntityTestFactory<Payment> {
         payment.setPaymentDate(LocalDate.now());
 
         return payment;
-    }
-
-    @Override
-    public void updateValidEntity(Payment entity) {
-
     }
 }

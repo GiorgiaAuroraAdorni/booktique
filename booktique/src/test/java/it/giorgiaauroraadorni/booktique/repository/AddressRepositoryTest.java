@@ -1,7 +1,7 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ class AddressRepositoryTest {
     private AddressRepository addressRepository;
 
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     private List<Address> dummyAddresses;
 
@@ -84,7 +84,14 @@ class AddressRepositoryTest {
         Address savedAddress = addressRepository.findById(dummyAddresses.get(0).getId()).get();
 
         // change attributes and update the address object
-        addressFactory.updateValidEntity(savedAddress);
+        savedAddress.setStreetAddress("Largo Nomelargo 100");
+        savedAddress.setCity("Nuova Città");
+        savedAddress.setProvince("NC");
+        savedAddress.setPostalCode("11111");
+        savedAddress.setRegion("Nuova Regione");
+        savedAddress.setCountry("Nuovo Stato");
+        savedAddress.setBuilding("Edificio 1");
+
         savedAddress = addressRepository.save(savedAddress);
 
         // check that all the attributes have been updated correctly and contain the expected value

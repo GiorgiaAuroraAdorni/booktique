@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public interface EntityTestFactory<T> {
+public interface EntityFactory<T> {
 
     /**
      * Create a valid entity that will be used in the test.
@@ -12,12 +12,6 @@ public interface EntityTestFactory<T> {
      * @return the created entity.
      */
     T createValidEntity(int idx);
-
-    /**
-     * Update a valid entity.
-     * @param entity to be updated.
-     */
-    void updateValidEntity(T entity);
 
     default T createValidEntity() {
         return createValidEntity(0);

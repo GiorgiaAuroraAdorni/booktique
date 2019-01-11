@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class EmployeeTestFactory implements EntityTestFactory<Employee> {
+public class EmployeeFactory implements EntityFactory<Employee> {
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     @Override
     public Employee createValidEntity(int idx) {
@@ -32,10 +32,5 @@ public class EmployeeTestFactory implements EntityTestFactory<Employee> {
         // the self-association with the supervisor isn't created, so the attribute is initially null
 
         return employee;
-    }
-
-    @Override
-    public void updateValidEntity(Employee entity) {
-
     }
 }

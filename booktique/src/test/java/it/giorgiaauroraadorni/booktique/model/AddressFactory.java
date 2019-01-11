@@ -3,7 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AddressTestFactory implements EntityTestFactory<Address> {
+public class AddressFactory implements EntityFactory<Address> {
 
     @Override
     public Address createValidEntity(int idx) {
@@ -21,16 +21,5 @@ public class AddressTestFactory implements EntityTestFactory<Address> {
         address.setBuilding("Appartamento 2 terzo piano");
 
         return address;
-    }
-
-    @Override
-    public void updateValidEntity(Address address) {
-        address.setStreetAddress("Largo Nomelargo 100");
-        address.setCity("Nuova Città");
-        address.setProvince("NC");
-        address.setPostalCode("11111");
-        address.setRegion("Nuova Regione");
-        address.setCountry("Nuovo Stato");
-        address.setBuilding("Edificio 1");
     }
 }

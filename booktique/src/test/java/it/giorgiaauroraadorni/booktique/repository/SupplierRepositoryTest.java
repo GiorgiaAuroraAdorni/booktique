@@ -1,7 +1,7 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import it.giorgiaauroraadorni.booktique.model.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +30,10 @@ class SupplierRepositoryTest {
     private AddressRepository addressRepository;
 
     @Autowired
-    private EntityTestFactory<Supplier> supplierFactory;
+    private EntityFactory<Supplier> supplierFactory;
 
     @Autowired
-    private EntityTestFactory<Address> addressFactory;
+    private EntityFactory<Address> addressFactory;
 
     private List<Supplier> dummySuppliers;
 

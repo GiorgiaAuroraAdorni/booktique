@@ -30,10 +30,10 @@ class ItemRepositoryTest {
     private BookRepository bookRepository;
 
     @Autowired
-    private EntityTestFactory<Item> itemFactory;
+    private EntityFactory<Item> itemFactory;
 
     @Autowired
-    private EntityTestFactory<Book> bookFactory;
+    private EntityFactory<Book> bookFactory;
 
     private List<Item> dummyItems;
 

@@ -2,7 +2,7 @@ package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.Book;
-import it.giorgiaauroraadorni.booktique.model.EntityTestFactory;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -27,10 +27,10 @@ class BookRepositoryTest {
     private AuthorRepository authorRepository;
 
     @Autowired
-    private EntityTestFactory<Book> bookFactory;
+    private EntityFactory<Book> bookFactory;
 
     @Autowired
-    private EntityTestFactory<Author> authorFactory;
+    private EntityFactory<Author> authorFactory;
 
     private List<Book> dummyBooks;
 
@@ -141,11 +141,16 @@ class BookRepositoryTest {
     public void testUpdateBook() {
         // get a Book from the repository
         Book savedBook = bookRepository.findById(dummyBooks.get(0).getId()).get();
+        // change some attributes and update the Book object
+        // the authors association isn't updated
+        savedBook.setTitle("Nuovo Titolo");
+        savedBook.setPublisher("Nuovo Editore");
+        savedBook.setSubtitle("Nuovo Sottotitolo");
+        savedBook.setBookFormat(Book.Format.DIGITAL);
+        savedBook.setEdition(2);
+        savedBook.setLanguage("Nuova Lingua");
+        savedBook.setPublicationDate(savedBook.getPublicationDate().plusYears(1));
 
-        var initialAuthors = savedBook.getAuthors();
-
-        // change some attributes
-        Author author = authorFactory.createValidEntity(1);
 
         Set<Author> newAuthors = new HashSet<>();
         newAuthors.add(author);

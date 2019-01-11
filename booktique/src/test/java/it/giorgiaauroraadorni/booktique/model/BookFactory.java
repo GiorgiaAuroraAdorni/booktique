@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class BookTestFactory implements EntityTestFactory<Book> {
+public class BookFactory implements EntityFactory<Book> {
     @Autowired
-    private EntityTestFactory<Author> authorFactory;
+    private EntityFactory<Author> authorFactory;
 
     @Override
     public Book createValidEntity(int idx) {
@@ -29,16 +30,12 @@ public class BookTestFactory implements EntityTestFactory<Book> {
         book.setPublicationDate(LocalDate.of(1999, 1, 1));
 
         // association withs authors
-        Set<Author> authors = Set.of(author);
+        Set<Author> authors = new HashSet<>();
+        authors.add(author);
         book.setAuthors(authors);
 
         // the bidirectional self-association between prequel and sequel isn't created, so the attribute is initially null
-        
+
         return book;
-    }
-
-    @Override
-    public void updateValidEntity(Book entity) {
-
     }
 }
