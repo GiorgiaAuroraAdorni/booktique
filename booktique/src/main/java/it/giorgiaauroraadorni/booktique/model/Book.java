@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,7 +18,6 @@ public class Book extends AuditModel implements Serializable {
 
     // The ISBN is a sequence of 10/13 digits start with only 978.
     @NaturalId
-    // FIXME: create a method that remove "-" from the isbn and check the uniqueness
     @Pattern(regexp = "^((978[\\--– ])?[0-9][0-9\\--– ]{10}[\\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])$")
     private String isbn;
 
@@ -49,10 +49,10 @@ public class Book extends AuditModel implements Serializable {
 
     private LocalDate publicationDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Book prequel;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "prequel")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "prequel", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Book sequel;
 
     //Getters and Setters
@@ -175,6 +175,28 @@ public class Book extends AuditModel implements Serializable {
             this.setSequel(sequel);
             sequel.setPrequel(this);
         }
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Book)) return false;
+        Book book = (Book) expectedObject;
+        return Objects.equals(getId(), book.getId()) &&
+                Objects.equals(getIsbn(), book.getIsbn()) &&
+                Objects.equals(getTitle(), book.getTitle()) &&
+                getSubtitle().equals(book.getSubtitle()) &&
+                Objects.equals(getPublisher(), book.getPublisher()) &&
+                getEdition().equals(book.getEdition()) &&
+                getLanguage().equals(book.getLanguage()) &&
+                getBookFormat() == book.getBookFormat() &&
+                getPublicationDate().isEqual(book.getPublicationDate());
+        // ignore prequel and sequel
+        // ignore authors
     }
 
     /**
