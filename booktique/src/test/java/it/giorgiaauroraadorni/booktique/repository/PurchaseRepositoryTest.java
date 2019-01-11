@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -107,7 +108,7 @@ class PurchaseRepositoryTest {
         // change some attributes
         var oldItems = savedPurchase.getItems();
         var oldOrderDate = savedPurchase.getOrderDate();
-        var oldAmount = savedPurchase.getAmount();
+        BigDecimal oldAmount = savedPurchase.getAmount();
 
         Set<Item> newItems = new HashSet<>(itemFactory.createValidEntities(2));
         savedPurchase.setItems(newItems);
@@ -125,10 +126,9 @@ class PurchaseRepositoryTest {
         assertNotEquals(oldItems, updatedPurchase.getItems());
         assertEquals(LocalDate.of(2038, 1, 4), updatedPurchase.getOrderDate());
         assertNotEquals(oldOrderDate, updatedPurchase.getOrderDate());
-        //FIXME
         assertNotNull(oldAmount);
-        assertNotEquals(oldAmount, updatedPurchase.getAmount()); //assertNotEquals not work
-        assertNotEquals(0, updatedPurchase.getAmount());
+        assertNotNull(updatedPurchase.getAmount());
+        assertNotEquals(oldAmount, updatedPurchase.getAmount());
     }
 
     /**

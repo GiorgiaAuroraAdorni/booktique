@@ -91,8 +91,10 @@ public class Purchase extends AuditModel {
 
     public BigDecimal getAmount() {
         BigDecimal amount = new BigDecimal(0);
-        for (Item i: items) {
-            amount.add(i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantityPerUnit())));
+        for (Item i: this.items) {
+            BigDecimal unitPrice = i.getUnitPrice();
+            BigDecimal quantityPerUnit = BigDecimal.valueOf(i.getQuantityPerUnit());
+            amount = amount.add(unitPrice.multiply(quantityPerUnit));
         }
         return amount;
     }

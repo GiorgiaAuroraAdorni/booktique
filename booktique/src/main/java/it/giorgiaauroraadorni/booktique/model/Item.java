@@ -21,7 +21,7 @@ public class Item extends AuditModel {
     private BigDecimal unitPrice;
 
     @Column(nullable = false)
-    private int quantityPerUnit;
+    private Integer quantityPerUnit;
 
     // Getters and Setters
     public Long getId() {
@@ -60,7 +60,7 @@ public class Item extends AuditModel {
         return quantityPerUnit;
     }
 
-    public void setQuantityPerUnit(int quantityPerUnit) {
+    public void setQuantityPerUnit(Integer quantityPerUnit) {
         this.quantityPerUnit = quantityPerUnit;
     }
 }
