@@ -8,8 +8,6 @@ import javax.validation.constraints.Size;
 @Table(name = "customers")
 public class Customer extends Person {
 
-    private Person customer;
-
     @Column(unique = true, length = 32, nullable = false)
     @Size(min = 5)
     private String username;

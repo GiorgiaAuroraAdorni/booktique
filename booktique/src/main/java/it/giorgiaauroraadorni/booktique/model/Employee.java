@@ -8,8 +8,6 @@ import java.time.LocalDate;
 @Table(name = "employees")
 public class Employee extends Person {
 
-    private Person employee;
-
     @Column(unique = true, length = 32, nullable = false)
     @Size(min = 5)
     private String username;
@@ -27,14 +25,6 @@ public class Employee extends Person {
     private Employee supervisor;
 
     // Getters and Setters
-    public Person getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Person employee) {
-        this.employee = employee;
-    }
-
     public LocalDate getHireDate() {
         return hireDate;
     }

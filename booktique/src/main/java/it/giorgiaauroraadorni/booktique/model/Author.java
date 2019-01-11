@@ -2,12 +2,11 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Entity
 @Table(name = "authors")
 public class Author extends Person {
-
-    private Person author;
 
     @Column(length = 280)
     private String biography;
@@ -17,14 +16,6 @@ public class Author extends Person {
     private String webSiteURL;
 
     // Getters and Setters
-    public Person getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Person author) {
-        this.author = author;
-    }
-
     public String getBiography() {
         return biography;
     }
