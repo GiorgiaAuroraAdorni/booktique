@@ -22,8 +22,8 @@ public class AuthorFactory implements EntityFactory<Author> {
         author.setMobilePhone("333333333" + idx);
         author.setWebSiteURL("https://www." + author.getName() + author.getSurname() + ".org");
         author.setBiography(author.getName() + " is a friendly government politician and has a post-graduate degree " +
-                "in philosophy, politics and economics. To lear more about " + author.getName() + " " +
-                author.getSurname() + " by visit the website " + author.getWebSiteURL() + " !");
+                "in philosophy, politics and economics. To learn more about " + author.getName() + " " +
+                author.getSurname() + " visit the website " + author.getWebSiteURL() + " !");
 
         return author;
     }

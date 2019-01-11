@@ -26,14 +26,6 @@ public class Customer extends Person {
     private Address address;
 
     // Getters and Setters
-    public Person getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Person customer) {
-        this.customer = customer;
-    }
-
     public String getUsername() {
         return username;
     }
