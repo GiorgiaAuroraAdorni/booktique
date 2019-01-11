@@ -37,18 +37,10 @@ class AuthorRepositoryTest {
         dummyAuthors = authorRepository.saveAll(dummyAuthors);
     }
 
-    /* Test CRUD operations */
-
     @Test
     void repositoryLoads() {}
 
-    @Test
-    void repositoryFindAll() {
-        var savedAuthors = authorRepository.findAll();
-
-        // check if all the authors are correctly added to the repository
-        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
-    }
+    /* Test CRUD operations */
 
     /**
      * Insert many entries in the repository and check if these are readable and the attributes are correct
@@ -280,17 +272,20 @@ class AuthorRepositoryTest {
     /* Test search operations */
 
     @Test
+    void repositoryFindAll() {
+        var savedAuthors = authorRepository.findAll();
+
+        // check if all the authors are correctly added to the repository
+        assertTrue(savedAuthors.containsAll(dummyAuthors), "findAll should fetch all dummy authors");
+    }
+
+    @Test
     public void testFindById() {
         // check the correct reading of the author via findById
         var foundAuthor = authorRepository.findById(dummyAuthors.get(0).getId());
 
         assertEquals(foundAuthor.get(), dummyAuthors.get(0));
         assertEquals(foundAuthor.get().getId(), dummyAuthors.get(0).getId());
-
-        // try to search for authors by an not existing id
-        var notFoundAuthor = authorRepository.findById(999L);
-
-        assertTrue(notFoundAuthor.isEmpty());
     }
 
     @Test

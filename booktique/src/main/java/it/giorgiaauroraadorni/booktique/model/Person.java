@@ -5,6 +5,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "persons")
@@ -94,5 +95,22 @@ public abstract class Person extends AuditModel {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-}
 
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Person)) return false;
+        Person person = (Person) expectedObject;
+        return Objects.equals(getId(), person.getId()) &&
+                Objects.equals(getFiscalCode(), person.getFiscalCode()) &&
+                Objects.equals(getName(), person.getName()) &&
+                Objects.equals(getSurname(), person.getSurname()) &&
+                getDateOfBirth().equals(person.getDateOfBirth()) &&
+                getEmail().equals(person.getEmail()) &&
+                getMobilePhone().equals(person.getMobilePhone());
+    }
+}

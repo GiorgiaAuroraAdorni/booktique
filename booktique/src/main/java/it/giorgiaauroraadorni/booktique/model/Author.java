@@ -2,7 +2,6 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import java.util.Objects;
 
 @Entity
 @Table(name = "authors")
@@ -30,5 +29,19 @@ public class Author extends Person {
 
     public void setWebSiteURL(String webSiteURL) {
         this.webSiteURL = webSiteURL;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Author)) return false;
+        if(!(super.equalsByAttributes(expectedObject))) return false;
+        Author author = (Author) expectedObject;
+        return getBiography().equals(author.getBiography()) &&
+                getWebSiteURL().equals(author.getWebSiteURL());
     }
 }
