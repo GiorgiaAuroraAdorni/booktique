@@ -81,8 +81,19 @@ class BookRepositoryTest {
             assertEquals("Lingua", dummyBooks.get(i).getLanguage());
             assertEquals(LocalDate.of(1999, 1, 1), dummyBooks.get(i).getPublicationDate());
             assertEquals("Sottotitolo", dummyBooks.get(i).getSubtitle());
-            assertNotNull(dummyBooks.get(i).getAuthors());
         }
+    }
+
+    /**
+     * Throws an exception when attempting to create a book without mandatory attributes
+     */
+    @Test
+    public void testIllegalCreateBook() {
+        Book invalidBook = new Book();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            bookRepository.saveAndFlush(invalidBook);
+        });
     }
 
     @Test
@@ -162,12 +173,13 @@ class BookRepositoryTest {
 
         savedBook = bookRepository.save(savedBook);
 
+        // clear the memory in order to get a new istance of the saved book from the db
         bookRepository.flush();
         entityManager.clear();
 
+        // check that all the attributes have been updated correctly and contain the expected value
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
 
-        // check that all the attributes have been updated correctly and contain the expected value
         assertTrue(bookRepository.existsById(updatedBook.getId()));
         assertEquals("Nuovo Titolo", updatedBook.getTitle());
         assertEquals("Nuovo Sottotitolo", updatedBook.getSubtitle());
@@ -195,6 +207,7 @@ class BookRepositoryTest {
         // update the book object
         savedBook = bookRepository.save(savedBook);
 
+        // clear the memory in order to get a new istance of the saved book from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -241,18 +254,6 @@ class BookRepositoryTest {
         assertTrue(updatedPrequel.equalsByAttributes(prequel));
         assertNotNull(updatedPrequel.getSequel());
         assertTrue(updatedPrequel.getSequel().equalsByAttributes(updatedSequel));
-    }
-
-    /**
-     * Throws an exception when attempting to create a book without mandatory attributes
-     */
-    @Test
-    public void testIllegalCreateBook() {
-        Book invalidBook = new Book();
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            bookRepository.saveAndFlush(invalidBook);
-        });
     }
 
     /**
