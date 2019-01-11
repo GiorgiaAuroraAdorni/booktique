@@ -1,6 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "addresses")
@@ -15,20 +16,22 @@ public class Address extends AuditModel {
 
     private String building;
 
-    @Column(length = 90, nullable = false)
+    @Column(length = 35, nullable = false)
     private String city;
 
     // Province Abbreviation
     @Column(length = 2, nullable = false)
     private String province;
 
-    @Column(length = 90)
+    @Column(length = 25)
     private String region;
 
-    @Column(length = 18, nullable = false)
+    // This is an italian postal code.
+    @Column(length = 5, nullable = false)
+    @Pattern(regexp = "^\\d+")
     private String postalCode;
 
-    @Column(length = 90, nullable = false)
+    @Column(length = 30, nullable = false)
     private String country;
 
     // Getters and Setters
