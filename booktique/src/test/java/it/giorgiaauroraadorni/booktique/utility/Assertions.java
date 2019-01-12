@@ -3,6 +3,9 @@ package it.giorgiaauroraadorni.booktique.utility;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 public class Assertions {
 
     /**
@@ -18,36 +21,24 @@ public class Assertions {
         if (expected == actual) return true;
         if (expected == null || actual == null) return false;
 
-        var dictsA = expected
+        var dictsExpected = expected
                 .stream()
                 .map((e) -> e.entityToDict(optionalId))
                 .collect(Collectors.toSet());
 
-        var dictsB = actual
+        var dictsActual = actual
                 .stream()
                 .map((e) -> e.entityToDict(optionalId))
                 .collect(Collectors.toSet());
 
-        return dictsA.equals(dictsB);
+        return dictsExpected.equals(dictsActual);
     }
 
-    public static <T extends EntityToDict> void assertAssociationEquals(Set<T> expected, Set<T> actual,
-                                                                     boolean optionalId) {
+    public static <T extends EntityToDict> void assertAssociationEquals(Set<T> expected, Set<T> actual, boolean optionalId) {
         assertTrue(associationEquals(expected, actual, optionalId));
     }
 
-    /**
-     *
-     * @param expected
-     * @param actual
-     * @param optionalId
-     * @param <T>
-     * @return
-     */
-    public static <T extends EntityEqualsByAttributes> boolean assertAttributesEquals(T expected, T actual, boolean optionalId) {
-        if (expected == actual) return true;
-        if (expected == null || actual == null) return false;
-
-        return expected.equalsByAttributes(actual, optionalId);
+    public static <T extends EntityEqualsByAttributes> void assertAttributesEquals(T expected, T actual, boolean optionalId) {
+        assertTrue(expected.equalsByAttributes(actual, optionalId));
     }
 }
