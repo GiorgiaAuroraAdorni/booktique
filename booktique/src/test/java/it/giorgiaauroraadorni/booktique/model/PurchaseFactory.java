@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -34,12 +35,14 @@ public class PurchaseFactory implements EntityFactory<Purchase> {
         // mandatory associations
         purchase.setCustomer(customer);
         purchase.setEmployee(employee);
-        Set<Item> items = Set.of(item);
+        Set<Item> items = new HashSet<>();
+        items.add(item);
         purchase.setItems(items);
         purchase.setPaymentDetails(payment);
 
         // other attributes
         purchase.setStatus(Purchase.Status.IN_PRODUCTION);
+        purchase.setShippingDate(LocalDate.now());
 
         return purchase;
     }
