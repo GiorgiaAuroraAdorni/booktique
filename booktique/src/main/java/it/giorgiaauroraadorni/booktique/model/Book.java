@@ -183,11 +183,21 @@ public class Book extends AuditModel implements Serializable {
      * @return
      */
     public boolean equalsByAttributes(Object expectedObject) {
+        Book book = (Book) expectedObject;
+        return this.equalsByAttributesWithoutId(expectedObject)
+                && Objects.equals(getId(), book.getId());
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributesWithoutId(Object expectedObject) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Book)) return false;
         Book book = (Book) expectedObject;
-        return Objects.equals(getId(), book.getId()) &&
-                Objects.equals(getIsbn(), book.getIsbn()) &&
+        return Objects.equals(getIsbn(), book.getIsbn()) &&
                 Objects.equals(getTitle(), book.getTitle()) &&
                 getSubtitle().equals(book.getSubtitle()) &&
                 Objects.equals(getPublisher(), book.getPublisher()) &&

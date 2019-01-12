@@ -2,6 +2,7 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Entity
 @Table(name="suppliers")
@@ -67,5 +68,31 @@ public class Supplier extends AuditModel {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        Supplier supplier = (Supplier) expectedObject;
+        return Objects.equals(getId(), supplier.getId()) &&
+                this.equalsByAttributesWithoutId(expectedObject);
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Supplier)) return false;
+        Supplier supplier = (Supplier) expectedObject;
+        return Objects.equals(getCompanyName(), supplier.getCompanyName()) &&
+                getEmail().equals(supplier.getEmail()) &&
+                getPhoneNumber().equals(supplier.getPhoneNumber()) &&
+                getAddress().equalsByAttributesWithoutId(supplier.getAddress());
     }
 }

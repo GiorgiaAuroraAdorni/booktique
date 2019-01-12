@@ -106,17 +106,9 @@ public class Address extends AuditModel {
      * @return
      */
     public boolean equalsByAttributes(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Address)) return false;
         Address address = (Address) expectedObject;
         return Objects.equals(getId(), address.getId()) &&
-                Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
-                getBuilding().equals(address.getBuilding()) &&
-                Objects.equals(getCity(), address.getCity()) &&
-                Objects.equals(getProvince(), address.getProvince()) &&
-                getRegion().equals(address.getRegion()) &&
-                Objects.equals(getPostalCode(), address.getPostalCode()) &&
-                Objects.equals(getCountry(), address.getCountry());
+                this.equalsByAttributesWithoutId(expectedObject);
     }
 
     /**
