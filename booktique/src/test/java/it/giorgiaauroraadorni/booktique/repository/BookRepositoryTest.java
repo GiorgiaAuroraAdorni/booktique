@@ -286,7 +286,7 @@ class BookRepositoryTest {
         // update the book object
         savedBook = bookRepository.save(savedBook);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get new istances of the saved book and the authors from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -323,12 +323,12 @@ class BookRepositoryTest {
         Book sequel = dummyBooks.get(1);
         Book prequel = sequel.getPrequel();
 
-        // modified some prequel attribute and update the istances
+        // modified some prequel attribute and update the book istance
         prequel.setSubtitle("Nuovo sottotitolo");
         prequel.setTitle("Nuovo titolo");
         prequel = bookRepository.save(prequel);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get new istances of the saved books from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -435,11 +435,9 @@ class BookRepositoryTest {
      */
     @Test
     public void testDeleteBookAuthor() {
-        // get a pair book-authors from the repository
+        // get a pair book-authors from the repository and delete the authors object
         Book book = dummyBooks.get(1);
         Set<Author> authors = book.getAuthors();
-
-        // delete all the authors object
         authorRepository.deleteAll();
 
         // throws an exception when attempting to delete an author of a book

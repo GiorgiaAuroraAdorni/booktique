@@ -159,11 +159,10 @@ class CustomerRepositoryTest {
     }
 
     /**
-     * Test the correct persist of customer address.
+     * Test the correct persistence of customer addresses.
      */
     @Test
     public void testCustomerAddress() {
-        // check if the addresses are set correctly
         for (Customer customer: dummyCustomers) {
             assertTrue(addressRepository.existsById(customer.getAddress().getId()));
         }
@@ -305,7 +304,6 @@ class CustomerRepositoryTest {
         // get a customer from the repository
         Customer savedCustomer = dummyCustomers.get(0);
 
-        var address = savedCustomer.getAddress();
         // change some attributes and update the customer object
         // the address association isn't updated
         savedCustomer.setName("Nuovo Nome");
@@ -331,7 +329,6 @@ class CustomerRepositoryTest {
         assertEquals("Nuovo Cognome", updatedCustomer.getSurname());
         assertEquals("NuovoCUserNo", updatedCustomer.getUsername());
         assertEquals("NuovaPassword", updatedCustomer.getPassword());
-
         assertEquals(LocalDate.now().minusYears(20), updatedCustomer.getDateOfBirth());
         assertEquals("NuovoNomeNuovoCognome@customer-mail.com", updatedCustomer.getEmail());
         assertEquals("3331111100", updatedCustomer.getMobilePhone());
@@ -357,11 +354,11 @@ class CustomerRepositoryTest {
      */
     @Test
     public void testUpdateAddress() {
-        // get a customer from the repository, modify the fiscal code and update the customer object
+        // get a customer from the repository, modify the address and update the customer object
         Customer savedCustomer = dummyCustomers.get(0);
         Address savedAddress = savedCustomer.getAddress();
 
-        // modified some prequel attribute and update the istances
+        // modified some address attributes and update the istances
         savedAddress.setStreetAddress("Largo Nomelargo 100");
         savedAddress.setRegion("Nuova Regione");
 
@@ -371,7 +368,7 @@ class CustomerRepositoryTest {
         addressRepository.flush();
         entityManager.clear();
 
-        // get the updated customer and hs address from teh repository
+        // get the updated customer and address from the repository
         Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
         Address updatedAddress = updatedCustomer.getAddress();
 
