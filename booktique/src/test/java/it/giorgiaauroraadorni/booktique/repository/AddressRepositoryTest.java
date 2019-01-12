@@ -1,6 +1,7 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
+import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +35,7 @@ class AddressRepositoryTest {
 
     @BeforeEach
     void createDummyAddresses() {
-        // create a list of valid address entities and save the created entities in the addressRepository
+        // create a list of valid address entities and save them in the addressRepository
         dummyAddresses = (addressFactory.createValidEntities(2));
         dummyAddresses = addressRepository.saveAll(dummyAddresses);
     }
@@ -46,7 +46,7 @@ class AddressRepositoryTest {
     /* Test CRUD operations */
 
     /**
-     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     * Insert many entries in the repository and check if these are readable and the attributes are correct.
      */
     @Test
     public void testCreateAddress() {
@@ -55,8 +55,8 @@ class AddressRepositoryTest {
             assertNotEquals(0, addressRepository.count());
             assertNotNull(addressRepository.existsById(dummyAddresses.get(i).getId()));
 
-            // check if the books contain the createdAt and updatedAt annotation that are automatically populate,
-            // and check if the books id are correctly automatic generated
+            // check if the addresses contain the createdAt and updatedAt annotation that are automatically populate,
+            // and check if the addresses id are correctly automatic generated
             assertNotNull(dummyAddresses.get(i).getCreatedAt());
             assertNotNull(dummyAddresses.get(i).getUpdatedAt());
             assertNotNull(dummyAddresses.get(i).getId());
@@ -74,7 +74,7 @@ class AddressRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create an address without mandatory attributes
+     * Throws an exception when attempting to create an address without mandatory attributes.
      */
     @Test
     public void testIllegalCreateAddress() {
@@ -87,17 +87,17 @@ class AddressRepositoryTest {
 
     @Test
     public void testSave() {
-        var address = addressFactory.createValidEntity(3);
+        var address = addressFactory.createValidEntity(2);
 
         assertDoesNotThrow(() -> addressRepository.save(address));
     }
 
     /**
-     * Throws an exception when attempting to create an address with illegal postal code format type
+     * Throws an exception when attempting to create an address with illegal postal code.
      */
     @Test
-    public void testIllegalPostalCodeFormat() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
+    public void testIllegalPostalCode() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
         assertThrows(ConstraintViolationException.class,() -> {
             invalidAddress.setPostalCode("AAAAA");
             addressRepository.saveAndFlush(invalidAddress);
@@ -105,7 +105,78 @@ class AddressRepositoryTest {
     }
 
     /**
-     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     * Throws an exception when attempting to create or update an address with illegal size for the city attribute.
+     */
+    @Test
+    public void testIllegalCitySize() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setCity("Milano Città metropolitana MI Mediolanum");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an address with illegal size for the region attribute.
+     */
+    @Test
+    public void testIllegalRegionSize() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setRegion("Regione Lombardia capoluogo Milano");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an address with illegal size for the province attribute.
+     */
+    @Test
+    public void testIllegalProvinceSize() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setProvince("MIL");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an address with illegal size for the postal
+     * code attribute.
+     */
+    @Test
+    public void testIllegalPostalCodeSize() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setPostalCode("111111");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+
+        assertThrows(JpaSystemException.class, () -> {
+            invalidAddress.setPostalCode("1111");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an address with illegal size for the country attribute.
+     */
+    @Test
+    public void testIllegalCountrySize() {
+        Address invalidAddress = addressFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidAddress.setCountry("Stato Italia Repubblica Italiana Continente Europa");
+            addressRepository.saveAndFlush(invalidAddress);
+        });
+    }
+
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly.
      */
     @Test
     public void testUpdateAddress() {
@@ -123,7 +194,7 @@ class AddressRepositoryTest {
 
         savedAddress = addressRepository.save(savedAddress);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get a new istance of the saved address from the db
         addressRepository.flush();
         entityManager.clear();
 
@@ -141,92 +212,23 @@ class AddressRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update an address with illegal size for the city attribute
-     */
-    @Test
-    public void testIllegalCitySize() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidAddress.setCity("Milano Città metropolitana MI Mediolanum");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update an address with illegal size for the region attribute
-     */
-    @Test
-    public void testIllegalRegionSize() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidAddress.setRegion("Regione Lombardia capoluogo Milano");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update an address with illegal size for the province attribute
-     */
-    @Test
-    public void testIllegalProvinceSize() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidAddress.setProvince("MIL");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update an address with illegal size for the postal
-     * code attribute
-     */
-    @Test
-    public void testIllegalPostalCodeSize() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidAddress.setPostalCode("111111");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-
-        assertThrows(JpaSystemException.class, () -> {
-            invalidAddress.setPostalCode("1111");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update an address with illegal size for the country attribute
-     */
-    @Test
-    public void testIllegalCountrySize() {
-        Address invalidAddress = addressFactory.createValidEntity(3);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidAddress.setCountry("Stato Italia Repubblica Italiana Continente Europa");
-            addressRepository.saveAndFlush(invalidAddress);
-        });
-    }
-
-    /**
-     * Delete an entry and check if the address was removed correctly
+     * Delete an entry and check that the operation has been carried out correctly.
      */
     @Test
     public void testDeleteAddress() {
+        // get an address from the repository and delete it
+        Address savedAddress = dummyAddresses.get(0);
+        addressRepository.delete(savedAddress);
 
-        // get a Book from the repository
-        Address savedBook = addressRepository.findById(dummyAddresses.get(0).getId()).get();
+        // check that the address has been deleted correctly
+        assertFalse(addressRepository.existsById(savedAddress.getId()));
+    }
 
-        // delete the Book object
-        addressRepository.delete(savedBook);
-
-        // check that the book has been deleted correctly
-        assertEquals(addressRepository.findById(dummyAddresses.get(0).getId()), Optional.empty());
-
-        // delete all the entries verifying that the operation has been carried out correctly
+    /**
+     * Delete all the entries verifying that the operation has been carried out correctly.
+     */
+    @Test
+    public void testDeleteAllAddresses() {
         addressRepository.deleteAll();
         assertTrue(addressRepository.findAll().isEmpty());
     }
@@ -237,7 +239,7 @@ class AddressRepositoryTest {
     void repositoryFindAll() {
         var savedAddresses = addressRepository.findAll();
 
-        // check if all the authors are correctly added to the repository
+        // check if all the addreses are correctly added to the repository
         assertTrue(savedAddresses.containsAll(dummyAddresses), "findAll should fetch all dummy addresses");
     }
 
