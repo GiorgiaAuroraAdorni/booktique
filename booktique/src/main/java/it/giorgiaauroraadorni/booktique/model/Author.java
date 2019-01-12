@@ -1,11 +1,15 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "authors")
-public class Author extends Person {
+public class Author extends Person implements EntityToDict {
 
     @Column(length = 280)
     private String biography;
@@ -47,5 +51,24 @@ public class Author extends Person {
         Author author = (Author) expectedObject;
         return getBiography().equals(author.getBiography()) &&
                 getWebSiteURL().equals(author.getWebSiteURL());
+    }
+
+    @Override
+    public Map<String, Object> entityToDict(boolean optionalId) {
+        Map<String, Object> dictionaryAttributes = new HashMap<>();
+
+        if (optionalId) {
+            dictionaryAttributes.put("id", this.getId());
+        }
+        dictionaryAttributes.put("fiscalCode", this.getFiscalCode());
+        dictionaryAttributes.put("name", this.getName());
+        dictionaryAttributes.put("surname", this.getSurname());
+        dictionaryAttributes.put("dateOfBirth", this.getDateOfBirth().toString());
+        dictionaryAttributes.put("email", this.getEmail());
+        dictionaryAttributes.put("mobilePhone", this.getMobilePhone());
+        dictionaryAttributes.put("webSiteURL", this.getWebSiteURL());
+        dictionaryAttributes.put("biography", this.getBiography());
+
+        return dictionaryAttributes;
     }
 }

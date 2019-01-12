@@ -1,17 +1,21 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "books")
-public class Book extends AuditModel implements Serializable {
+public class Book extends AuditModel implements Serializable, EntityToDict {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -222,5 +226,36 @@ public class Book extends AuditModel implements Serializable {
         } else if (prequel != null) {
             prequel.setSequel(null);
         }
+    }
+
+    @Override
+    public Map<String, Object> entityToDict(boolean optionalId) {
+        Map<String, Object> dictionaryAttributes = new HashMap<>();
+
+        var authorsToDict = this.getAuthors()
+                .stream()
+                .map((e) -> e.entityToDict(optionalId))
+                .collect(Collectors.toSet());
+
+        if (optionalId) {
+            dictionaryAttributes.put("id", this.getId());
+        }
+        dictionaryAttributes.put("title", this.getTitle());
+        dictionaryAttributes.put("isbn", this.getIsbn());
+        dictionaryAttributes.put("authors", authorsToDict);
+        if (this.getPrequel() != null) {
+            dictionaryAttributes.put("prequel", this.getPrequel().entityToDict(optionalId));
+        }
+        if (this.getSequel() != null) {
+            dictionaryAttributes.put("sequelId", this.getSequel().getId());
+        }
+        dictionaryAttributes.put("subtitle", this.getSubtitle());
+        dictionaryAttributes.put("pubblicationDate", this.getPublicationDate());
+        dictionaryAttributes.put("publisher", this.getPublisher());
+        dictionaryAttributes.put("edition", this.getEdition());
+        dictionaryAttributes.put("language", this.getLanguage());
+        dictionaryAttributes.put("format", this.getBookFormat());
+
+        return dictionaryAttributes;
     }
 }

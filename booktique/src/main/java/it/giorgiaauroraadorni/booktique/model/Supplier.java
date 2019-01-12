@@ -1,12 +1,16 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
 @Table(name="suppliers")
-public class Supplier extends AuditModel {
+public class Supplier extends AuditModel implements EntityToDict {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -94,5 +98,20 @@ public class Supplier extends AuditModel {
                 getEmail().equals(supplier.getEmail()) &&
                 getPhoneNumber().equals(supplier.getPhoneNumber()) &&
                 getAddress().equalsByAttributesWithoutId(supplier.getAddress());
+    }
+
+    @Override
+    public Map<String, Object> entityToDict(boolean optionalId) {
+        Map<String, Object> dictionaryAttributes = new HashMap<>();
+
+        if (optionalId) {
+            dictionaryAttributes.put("id", this.getId());
+        }
+        dictionaryAttributes.put("companyName", this.getCompanyName());
+        dictionaryAttributes.put("address", this.getAddress());
+        dictionaryAttributes.put("email", this.getEmail());
+        dictionaryAttributes.put("phoneNumber", this.getPhoneNumber());
+
+        return dictionaryAttributes;
     }
 }

@@ -1,12 +1,16 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
 @Table(name = "addresses")
-public class Address extends AuditModel {
+public class Address extends AuditModel implements EntityToDict {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -127,5 +131,23 @@ public class Address extends AuditModel {
                 getRegion().equals(address.getRegion()) &&
                 Objects.equals(getPostalCode(), address.getPostalCode()) &&
                 Objects.equals(getCountry(), address.getCountry());
+    }
+
+    @Override
+    public Map<String, Object> entityToDict(boolean optionalId) {
+        Map<String, Object> dictionaryAttributes = new HashMap<>();
+
+        if (optionalId) {
+            dictionaryAttributes.put("id", this.getId());
+        }
+        dictionaryAttributes.put("streetAddress", this.getStreetAddress());
+        dictionaryAttributes.put("building", this.getBuilding());
+        dictionaryAttributes.put("city", this.getCity());
+        dictionaryAttributes.put("region", this.getRegion());
+        dictionaryAttributes.put("postalCode", this.getPostalCode());
+        dictionaryAttributes.put("province", this.getProvince());
+        dictionaryAttributes.put("country", this.getCountry());
+
+        return dictionaryAttributes;
     }
 }
