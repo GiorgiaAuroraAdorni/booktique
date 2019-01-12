@@ -3,6 +3,7 @@ package it.giorgiaauroraadorni.booktique.model;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "customers")
@@ -56,5 +57,36 @@ public class Customer extends Person {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Customer)) return false;
+        if(!(super.equalsByAttributes(expectedObject))) return false;
+        Customer customer = (Customer) expectedObject;
+        return this.equalsByAttributesWithoutId(expectedObject) &&
+                getAddress().equalsByAttributes(customer.getAddress());
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Customer)) return false;
+        if(!(super.equalsByAttributesWithoutId(expectedObject))) return false;
+        Customer customer = (Customer) expectedObject;
+        return Objects.equals(getUsername(), customer.getUsername()) &&
+                Objects.equals(getPassword(), customer.getPassword()) &&
+                getVatNumber().equals(customer.getVatNumber()) &&
+                (getAddress() == customer.getAddress() ||
+                (getAddress() != null && getAddress().equalsByAttributesWithoutId(customer.getAddress())));
     }
 }

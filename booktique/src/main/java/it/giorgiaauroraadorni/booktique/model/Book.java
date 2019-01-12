@@ -184,7 +184,7 @@ public class Book extends AuditModel implements Serializable {
      */
     public boolean equalsByAttributes(Object expectedObject) {
         Book book = (Book) expectedObject;
-        return this.equalsByAttributesWithoutId(expectedObject)
+        return this.equalsByAttributesWithoutIdAndAssociations(expectedObject)
                 && Objects.equals(getId(), book.getId());
     }
 
@@ -193,7 +193,7 @@ public class Book extends AuditModel implements Serializable {
      * @param expectedObject
      * @return
      */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+    public boolean equalsByAttributesWithoutIdAndAssociations(Object expectedObject) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Book)) return false;
         Book book = (Book) expectedObject;
@@ -205,8 +205,7 @@ public class Book extends AuditModel implements Serializable {
                 getLanguage().equals(book.getLanguage()) &&
                 getBookFormat() == book.getBookFormat() &&
                 getPublicationDate().isEqual(book.getPublicationDate());
-        // ignore prequel and sequel
-        // ignore authors
+        // ignore associations
     }
 
     /**

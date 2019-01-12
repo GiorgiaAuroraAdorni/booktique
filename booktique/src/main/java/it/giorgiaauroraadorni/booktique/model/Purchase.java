@@ -23,7 +23,7 @@ public class Purchase extends AuditModel {
     @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Employee employee;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Item> items = new HashSet<>();
 
     @Column(nullable = false)
@@ -136,6 +136,45 @@ public class Purchase extends AuditModel {
 
     public void setPaymentDetails(Payment paymentDetails) {
         this.paymentDetails = paymentDetails;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        Purchase purchase = (Purchase) expectedObject;
+        return Objects.equals(getId(), purchase.getId()) &&
+                (getCustomer() == purchase.getCustomer() || (getCustomer() != null &&
+                        getCustomer().equalsByAttributes(purchase.getCustomer()))) &&
+                (getPaymentDetails() == purchase.getPaymentDetails() || (getPaymentDetails() != null &&
+                        getPaymentDetails().equalsByAttributes(purchase.getPaymentDetails()))) &&
+                (getEmployee() == purchase.getEmployee() || (getEmployee() != null &&
+                        getEmployee().equalsByAttributes(purchase.getEmployee())));
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributeWithoutId(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Purchase)) return false;
+        Purchase purchase = (Purchase) expectedObject;
+        return (getOrderDate() == purchase.getOrderDate() ||
+                (getOrderDate() != null && getOrderDate().isEqual(purchase.getOrderDate()))) &&
+                (getShippingDate() == purchase.getShippingDate() || (getShippingDate() != null &&
+                        getShippingDate().isEqual(purchase.getShippingDate()))) &&
+                getStatus() == purchase.getStatus() &&
+                (getCustomer() == purchase.getCustomer() || (getCustomer() != null &&
+                        getCustomer().equalsByAttributesWithoutId(purchase.getCustomer()))) &&
+                (getPaymentDetails() == purchase.getPaymentDetails() || (getPaymentDetails() != null &&
+                        getPaymentDetails().equalsByAttributesWithoutId(purchase.getPaymentDetails()))) &&
+                (getEmployee() == purchase.getEmployee() || (getEmployee() != null &&
+                        getEmployee().equalsByAttributesWithoutId(purchase.getEmployee())));
+        // ignore item
     }
 
     /**

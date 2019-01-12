@@ -108,7 +108,7 @@ public class Address extends AuditModel {
     public boolean equalsByAttributes(Object expectedObject) {
         Address address = (Address) expectedObject;
         return Objects.equals(getId(), address.getId()) &&
-                this.equalsByAttributesWithoutId(expectedObject);
+                this.equalsByAttributesWithoutId(address);
     }
 
     /**

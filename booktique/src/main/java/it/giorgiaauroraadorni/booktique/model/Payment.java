@@ -90,10 +90,22 @@ public class Payment extends AuditModel {
         if (!(expectedObject instanceof Payment)) return false;
         Payment payment = (Payment) expectedObject;
         return Objects.equals(getId(), payment.getId()) &&
-                Objects.equals(getCardNumber(), payment.getCardNumber()) &&
+                this.equalsByAttributesWithoutId(payment);
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Payment)) return false;
+        Payment payment = (Payment) expectedObject;
+        return Objects.equals(getCardNumber(), payment.getCardNumber()) &&
                 Objects.equals(getCardholderName(), payment.getCardholderName()) &&
-                Objects.equals(getExpireDate(), payment.getExpireDate()) &&
+                (getExpireDate() == payment.getExpireDate() || (getExpireDate() != null && getExpireDate().isEqual(payment.getExpireDate()))) &&
                 Objects.equals(getCVC(), payment.getCVC()) &&
-                getPaymentDate().equals(payment.getPaymentDate());
+                (getPaymentDate() == payment.getPaymentDate() || (getPaymentDate() != null && getPaymentDate().isEqual(payment.getPaymentDate())));
     }
 }

@@ -36,10 +36,14 @@ public class Author extends Person {
      * @param expectedObject
      * @return
      */
-    public boolean equalsByAttributes(Object expectedObject) {
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Author)) return false;
-        if(!(super.equalsByAttributes(expectedObject))) return false;
+        if (optionalId) {
+            if(!(super.equalsByAttributes(expectedObject))) return false;
+        } else {
+            if(!(super.equalsByAttributesWithoutId(expectedObject))) return false;
+        }
         Author author = (Author) expectedObject;
         return getBiography().equals(author.getBiography()) &&
                 getWebSiteURL().equals(author.getWebSiteURL());
