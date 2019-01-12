@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
+import com.sun.source.tree.LambdaExpressionTree;
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.EntityFactory;
@@ -9,6 +10,7 @@ import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -47,7 +49,7 @@ class BookRepositoryTest {
         // add the first book as prequel for the second one
         dummyBooks.get(1).addPrequel(dummyBooks.get(0));
 
-        // save the created entities in the bookRepository
+        // save the created entities in the bookRepository and persist addresses
         dummyBooks = bookRepository.saveAll(dummyBooks);
     }
 
@@ -57,7 +59,7 @@ class BookRepositoryTest {
     void repositoryLoads() {}
 
     /**
-     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     * Insert many entries in the repository and check if these are readable and the attributes are correct.
      */
     @Test
     public void testCreateBook() {
@@ -85,7 +87,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create a book without mandatory attributes
+     * Throws an exception when attempting to create a book without mandatory attributes.
      */
     @Test
     public void testIllegalCreateBook() {
@@ -103,14 +105,35 @@ class BookRepositoryTest {
         assertDoesNotThrow(() -> bookRepository.save(book));
     }
 
+    /**
+     * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
+     * by violating the unique constraints on the properties that constitute a natural-id.
+     */
+    @Test
+    public void testUniqueBookIdentifier() {
+        Book duplicatedBook = bookFactory.createValidEntity();
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedBook.setIsbn("978-00-00-00000-0");
+            bookRepository.saveAndFlush(duplicatedBook);
+        });
+    }
+
+    /**
+     * Test the correct persist of books authors.
+     */
     @Test
     public void testBookAuthors() {
         // check if the authors are set correctly
-        for (int i = 0; i < dummyBooks.size(); i++) {
-            assertNotNull(bookRepository.findById(dummyBooks.get(i).getId()).get().getAuthors());
-        }
+        for (Book book: dummyBooks)
+            for (Author a: book.getAuthors()) {
+                assertTrue(authorRepository.existsById(a.getId()));
+            }
     }
 
+    /**
+     * Test the correct persist and merge of books prequel and sequel.
+     */
     @Test
     public void testBookPrequel() {
         // check if the books prequels are set correctly
@@ -127,23 +150,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
-     * by violating an integrity constraint, in particular, the unique constraints on the properties that
-     * constitute a natural-id
-     */
-    @Test
-    public void testUniqueBookIdentifier() {
-        Book duplicatedBook = bookFactory.createValidEntity();
-
-        // save the book in the repository
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            duplicatedBook.setIsbn("978-00-00-00000-0");
-            bookRepository.saveAndFlush(duplicatedBook);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create a book with illegal format type
+     * Throws an exception when attempting to create a book with illegal book format type.
      */
     @Test
     public void testIllegalBookFormat() {
@@ -154,7 +161,65 @@ class BookRepositoryTest {
     }
 
     /**
-     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     * Throws an exception when attempting to create or update a book with illegal size for the title attribute.
+     */
+    @Test
+    public void testIllegalTitleSize() {
+        Book invalidBook = bookFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidBook.setTitle("The Persecution and Assassination of Jean-Paul Marat as Performed by the Inmates of" +
+                    " the Asylum of Charenton Under the Direction of the Marquis de Sade");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a book with illegal size for the publisher attribute.
+     */
+    @Test
+    public void testIllegalPublisherSize() {
+        Book invalidBook = bookFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidBook.setPublisher("Marion Boyars Publishers Ltd; 5 Revised edition edizione (1 ottobre 1969)");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a book with illegal size for the subtitle attribute.
+     */
+    @Test
+    public void testIllegalSubtitleSize() {
+        Book invalidBook = bookFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidBook.setSubtitle("This extraordinary play, which swept Europe before coming to America, is based " +
+                    "on two historical truths: the infamous Marquis de Sade was confined in the lunatic asylum of " +
+                    "Charenton, where he staged plays; and the revolutionary Jean-Paul Marat was stabbed in a " +
+                    "bathtub by Charlotte Corday at the height of the Terror during the French Revolution. But this " +
+                    "play-within-a-play is not historical drama. Its thought is as modern as today's police states " +
+                    "and The Bomb; its theatrical impact has everywhere been called a major innovation.");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a book with illegal size for the language attribute.
+     */
+    @Test
+    public void testIllegalLanguageSize() {
+        Book invalidBook = bookFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidBook.setLanguage("Indo-European Germanic West Germanic Anglo-Frisian Anglic English");
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly.
      */
     @Test
     public void testUpdateBook() {
@@ -191,7 +256,21 @@ class BookRepositoryTest {
     }
 
     /**
-     * Update the author of an entry and check if the book have been updated correctly
+     * Throws an exception when attempting to update the immutable natural identifier isbn.
+     */
+    @Test
+    public void testUpdateIsbn() {
+        // get a book from the repository, modify the isbn and update the isbn object
+        Book savedBook = dummyBooks.get(0);
+
+        assertThrows(JpaSystemException.class, () -> {
+            savedBook.setIsbn("978-00-00-00000-4");
+            bookRepository.saveAndFlush(savedBook);
+        }, "It's not possible to updated a book isbn!");
+    }
+
+    /**
+     * Update the author of an entry and check if the book have been updated correctly.
      */
     @Test
     public void testUpdateBookAuthors() {
@@ -216,10 +295,27 @@ class BookRepositoryTest {
 
         // check that all the attributes have been updated correctly and contain the expected value
         assertTrue(bookRepository.existsById(updatedBook.getId()));
+        //FIXME
+        //assertEquals(savedBookAuthors, updatedBookAuthors);
+        assertTrue(savedBookAuthors.equals(updatedBookAuthors));
+        assertFalse(dummyBooks.get(0).getAuthors().equals(updatedBookAuthors));
+//        for (Author updatedAuthor: updatedBookAuthors) {
+//            assertTrue(authorRepository.existsById(updatedAuthor.getId()));
+//        }
+//        for (int i = 0; i < updatedBookAuthors.size(); i++) {
+//            for (Author updatedAuthor: updatedBookAuthors) {
+//                updatedAuthor.getId();
+//                for (Author savedAuthor: savedBookAuthors) {
+//
+//                }
+//            }
+//
+//            assertTrue();
+//        }
     }
 
     /**
-     * Update the prequel of an entry and check if the fields are changed correctly and that the sequel was updated
+     * Update the prequel of an entry and check if the fields are changed correctly and that the sequel was updated.
      */
     @Test
     public void testUpdateBookPrequel() {
@@ -257,82 +353,20 @@ class BookRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update a book with illegal size for the title attribute
-     */
-    @Test
-    public void testIllegalTitleSize() {
-        Book invalidBook = bookFactory.createValidEntity(2);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidBook.setTitle("The Persecution and Assassination of Jean-Paul Marat as Performed by the Inmates of" +
-                    " the Asylum of Charenton Under the Direction of the Marquis de Sade");
-            bookRepository.saveAndFlush(invalidBook);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update a book with illegal size for the publisher attribute
-     */
-    @Test
-    public void testIllegalPublisherSize() {
-        Book invalidBook = bookFactory.createValidEntity(2);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidBook.setPublisher("Marion Boyars Publishers Ltd; 5 Revised edition edizione (1 ottobre 1969)");
-            bookRepository.saveAndFlush(invalidBook);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update a book with illegal size for the subtitle attribute
-     */
-    @Test
-    public void testIllegalSubtitleSize() {
-        Book invalidBook = bookFactory.createValidEntity(2);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidBook.setSubtitle("This extraordinary play, which swept Europe before coming to America, is based " +
-                    "on two historical truths: the infamous Marquis de Sade was confined in the lunatic asylum of " +
-                    "Charenton, where he staged plays; and the revolutionary Jean-Paul Marat was stabbed in a " +
-                    "bathtub by Charlotte Corday at the height of the Terror during the French Revolution. But this " +
-                    "play-within-a-play is not historical drama. Its thought is as modern as today's police states " +
-                    "and The Bomb; its theatrical impact has everywhere been called a major innovation.");
-            bookRepository.saveAndFlush(invalidBook);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create or update a book with illegal size for the language attribute
-     */
-    @Test
-    public void testIllegalLanguageSize() {
-        Book invalidBook = bookFactory.createValidEntity(2);
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            invalidBook.setLanguage("Indo-European Germanic West Germanic Anglo-Frisian Anglic English");
-            bookRepository.saveAndFlush(invalidBook);
-        });
-    }
-
-    /**
-     * Delete an entry and check if the book was removed correctly
+     * Delete an entry and check that the operation has been carried out correctly.
      */
     @Test
     public void testDeleteBook() {
-        // get a Book from the repository and deleted it
+        // get a Book from the repository and delete it
         Book savedBook = dummyBooks.get(0);
         bookRepository.delete(savedBook);
 
         // check that the book has been deleted correctly
         assertFalse(bookRepository.existsById(savedBook.getId()));
-
-        // delete all the entries verifying that the operation has been carried out correctly
-        bookRepository.deleteAll();
-        assertTrue(bookRepository.findAll().isEmpty());
     }
 
     /**
-     * Delete all the entries and check if the books were removed correctly
+     * Delete all the entries verifying that the operation has been carried out correctly.
      */
     @Test
     public void testDeleteAllBooks() {
@@ -341,7 +375,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Delete the prequel of an entry and check was removed correctly and if the entry was updated
+     * Delete the prequel of an entry and check was removed correctly and if the entry was updated.
      */
     @Test
     public void testDeleteBookPrequel() {
@@ -369,7 +403,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Delete the sequel of an entry and check was removed correctly and if the entry was updated
+     * Delete the sequel of an entry and check was removed correctly and if the entry was updated.
      */
     @Test
     public void testDeleteBookSequel() {
@@ -413,7 +447,7 @@ class BookRepositoryTest {
             assertTrue(authorRepository.findAll().isEmpty());
             assertNull(bookRepository.findById(book.getId()).get().getAuthors());
             assertNotEquals(authors, bookRepository.findById(book.getId()).get().getAuthors());
-        }, "It's not possible to delete an author if he has written a book");
+        }, "It's not possible to delete an author if he has written a book!");
     }
 
     /* Test search operations */
@@ -439,11 +473,6 @@ class BookRepositoryTest {
 
         assertEquals(foundBook.get(), dummyBooks.get(0));
         assertEquals(foundBook.get().getId(), dummyBooks.get(0).getId());
-
-        // try to search for an book by a not existing id
-        var notFoundBook = bookRepository.findById(999L);
-
-        assertTrue(notFoundBook.isEmpty());
     }
 
     @Test
