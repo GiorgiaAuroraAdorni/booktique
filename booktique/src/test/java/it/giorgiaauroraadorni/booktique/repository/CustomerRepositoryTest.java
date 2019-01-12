@@ -1,8 +1,6 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
-import it.giorgiaauroraadorni.booktique.model.Address;
-import it.giorgiaauroraadorni.booktique.model.Customer;
-import it.giorgiaauroraadorni.booktique.model.EntityFactory;
+import it.giorgiaauroraadorni.booktique.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -12,16 +10,21 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 class CustomerRepositoryTest {
+    @PersistenceContext
+    private EntityManager entityManager;
+
     // Set automatically the attribute to the customerRepository instance
     @Autowired
     private CustomerRepository customerRepository;
@@ -39,106 +42,49 @@ class CustomerRepositoryTest {
 
     @BeforeEach
     void createDummyCustomers() {
-        // create a list of valid customers entities
+        // create a list of valid customers entities and save them in the customerRepository
+        // addresses were persisted
         dummyCustomers = customerFactory.createValidEntities(2);
-
-        // save the created entities in the customerRepository and persist addresses
         dummyCustomers = customerRepository.saveAll(dummyCustomers);
     }
-
-    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
 
+    /* Test CRUD operations */
+
     /**
-     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     * Insert many entries in the repository and check if these are readable and the attributes are correct.
      */
     @Test
     public void testCreateCustomer() {
-        List<Customer> savedCustomers = new ArrayList<>();
-
         for (int i = 0; i < dummyCustomers.size(); i++) {
-            // check if the customers id are correctly automatic generated
-            assertNotNull(customerRepository.getOne(dummyCustomers.get(i).getId()));
-            savedCustomers.add(customerRepository.getOne(dummyCustomers.get(i).getId()));
+            // check if the repository is populated
+            assertNotEquals(0, customerRepository.count());
+            assertNotNull(customerRepository.existsById(dummyCustomers.get(i).getId()));
 
-            // check if the customers contain the createdAt and updatedAt annotation that are automatically populate
-            assertNotNull(savedCustomers.get(i).getCreatedAt());
-            assertNotNull(savedCustomers.get(i).getUpdatedAt());
+            // check if the customers contain the createdAt and updatedAt annotation that are automatically populate,
+            // and check if the customers id are correctly automatic generated
+            assertNotNull(dummyCustomers.get(i).getCreatedAt());
+            assertNotNull(dummyCustomers.get(i).getUpdatedAt());
+            assertNotNull(dummyCustomers.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals(savedCustomers.get(i).getFiscalCode(), dummyCustomers.get(i).getFiscalCode());
-            assertEquals(savedCustomers.get(i).getName(), dummyCustomers.get(i).getName());
-            assertEquals(savedCustomers.get(i).getSurname(), dummyCustomers.get(i).getSurname());
-            assertEquals(savedCustomers.get(i).getDateOfBirth(), dummyCustomers.get(i).getDateOfBirth());
-            assertEquals(savedCustomers.get(i).getEmail(), dummyCustomers.get(i).getEmail());
-            assertEquals(savedCustomers.get(i).getMobilePhone(), dummyCustomers.get(i).getMobilePhone());
-            assertEquals(savedCustomers.get(i).getUsername(), dummyCustomers.get(i).getUsername());
-            assertEquals(savedCustomers.get(i).getPassword(), dummyCustomers.get(i).getPassword());
-            assertEquals(savedCustomers.get(i).getAddress(), dummyCustomers.get(i).getAddress());
-            assertEquals(savedCustomers.get(i).getVatNumber(), dummyCustomers.get(i).getVatNumber());
-            assertEquals(savedCustomers.get(i).getId(), dummyCustomers.get(i).getId());
-        }
-    }
-
-    @Test
-    public void testCustomerAddress() {
-        // check if the addresses are set correctly
-        for (int i = 0; i < dummyCustomers.size(); i++) {
-            assertNotNull(customerRepository.findById(dummyCustomers.get(i).getId()).get().getAddress());
+            assertEquals("CGNNMO00T00L00" + i + "C", dummyCustomers.get(i).getFiscalCode());
+            assertEquals("Nome" + i, dummyCustomers.get(i).getName());
+            assertEquals("Cognome" + i, dummyCustomers.get(i).getSurname());
+            assertEquals("CUserNo" + i, dummyCustomers.get(i).getUsername());
+            assertEquals("Qwerty1234", dummyCustomers.get(i).getPassword());
+            assertEquals(LocalDate.now().minusYears(20 + i), dummyCustomers.get(i).getDateOfBirth());
+            assertEquals(dummyCustomers.get(i).getName() + dummyCustomers.get(i).getSurname() + "@customer-mail.com", dummyCustomers.get(i).getEmail());
+            assertEquals("333111111" + i, dummyCustomers.get(i).getMobilePhone());
+            assertEquals("IT10000000000", dummyCustomers.get(i).getVatNumber());
+            assertTrue(dummyCustomers.get(i).getAddress().equalsByAttributesWithoutId(addressFactory.createValidEntity(i)));
         }
     }
 
     /**
-     * Update one entry partially, edit different attributes and check if the fields are changed correctly
-     */
-    @Test
-    public void testUpdateCustomer() {
-        // get a customer from the repository
-        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
-
-        var address = savedCustomer.getAddress();
-        // change some attributes
-        Address newAddress = addressFactory.createValidEntity(1);
-        savedCustomer.setAddress(newAddress);
-        savedCustomer.setName("Terry");
-        savedCustomer.setUsername("TerryMitchell83");
-        savedCustomer.setPassword("W422g31C38rRtCtM");
-
-        // update the Customer object
-        savedCustomer = customerRepository.save(savedCustomer);
-        Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
-
-        // check that all the attributes have been updated correctly and contain the expected value
-        assertNotNull(updatedCustomer);
-        assertNotNull(updatedCustomer.getAddress());
-        assertEquals(savedCustomer, updatedCustomer);
-        assertEquals("Terry", updatedCustomer.getName());
-        assertEquals("TerryMitchell83", updatedCustomer.getUsername());
-        assertEquals("W422g31C38rRtCtM", updatedCustomer.getPassword());
-        assertEquals(newAddress, updatedCustomer.getAddress());
-        assertNotEquals(address, updatedCustomer.getAddress());
-        assertTrue(addressRepository.findAll().contains(updatedCustomer.getAddress()));
-    }
-
-    /**
-     * Creates a customer with the same username of another and throws an exception when attempting to insert data
-     * by violating an integrity constraint, in particular, the unique constraints.
-     */
-    @Test
-    public void testUniqueCustomerUsernameIdentifier() {
-        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
-        var duplicatedUser = customerFactory.createValidEntity();
-
-        assertThrows(DataIntegrityViolationException.class, () -> {
-            duplicatedUser.setUsername(savedCustomer.getUsername());
-            customerRepository.saveAndFlush(duplicatedUser);
-        });
-    }
-
-    /**
-     * Throws an exception when attempting to create a customer without mandatory attributes
+     * Throws an exception when attempting to create a customer without mandatory attributes.
      */
     @Test
     public void testIllegalCreateCustomer() {
@@ -149,12 +95,138 @@ class CustomerRepositoryTest {
         });
     }
 
+    @Test
+    public void testSave() {
+        Customer customer = customerFactory.createValidEntity(2);
+
+        assertDoesNotThrow(() -> customerRepository.save(customer));
+    }
+
     /**
-     * Throws an exception when attempting to create or update a customer with illegal size for the username attribute
+     * Creates a customer with the same FiscalCode of another and throws an exception when attempting to insert data
+     * by violating the unique constraints on the properties that constitute a natural-id.
+     */
+    @Test
+    public void testUniqueFiscalCodeIdentifier() {
+        var duplicatedCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedCustomer.setFiscalCode("CGNNMO00T00L000C");
+            customerRepository.saveAndFlush(duplicatedCustomer);
+        });
+    }
+
+    /**
+     * Creates a customer with the same username of another and throws an exception when attempting to insert data
+     * by violating the unique constraints.
+     */
+    @Test
+    public void testUniqueCustomerUsername() {
+        var duplicatedCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedCustomer.setUsername("CUserNo0");
+            customerRepository.saveAndFlush(duplicatedCustomer);
+        });
+    }
+
+    /**
+     * Creates a customer with the same email of another and throws an exception when attempting to insert data by
+     * violating the unique constraints.
+     */
+    @Test
+    public void testUniqueEmail() {
+        var duplicatedCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedCustomer.setEmail("Nome0Cognome0@customer-mail.com");
+            customerRepository.saveAndFlush(duplicatedCustomer);
+        });
+    }
+
+    /**
+     * Creates a customer with the same mobile phone of another and throws an exception when attempting to insert data
+     * by violating the unique constraints.
+     */
+    @Test
+    public void testUniqueMobilePhone() {
+        var duplicatedCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedCustomer.setMobilePhone("3331111110");
+            customerRepository.saveAndFlush(duplicatedCustomer);
+        });
+    }
+
+    /**
+     * Test the correct persist of customer address.
+     */
+    @Test
+    public void testCustomerAddress() {
+        // check if the addresses are set correctly
+        for (Customer customer: dummyCustomers) {
+            assertTrue(addressRepository.existsById(customer.getAddress().getId()));
+        }
+    }
+
+    /**
+     * Throws an exception when attempting to create an author with illegal fiscal code.
+     */
+    @Test
+    public void testIllegalFiscalCode() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setFiscalCode("ABCDEFGHIJKLMNOP");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
+    /*
+     * Throws an exception when attempting to create a customer with illegal email.
+     */
+    @Test
+    public void testIllegalEmail() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setEmail("NomeCognome@mail@10.com");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create a customer with illegal mobile phone.
+     */
+    @Test
+    public void testIllegalMobilePhone() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            invalidCustomer.setMobilePhone("0039333123456");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create a customer with illegal date of birth.
+     */
+    @Test
+    public void testIllegalDateOfBirth() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DateTimeException.class, () -> {
+            invalidCustomer.setDateOfBirth(LocalDate.of(1980, 13, 32));
+            customerRepository.save(invalidCustomer);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a customer with illegal size for the username attribute.
      */
     @Test
     public void testIllegalUsernameSize() {
-        var invalidCustomer = customerFactory.createValidEntity();
+        var invalidCustomer = customerFactory.createValidEntity(2);
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidCustomer.setUsername("ChristieCarlsonClark15gennaio1983");
@@ -168,11 +240,11 @@ class CustomerRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update a customer with illegal size for the password attribute
+     * Throws an exception when attempting to create or update a customer with illegal size for the password attribute.
      */
     @Test
     public void testIllegalPasswordSize() {
-        var invalidCustomer = customerFactory.createValidEntity();
+        var invalidCustomer = customerFactory.createValidEntity(2);
 
         assertThrows(DataIntegrityViolationException.class, () -> {
             invalidCustomer.setPassword("-X2LPM4r`2.SJn)nGxW3Dt}4$C+z??\"d7np=fHWDTB`y2ye:w2>\\5Kf,}\\Ks?*NBq7FG./Qp" +
@@ -187,11 +259,11 @@ class CustomerRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create or update a customer with illegal size for the vat number attribute
+     * Throws an exception when attempting to create or update a customer with illegal size for the vat number attribute.
      */
     @Test
     public void testIllegalVatNumberSize() {
-        var invalidCustomer = customerFactory.createValidEntity();
+        var invalidCustomer = customerFactory.createValidEntity(2);
 
         assertThrows(ConstraintViolationException.class, () -> {
             invalidCustomer.setVatNumber("12345678901234567890");
@@ -200,44 +272,163 @@ class CustomerRepositoryTest {
     }
 
     /**
-     * Delete an entry and check if the customer was removed correctly
+     * Throws an exception when attempting to create or update a customer with illegal size for the name attribute.
+     */
+    @Test
+    public void testIllegalNameSize() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidCustomer.setName("PrimoNomeSecondoNomeTerzoNomeQuartoNome");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
+    /**
+     * Throws an exception when attempting to create or update a customer with illegal size for the surname attribute.
+     */
+    @Test
+    public void testIllegalSurnameSize() {
+        var invalidCustomer = customerFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            invalidCustomer.setSurname("PrimoCognomeSecondoCognomeTerzoCognome");
+            customerRepository.saveAndFlush(invalidCustomer);
+        });
+    }
+
+    /**
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly.
+     */
+    @Test
+    public void testUpdateCustomer() {
+        // get a customer from the repository
+        Customer savedCustomer = dummyCustomers.get(0);
+
+        var address = savedCustomer.getAddress();
+        // change some attributes and update the customer object
+        // the address association isn't updated
+        savedCustomer.setName("Nuovo Nome");
+        savedCustomer.setSurname("Nuovo Cognome");
+        savedCustomer.setUsername("NuovoCUserNo");
+        savedCustomer.setPassword("NuovaPassword");
+        savedCustomer.setDateOfBirth(LocalDate.now().minusYears(20));
+        savedCustomer.setEmail("NuovoNomeNuovoCognome@customer-mail.com");
+        savedCustomer.setMobilePhone("3331111100");
+        savedCustomer.setVatNumber("IT10000000011");
+
+        savedCustomer = customerRepository.save(savedCustomer);
+
+        // clear the memory in order to get a new istance of the saved customer from the db
+        customerRepository.flush();
+        entityManager.clear();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
+
+        assertTrue(customerRepository.existsById(updatedCustomer.getId()));
+        assertEquals("Nuovo Nome", updatedCustomer.getName());
+        assertEquals("Nuovo Cognome", updatedCustomer.getSurname());
+        assertEquals("NuovoCUserNo", updatedCustomer.getUsername());
+        assertEquals("NuovaPassword", updatedCustomer.getPassword());
+
+        assertEquals(LocalDate.now().minusYears(20), updatedCustomer.getDateOfBirth());
+        assertEquals("NuovoNomeNuovoCognome@customer-mail.com", updatedCustomer.getEmail());
+        assertEquals("3331111100", updatedCustomer.getMobilePhone());
+        assertEquals("IT10000000011", updatedCustomer.getVatNumber());
+    }
+
+    /**
+     * Throws an exception when attempting to update the immutable natural identifier fiscal code.
+     */
+    @Test
+    public void testUpdateFiscalCode() {
+        // get a customer from the repository, modify the fiscal code and update the customer object
+        Customer savedCustomer = dummyCustomers.get(0);
+
+        assertThrows(JpaSystemException.class, () -> {
+            savedCustomer.setFiscalCode("CGNNMO00A00L000C");
+            customerRepository.saveAndFlush(savedCustomer);
+        }, "It's not possible to updated a customer fiscal code!");
+    }
+
+    /**
+     * Update the address of an entry and check if the fields are changed correctly and that the customer was updated.
+     */
+    @Test
+    public void testUpdateAddress() {
+        // get a customer from the repository, modify the fiscal code and update the customer object
+        Customer savedCustomer = dummyCustomers.get(0);
+        Address savedAddress = savedCustomer.getAddress();
+
+        // modified some prequel attribute and update the istances
+        savedAddress.setStreetAddress("Largo Nomelargo 100");
+        savedAddress.setRegion("Nuova Regione");
+
+        savedAddress = addressRepository.save(savedAddress);
+
+        // clear the memory in order to get a new istance of the saved customer and address from the db
+        addressRepository.flush();
+        entityManager.clear();
+
+        // get the updated customer and hs address from teh repository
+        Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
+        Address updatedAddress = updatedCustomer.getAddress();
+
+        // check that the customer and the address exist
+        assertTrue(customerRepository.existsById(updatedCustomer.getId()));
+        assertTrue(addressRepository.existsById(updatedAddress.getId()));
+
+        // check that the address attribute have been updated correctly
+        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
+        assertEquals("Largo Nomelargo 100", updatedAddress.getStreetAddress());
+        assertEquals("Nuova Regione", updatedAddress.getRegion());
+    }
+
+    /**
+     * Delete an entry and check that the operation has been carried out correctly.
      */
     @Test
     public void testDeleteCustomer() {
-        // get a customer from the repository
-        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
-
-        // delete the customer object
+        // get a customer from the repository and delete it
+        Customer savedCustomer = dummyCustomers.get(0);
         customerRepository.delete(savedCustomer);
 
         // check that the customer has been deleted correctly
-        assertEquals(customerRepository.findById(dummyCustomers.get(0).getId()), Optional.empty());
+        assertFalse(customerRepository.existsById(savedCustomer.getId()));
+    }
 
-        // delete all the entries verifying that the operation has been carried out correctly
+    /**
+     * Delete all the entries verifying that the operation has been carried out correctly.
+     */
+    @Test
+    public void testDeleteAllCustomers() {
         customerRepository.deleteAll();
         assertTrue(customerRepository.findAll().isEmpty());
     }
 
     /**
-     * Throws an exception when attempting to delete the customer address
+     * Throws an exception when attempting to delete the customer address.
      */
     @Test
     public void testDeleteCustomerAddress() {
-        // get a customer and his address from the repository
-        Customer savedCustomer = customerRepository.findById(dummyCustomers.get(0).getId()).get();
+        // get a customer and his address from the repository and delete the address object
+        Customer savedCustomer = dummyCustomers.get(0);
         Address customerAddress = savedCustomer.getAddress();
-
-        // delete the address object
         addressRepository.delete(customerAddress);
 
-        // check that the address has been deleted correctly
-        assertEquals(addressRepository.findById(customerAddress.getId()), Optional.empty());
+        // clear the memory in order to get a new istance of the saved customer and address from the db
+        addressRepository.flush();
+        entityManager.clear();
 
         // throws an exception when attempting to access to a customer object whose address has been deleted
-        assertThrows(AssertionFailedError.class, () -> {
-            assertNull(customerRepository.findById(savedCustomer.getId()).get().getAddress());
-            assertNotEquals(customerAddress, customerRepository.findById(savedCustomer.getId()).get().getAddress());
-        }, "It's not possible to eliminate a customer address");
+        Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
+
+        assertThrows(AssertionFailedError.class,
+                () -> assertFalse(addressRepository.existsById(customerAddress.getId())),
+                "It's not possible to eliminate a customer address");
+        assertTrue(customerRepository.existsById(updatedCustomer.getId()));
+        assertNotNull(updatedCustomer.getAddress());
     }
 
     /* Test search operations */
@@ -262,11 +453,6 @@ class CustomerRepositoryTest {
 
         assertEquals(foundCustomer.get(), dummyCustomers.get(0));
         assertEquals(foundCustomer.get().getId(), dummyCustomers.get(0).getId());
-
-        // try to search for an customer by a not existing id
-        var notFoundCustomer = customerRepository.findById(999L);
-
-        assertTrue(notFoundCustomer.isEmpty());
     }
 
     @Test

@@ -13,12 +13,12 @@ public class CustomerFactory implements EntityFactory<Customer> {
     @Override
     public Customer createValidEntity(int idx) {
         var customer = new Customer();
-        var address = addressFactory.createValidEntity();
+        var address = addressFactory.createValidEntity(idx);
 
         // mandatory attributes
         customer.setFiscalCode("CGNNMO00T00L00" + idx + "C");
         customer.setName("Nome" + idx);
-        customer.setSurname("Cognome" +idx);
+        customer.setSurname("Cognome" + idx);
         customer.setUsername("CUserNo" + idx);
         customer.setPassword("Qwerty1234");
 

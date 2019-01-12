@@ -2,6 +2,7 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Entity
 @Table(name = "addresses")
@@ -97,5 +98,42 @@ public class Address extends AuditModel {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Address)) return false;
+        Address address = (Address) expectedObject;
+        return Objects.equals(getId(), address.getId()) &&
+                Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
+                getBuilding().equals(address.getBuilding()) &&
+                Objects.equals(getCity(), address.getCity()) &&
+                Objects.equals(getProvince(), address.getProvince()) &&
+                getRegion().equals(address.getRegion()) &&
+                Objects.equals(getPostalCode(), address.getPostalCode()) &&
+                Objects.equals(getCountry(), address.getCountry());
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Address)) return false;
+        Address address = (Address) expectedObject;
+        return Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
+                getBuilding().equals(address.getBuilding()) &&
+                Objects.equals(getCity(), address.getCity()) &&
+                Objects.equals(getProvince(), address.getProvince()) &&
+                getRegion().equals(address.getRegion()) &&
+                Objects.equals(getPostalCode(), address.getPostalCode()) &&
+                Objects.equals(getCountry(), address.getCountry());
     }
 }
