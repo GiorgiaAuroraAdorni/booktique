@@ -83,6 +83,8 @@ class BookRepositoryTest {
             assertEquals("Lingua", dummyBooks.get(i).getLanguage());
             assertEquals(LocalDate.of(1999, 1, 1), dummyBooks.get(i).getPublicationDate());
             assertEquals("Sottotitolo", dummyBooks.get(i).getSubtitle());
+            assertAssociationEquals(dummyBooks.get(i).getAuthors(), Set.of(authorFactory.createValidEntity(i)), false);
+
         }
     }
 
