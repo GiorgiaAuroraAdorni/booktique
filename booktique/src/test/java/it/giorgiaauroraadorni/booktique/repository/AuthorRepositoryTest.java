@@ -111,6 +111,34 @@ class AuthorRepositoryTest {
     }
 
     /**
+     * Creates an author with the same email of another and throws an exception when attempting to insert data by
+     * violating the unique constraints.
+     */
+    @Test
+    public void testUniqueEmail() {
+        var duplicatedAuthor = authorFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedAuthor.setEmail("Nome0Cognome0@author-mail.com");
+            authorRepository.saveAndFlush(duplicatedAuthor);
+        });
+    }
+
+    /**
+     * Creates an author with the same mobile phone of another and throws an exception when attempting to insert data
+     * by violating the unique constraints.
+     */
+    @Test
+    public void testUniqueMobilePhone() {
+        var duplicatedAuthor = authorFactory.createValidEntity(2);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            duplicatedAuthor.setMobilePhone("3333333330");
+            authorRepository.saveAndFlush(duplicatedAuthor);
+        });
+    }
+
+    /**
      * Throws an exception when attempting to create an author with illegal fiscal code.
      */
     @Test
@@ -246,14 +274,14 @@ class AuthorRepositoryTest {
         Author updatedAuthor = authorRepository.findById(savedAuthor.getId()).get();
 
         assertTrue(authorRepository.existsById(updatedAuthor.getId()));
-        assertEquals("Nuovo Nome", dummyAuthors.get(0).getName());
-        assertEquals("Nuovo Cognome", dummyAuthors.get(0).getSurname());
-        assertEquals(LocalDate.now().minusYears(35), dummyAuthors.get(0).getDateOfBirth());
-        assertEquals("NuovoNomeNuovoCognome@author-mail.com", dummyAuthors.get(0).getEmail());
-        assertEquals("3333333300", dummyAuthors.get(0).getMobilePhone());
-        assertEquals("https://www.NuovoNomeNuovoCognome.org", dummyAuthors.get(0).getWebSiteURL());
+        assertEquals("Nuovo Nome", updatedAuthor.getName());
+        assertEquals("Nuovo Cognome", updatedAuthor.getSurname());
+        assertEquals(LocalDate.now().minusYears(35), updatedAuthor.getDateOfBirth());
+        assertEquals("NuovoNomeNuovoCognome@author-mail.com", updatedAuthor.getEmail());
+        assertEquals("3333333300", updatedAuthor.getMobilePhone());
+        assertEquals("https://www.NuovoNomeNuovoCognome.org", updatedAuthor.getWebSiteURL());
         assertEquals("To learn more about Nuovo Nome visit the website " + savedAuthor.getWebSiteURL() + " !",
-                dummyAuthors.get(0).getBiography());
+                updatedAuthor.getBiography());
     }
 
     /**
