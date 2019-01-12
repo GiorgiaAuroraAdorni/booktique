@@ -467,7 +467,7 @@ class EmployeeRepositoryTest {
         // throws an exception when attempting to delete a supervisor that has subordinate employees
         assertThrows(AssertionFailedError.class,
                 () -> assertFalse(employeeRepository.existsById(supervisor.getId())),
-                        "It's not possible to eliminate a supervisor if his subordinates have not been first relocated");
+                "It's not possible to eliminate a supervisor if his subordinates have not been first relocated");
 
         // reallocate subordinate employees and update the employee object
         for (Employee e: dummyEmployees) {
@@ -490,7 +490,8 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Delete the employee address and check if the employee was updated correctly.
+     * Throws an exception when attempting to delete an address associated to an Employee.
+     * The correct elimination of an address is allowed only if the employee address is set null before the deletion.
      */
     @Test
     public void testDeleteEmployeeAddress() {
@@ -501,14 +502,10 @@ class EmployeeRepositoryTest {
         // delete the address object
         addressRepository.delete(employeeAddress);
 
-        // check that the address has been deleted correctly
-        assertEquals(addressRepository.findById(employeeAddress.getId()), Optional.empty());
-
         // throws an exception when attempting to access to an employee object whose address has been deleted
         assertThrows(AssertionFailedError.class, () -> {
-            assertNull(employeeRepository.findById(savedEmployee.getId()).get().getAddress());
-            assertNotEquals(employeeAddress, employeeRepository.findById(savedEmployee.getId()).get().getAddress());
-        }, "It's not possible to eliminate an address if his employee haven't been first updated");
+            assertFalse(addressRepository.existsById(employeeAddress.getId()));
+            }, "It's not possible to eliminate an address if his employee haven't been first updated");
 
         // update the employee setting null the supplier address
         savedEmployee.setAddress(null);

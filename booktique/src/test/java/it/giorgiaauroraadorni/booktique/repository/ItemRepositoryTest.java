@@ -3,13 +3,15 @@ package it.giorgiaauroraadorni.booktique.repository;
 import it.giorgiaauroraadorni.booktique.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class ItemRepositoryTest {
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // Set automatically the attribute to the itemRepository instance
     @Autowired
@@ -35,72 +39,50 @@ class ItemRepositoryTest {
     @Autowired
     private EntityFactory<Book> bookFactory;
 
+    @Autowired
+    private EntityFactory<Supplier> supplierFactory;
+
     private List<Item> dummyItems;
 
     @BeforeEach
     void createDummySuppliers() {
-        // create a list of valid item entities
+        // create a list of valid item entities and save them in the itemRepository
+        // books and suppliers were persisted
         dummyItems = itemFactory.createValidEntities(2);
-
-        // save the created entities in the itemRepository and persist books and suppliers
         dummyItems = itemRepository.saveAll(dummyItems);
     }
-
-    /* Test CRUD operations */
 
     @Test
     void repositoryLoads() {}
 
+    /* Test CRUD operations */
+
     /**
-     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     * Insert many entries in the repository and check if these are readable and the attributes are correct.
      */
     @Test
     public void testCreateItem() {
-        List<Item> savedItems = new ArrayList<>();
-
         for (int i = 0; i < dummyItems.size(); i++) {
-            // check if the items id are correctly automatic generated
-            assertNotNull(itemRepository.getOne(dummyItems.get(i).getId()));
-            savedItems.add(itemRepository.getOne(dummyItems.get(i).getId()));
+            // check if the repository is populated
+            assertNotEquals(0, itemRepository.count());
+            assertTrue(itemRepository.existsById(dummyItems.get(i).getId()));
 
             // check if the items contain the createdAt and updatedAt annotation that are automatically populate
-            assertNotNull(savedItems.get(i).getCreatedAt());
-            assertNotNull(savedItems.get(i).getUpdatedAt());
+            // and check if the items id are correctly automatic generated
+            assertNotNull(dummyItems.get(i).getCreatedAt());
+            assertNotNull(dummyItems.get(i).getUpdatedAt());
+            assertNotNull(dummyItems.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals(savedItems.get(i).getQuantityPerUnit(), dummyItems.get(i).getQuantityPerUnit());
-            assertEquals(savedItems.get(i).getUnitPrice(), dummyItems.get(i).getUnitPrice());
-            assertEquals(savedItems.get(i).getBookItem(), dummyItems.get(i).getBookItem());
-            assertEquals(savedItems.get(i).getSupplier(), dummyItems.get(i).getSupplier());
-            assertEquals(savedItems.get(i).getId(), dummyItems.get(i).getId());
+            assertEquals(1, dummyItems.get(i).getQuantityPerUnit());
+            assertEquals(BigDecimal.valueOf(13.49), dummyItems.get(i).getUnitPrice());
+            assertTrue(dummyItems.get(i).getSupplier().equalsByAttributesWithoutId(supplierFactory.createValidEntity(i)));
+            assertTrue(dummyItems.get(i).getBookItem().equalsByAttributesWithoutId(bookFactory.createValidEntity(i)));
         }
     }
 
     /**
-     * Update one entry editing different attributes and check if the fields are changed correctly
-     */
-    @Test
-    public void testUpdateItem() {
-        // get a item from the repository
-        Item savedItem = itemRepository.findById(dummyItems.get(0).getId()).get();
-
-        // change some attributes
-        savedItem.setQuantityPerUnit(2);
-        savedItem.setUnitPrice(BigDecimal.valueOf(34.99));
-
-        // update the item object
-        itemRepository.save(savedItem);
-        Item updatedItem = itemRepository.findById(savedItem.getId()).get();
-
-        // check that all the attributes have been updated correctly and contain the expected value
-        assertNotNull(updatedItem);
-        assertEquals(savedItem, updatedItem);
-        assertEquals(2, updatedItem.getQuantityPerUnit());
-        assertEquals(BigDecimal.valueOf(34.99), updatedItem.getUnitPrice());
-    }
-
-    /**
-     * Throws an exception when attempting to create an item without mandatory attributes
+     * Throws an exception when attempting to create an item without mandatory attributes.
      */
     @Test
     public void testIllegalCreateItem() {
@@ -111,8 +93,36 @@ class ItemRepositoryTest {
         });
     }
 
+    @Test
+    public void testSave() {
+        Item item = itemFactory.createValidEntity(2);
+
+        assertDoesNotThrow(() -> itemRepository.save(item));
+    }
+
     /**
-     * Throws an exception when attempting to create or update an item with illegal precision-scale for the attribute UnitPrice
+     * Test the correct persistence of item suppliers.
+     */
+    @Test
+    public void testItemSupplier() {
+        for (Item item: dummyItems) {
+            assertTrue(supplierRepository.existsById(item.getSupplier().getId()));
+        }
+    }
+
+    /**
+     * Test the correct persistence of item books.
+     */
+    @Test
+    public void testItemBook() {
+        for (Item item: dummyItems) {
+            assertTrue(bookRepository.existsById(item.getBookItem().getId()));
+        }
+    }
+
+    /**
+     * Throws an exception when attempting to create or update an item with illegal precision-scale for the attribute
+     * UnitPrice.
      */
     @Test
     public void testIllegalUnitPriceFormat() {
@@ -125,20 +135,144 @@ class ItemRepositoryTest {
     }
 
     /**
-     * Delete an entry and check if the item was removed correctly
+     * Update one entry editing different attributes and check if the fields are changed correctly.
      */
     @Test
-    public void testDeleteBook() {
+    public void testUpdateItem() {
         // get a item from the repository
-        Item savedItem = itemRepository.findById(dummyItems.get(0).getId()).get();
+        Item savedItem = dummyItems.get(0);
+
+        // change some attributes
+        savedItem.setQuantityPerUnit(2);
+        savedItem.setUnitPrice(BigDecimal.valueOf(34.99));
+
+        // update the item object
+        savedItem = itemRepository.save(savedItem);
+
+        // clear the memory in order to get a new istance of the saved item from the db
+        itemRepository.flush();
+        entityManager.clear();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        Item updatedItem = itemRepository.findById(savedItem.getId()).get();
+
+        assertTrue(itemRepository.existsById(updatedItem.getId()));
+        assertEquals(2, updatedItem.getQuantityPerUnit());
+        assertEquals(BigDecimal.valueOf(34.99), updatedItem.getUnitPrice());
+    }
+
+    /**
+     * Update the supplier of an entry editing different attributes and check if the fields are changed correctly and
+     * that the item was updated.
+     */
+    @Test
+    public void testUpdateSupplier() {
+        // get a item from the repository, modify his supplier and updated the supplier object
+        Item savedItem = dummyItems.get(0);
+        Supplier savedSupplier = savedItem.getSupplier();
+
+        savedSupplier.setCompanyName("Nuova Compagnia");
+        savedSupplier.setPhoneNumber("045612185");
+
+        savedSupplier = supplierRepository.save(savedSupplier);
+
+        // clear the memory in order to get a new istance of the saved item from the db
+        itemRepository.flush();
+        entityManager.clear();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        Item updatedItem = itemRepository.findById(savedItem.getId()).get();
+        Supplier updatedSupplier = updatedItem.getSupplier();
+
+        assertTrue(itemRepository.existsById(updatedItem.getId()));
+        assertTrue(supplierRepository.existsById(updatedSupplier.getId()));
+        assertTrue(updatedSupplier.equalsByAttributes(savedSupplier));
+    }
+
+    /**
+     * Update the book of an entry editing different attributes and check if the fields are changed correctly and
+     * that the item was updated.
+     */
+    @Test
+    public void testUpdateBook() {
+        // get a item from the repository, modify his book item and updated the supplier object
+        Item savedItem = dummyItems.get(0);
+        Book savedBook = savedItem.getBookItem();
+
+        savedBook.setSubtitle("Nuovo sottotitolo");
+        savedBook.setTitle("Nuovo titolo");
+
+        savedBook = bookRepository.save(savedBook);
+
+        // clear the memory in order to get a new istance of the saved item from the db
+        itemRepository.flush();
+        entityManager.clear();
+
+        // check that all the attributes have been updated correctly and contain the expected value
+        Item updatedItem = itemRepository.findById(savedItem.getId()).get();
+        Book updatedBook = updatedItem.getBookItem();
+
+        assertTrue(itemRepository.existsById(updatedItem.getId()));
+        assertTrue(bookRepository.existsById(updatedBook.getId()));
+        assertTrue(updatedBook.equalsByAttributes(savedBook));
+    }
+
+    /**
+     * Delete an entry and check if the item was removed correctly.
+     */
+    @Test
+    public void testDeleteItem() {
+        // get a item from the repository
+        Item savedItem = dummyItems.get(0);
 
         // delete the item object and check that the item has been deleted correctly
         itemRepository.delete(savedItem);
         assertEquals(itemRepository.findById(dummyItems.get(0).getId()), Optional.empty());
+    }
 
-        // delete all the entries verifying that the operation has been carried out correctly
+    /**
+     * Delete all the entries verifying that the operation has been carried out correctly.
+     */
+    @Test
+    public void testDeleteAllItems() {
         itemRepository.deleteAll();
         assertTrue(itemRepository.findAll().isEmpty());
+    }
+
+    /**
+     * Throws an exception when attempting to delete a supplier associated to an item.
+     * The correct elimination of a book is allowed only if the item is first re-associate to another existent supplier.
+     */
+    @Test
+    public void testDeleteItemSupplier() {
+        // get an item and his supplier from the repository and delete the supplier
+        Item item = dummyItems.get(0);
+        Supplier supplier = item.getSupplier();
+        supplierRepository.delete(supplier);
+
+        // throws an exception when attempting to delete an author of a book
+        assertThrows(AssertionFailedError.class, () -> {
+            assertFalse(supplierRepository.existsById(supplier.getId()));
+            assertNull(item.getSupplier());
+            }, "It's not possible to delete a book if it belongs to an item!");
+    }
+
+    /**
+     * Throws an exception when attempting to delete a book associated to an item.
+     * The correct elimination of a book is allowed only if the bookitem is first re-associate to an existent book.
+     */
+    @Test
+    public void testDeleteItemBook() {
+        // get an item and his book from the repository and delete the book
+        Item item = dummyItems.get(0);
+        Book book = item.getBookItem();
+        bookRepository.delete(book);
+
+        // throws an exception when attempting to delete an author of a book
+        assertThrows(AssertionFailedError.class, () -> {
+            assertFalse(bookRepository.existsById(book.getId()));
+            assertNull(item.getBookItem());
+            }, "It's not possible to delete a book if it belongs to an item!");
     }
 
     /* Test search operations */
@@ -170,11 +304,6 @@ class ItemRepositoryTest {
 
         assertEquals(foundItem.get(), dummyItems.get(0));
         assertEquals(foundItem.get().getId(), dummyItems.get(0).getId());
-
-        // try to search for an item by a not existing id
-        var notFoundItem = itemRepository.findById(999L);
-
-        assertTrue(notFoundItem.isEmpty());
     }
 
     @Test

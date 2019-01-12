@@ -4,7 +4,6 @@ import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;

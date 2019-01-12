@@ -246,14 +246,8 @@ class BookRepositoryTest {
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
 
         assertTrue(bookRepository.existsById(updatedBook.getId()));
-        assertEquals("Nuovo Titolo", updatedBook.getTitle());
-        assertEquals("Nuovo Sottotitolo", updatedBook.getSubtitle());
-        assertEquals("Nuovo Editore", updatedBook.getPublisher());
-        assertEquals(Integer.valueOf(2), updatedBook.getEdition());
-        assertEquals("Nuova Lingua", updatedBook.getLanguage());
-        assertEquals(Book.Format.DIGITAL, updatedBook.getBookFormat());
-        assertEquals(LocalDate.of(1999, 1, 1).plusYears(1), updatedBook.getPublicationDate());
-    }
+        assertTrue(updatedBook.equalsByAttributes(savedBook));
+        }
 
     /**
      * Throws an exception when attempting to update the immutable natural identifier isbn.
@@ -375,7 +369,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Delete the prequel of an entry and check was removed correctly and if the entry was updated.
+     * Delete the prequel of an entry and check that was removed correctly and that the entry was updated.
      */
     @Test
     public void testDeleteBookPrequel() {
@@ -403,7 +397,7 @@ class BookRepositoryTest {
     }
 
     /**
-     * Delete the sequel of an entry and check was removed correctly and if the entry was updated.
+     * Delete the sequel of an entry and check that was removed correctly and that the entry was updated.
      */
     @Test
     public void testDeleteBookSequel() {
