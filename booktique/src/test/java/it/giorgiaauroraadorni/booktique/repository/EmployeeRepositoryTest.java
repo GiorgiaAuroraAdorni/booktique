@@ -18,7 +18,6 @@ import javax.validation.ConstraintViolationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +67,7 @@ class EmployeeRepositoryTest {
     @Test
     public void testCreateEmployee() {
        for (int i = 0; i < dummyEmployees.size(); i++) {
+            // check if the repository is populated
             assertNotEquals(0, employeeRepository.count());
             assertTrue(employeeRepository.existsById(dummyEmployees.get(i).getId()));
 
@@ -107,8 +107,6 @@ class EmployeeRepositoryTest {
     @Test
     public void testSave() {
         Employee employee = employeeFactory.createValidEntity(2);
-        employee.setSupervisor(dummyEmployees.get(0));
-
         assertDoesNotThrow(() -> employeeRepository.save(employee));
     }
 
@@ -331,14 +329,7 @@ class EmployeeRepositoryTest {
         Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
 
         assertTrue(employeeRepository.existsById(updatedEmployee.getId()));
-        assertEquals("Nuovo Nome", updatedEmployee.getName());
-        assertEquals("Nuovo Cognome", updatedEmployee.getSurname());
-        assertEquals("NuovoEUserNo", updatedEmployee.getUsername());
-        assertEquals("NuovaPassword", updatedEmployee.getPassword());
-        assertEquals(LocalDate.now().minusYears(35), updatedEmployee.getDateOfBirth());
-        assertEquals("NuovoNomeNuovoCognome@employee-mail.com", updatedEmployee.getEmail());
-        assertEquals("3331111100", updatedEmployee.getMobilePhone());
-        assertEquals(LocalDate.now(), updatedEmployee.getHireDate());
+        assertTrue(updatedEmployee.equalsByAttributes(savedEmployee));
     }
 
     /**
@@ -384,8 +375,7 @@ class EmployeeRepositoryTest {
 
         // check that the address attribute have been updated correctly
         assertTrue(updatedAddress.equalsByAttributes(savedAddress));
-        assertEquals("Largo Nomelargo 100", updatedAddress.getStreetAddress());
-        assertEquals("Nuova Regione", updatedAddress.getRegion());
+        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
     }
 
     /**
@@ -417,8 +407,7 @@ class EmployeeRepositoryTest {
 
         // check that the supervisor attribute have been updated correctly
         assertTrue(updatesSupervisor.equalsByAttributes(savedSupervisor));
-        assertEquals("SupervisorNo1", updatesSupervisor.getUsername());
-        assertEquals("Nome Supervisor", updatesSupervisor.getName());
+        assertTrue(updatesSupervisor.equalsByAttributes(savedSupervisor));
     }
 
     /**
