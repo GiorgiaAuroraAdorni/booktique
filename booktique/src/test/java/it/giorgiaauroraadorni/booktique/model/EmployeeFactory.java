@@ -13,7 +13,7 @@ public class EmployeeFactory implements EntityFactory<Employee> {
     @Override
     public Employee createValidEntity(int idx) {
         var employee = new Employee();
-        var address = addressFactory.createValidEntity();
+        var address = addressFactory.createValidEntity(idx);
 
         // mandatory attributes
         employee.setFiscalCode("CGNNMO00T00L00" + idx + "E");
@@ -29,8 +29,8 @@ public class EmployeeFactory implements EntityFactory<Employee> {
         employee.setHireDate(LocalDate.now().minusYears(5).plusMonths(idx));
         employee.setAddress(address);
 
-        // the self-association with the supervisor isn't created, so the attribute is initially null
-
+        // the self-association is created by default setting each employee as his/her own supervisor
+        employee.setSupervisor(employee);
         return employee;
     }
 }
