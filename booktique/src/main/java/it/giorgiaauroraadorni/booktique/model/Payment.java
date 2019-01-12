@@ -2,8 +2,8 @@ package it.giorgiaauroraadorni.booktique.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "payments")
@@ -78,5 +78,22 @@ public class Payment extends AuditModel {
 
     public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    /**
+     *
+     * @param expectedObject
+     * @return
+     */
+    public boolean equalsByAttributes(Object expectedObject) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Payment)) return false;
+        Payment payment = (Payment) expectedObject;
+        return Objects.equals(getId(), payment.getId()) &&
+                Objects.equals(getCardNumber(), payment.getCardNumber()) &&
+                Objects.equals(getCardholderName(), payment.getCardholderName()) &&
+                Objects.equals(getExpireDate(), payment.getExpireDate()) &&
+                Objects.equals(getCVC(), payment.getCVC()) &&
+                getPaymentDate().equals(payment.getPaymentDate());
     }
 }
