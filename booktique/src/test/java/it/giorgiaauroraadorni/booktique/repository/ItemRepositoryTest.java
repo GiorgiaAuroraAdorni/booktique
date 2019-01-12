@@ -77,7 +77,7 @@ class ItemRepositoryTest {
             assertEquals(1, dummyItems.get(i).getQuantityPerUnit());
             assertEquals(BigDecimal.valueOf(13.49), dummyItems.get(i).getUnitPrice());
             assertTrue(dummyItems.get(i).getSupplier().equalsByAttributesWithoutId(supplierFactory.createValidEntity(i)));
-            assertTrue(dummyItems.get(i).getBookItem().equalsByAttributesWithoutId(bookFactory.createValidEntity(i)));
+            assertTrue(dummyItems.get(i).getBookItem().equalsByAttributesWithoutIdAndAssociations(bookFactory.createValidEntity(i)));
         }
     }
 

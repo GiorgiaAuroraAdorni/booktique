@@ -63,16 +63,7 @@ class AuthorRepositoryTest {
             assertNotNull(dummyAuthors.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("CGNNMO00T00L00" + i + "A", dummyAuthors.get(i).getFiscalCode());
-            assertEquals("Nome" + i, dummyAuthors.get(i).getName());
-            assertEquals("Cognome" + i, dummyAuthors.get(i).getSurname());
-            assertEquals(LocalDate.now().minusYears(35 + i), dummyAuthors.get(i).getDateOfBirth());
-            assertEquals("Nome" + i + "Cognome" + i + "@author-mail.com", dummyAuthors.get(i).getEmail());
-            assertEquals("333333333" + i, dummyAuthors.get(i).getMobilePhone());
-            assertEquals("https://www." + "Nome" + i + "Cognome" + i + ".org", dummyAuthors.get(i).getWebSiteURL());
-            assertEquals("Nome" + i + " is a friendly government politician and has a post-graduate degree " +
-                    "in philosophy, politics and economics. To learn more about " + "Nome" + i + " " +
-                    "Cognome" + i + " visit the website " + "https://www." + "Nome" + i + "Cognome" + i + ".org !", dummyAuthors.get(i).getBiography());
+            assertTrue(dummyAuthors.get(i).equalsByAttributesWithoutId(authorFactory.createValidEntity(i)));
         }
     }
 
@@ -273,14 +264,7 @@ class AuthorRepositoryTest {
         Author updatedAuthor = authorRepository.findById(savedAuthor.getId()).get();
 
         assertTrue(authorRepository.existsById(updatedAuthor.getId()));
-        assertEquals("Nuovo Nome", updatedAuthor.getName());
-        assertEquals("Nuovo Cognome", updatedAuthor.getSurname());
-        assertEquals(LocalDate.now().minusYears(35), updatedAuthor.getDateOfBirth());
-        assertEquals("NuovoNomeNuovoCognome@author-mail.com", updatedAuthor.getEmail());
-        assertEquals("3333333300", updatedAuthor.getMobilePhone());
-        assertEquals("https://www.NuovoNomeNuovoCognome.org", updatedAuthor.getWebSiteURL());
-        assertEquals("To learn more about Nuovo Nome visit the website " + savedAuthor.getWebSiteURL() + " !",
-                updatedAuthor.getBiography());
+        assertTrue(updatedAuthor.equalsByAttributes(savedAuthor));
     }
 
     /**

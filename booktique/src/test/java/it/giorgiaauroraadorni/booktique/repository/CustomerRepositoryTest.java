@@ -35,9 +35,6 @@ class CustomerRepositoryTest {
     @Autowired
     private EntityFactory<Customer> customerFactory;
 
-    @Autowired
-    private EntityFactory<Address> addressFactory;
-
     private List<Customer> dummyCustomers;
 
     @BeforeEach
@@ -70,16 +67,7 @@ class CustomerRepositoryTest {
             assertNotNull(dummyCustomers.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("CGNNMO00T00L00" + i + "C", dummyCustomers.get(i).getFiscalCode());
-            assertEquals("Nome" + i, dummyCustomers.get(i).getName());
-            assertEquals("Cognome" + i, dummyCustomers.get(i).getSurname());
-            assertEquals("CUserNo" + i, dummyCustomers.get(i).getUsername());
-            assertEquals("Qwerty1234", dummyCustomers.get(i).getPassword());
-            assertEquals(LocalDate.now().minusYears(20 + i), dummyCustomers.get(i).getDateOfBirth());
-            assertEquals(dummyCustomers.get(i).getName() + dummyCustomers.get(i).getSurname() + "@customer-mail.com", dummyCustomers.get(i).getEmail());
-            assertEquals("333111111" + i, dummyCustomers.get(i).getMobilePhone());
-            assertEquals("IT10000000000", dummyCustomers.get(i).getVatNumber());
-            assertTrue(dummyCustomers.get(i).getAddress().equalsByAttributesWithoutId(addressFactory.createValidEntity(i)));
+            assertTrue(dummyCustomers.get(i).equalsByAttributesWithoutId(customerFactory.createValidEntity(i)));
         }
     }
 
@@ -325,14 +313,7 @@ class CustomerRepositoryTest {
         Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
 
         assertTrue(customerRepository.existsById(updatedCustomer.getId()));
-        assertEquals("Nuovo Nome", updatedCustomer.getName());
-        assertEquals("Nuovo Cognome", updatedCustomer.getSurname());
-        assertEquals("NuovoCUserNo", updatedCustomer.getUsername());
-        assertEquals("NuovaPassword", updatedCustomer.getPassword());
-        assertEquals(LocalDate.now().minusYears(20), updatedCustomer.getDateOfBirth());
-        assertEquals("NuovoNomeNuovoCognome@customer-mail.com", updatedCustomer.getEmail());
-        assertEquals("3331111100", updatedCustomer.getMobilePhone());
-        assertEquals("IT10000000011", updatedCustomer.getVatNumber());
+        assertTrue(updatedCustomer.equalsByAttributes(savedCustomer));
     }
 
     /**
@@ -378,8 +359,7 @@ class CustomerRepositoryTest {
 
         // check that the address attribute have been updated correctly
         assertTrue(updatedAddress.equalsByAttributes(savedAddress));
-        assertEquals("Largo Nomelargo 100", updatedAddress.getStreetAddress());
-        assertEquals("Nuova Regione", updatedAddress.getRegion());
+        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
     }
 
     /**

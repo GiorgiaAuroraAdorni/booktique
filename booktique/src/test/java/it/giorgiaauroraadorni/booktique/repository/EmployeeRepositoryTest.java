@@ -37,9 +37,6 @@ class EmployeeRepositoryTest {
     @Autowired
     private EntityFactory<Employee> employeeFactory;
 
-    @Autowired
-    private EntityFactory<Address> addressFactory;
-
     private List<Employee> dummyEmployees;
 
     @BeforeEach
@@ -78,17 +75,8 @@ class EmployeeRepositoryTest {
             assertNotNull(dummyEmployees.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("CGNNMO00T00L00" + i + "E", dummyEmployees.get(i).getFiscalCode());
-            assertEquals("Nome" + i, dummyEmployees.get(i).getName());
-            assertEquals("Cognome" + i, dummyEmployees.get(i).getSurname());
-            assertEquals(LocalDate.now().minusYears(30 + i), dummyEmployees.get(i).getDateOfBirth());
-            assertEquals("Nome" + i + "Cognome" + i + "@employee-mail.com", dummyEmployees.get(i).getEmail());
-            assertEquals("333000000" + i, dummyEmployees.get(i).getMobilePhone());
-            assertEquals("EUserNo" + i, dummyEmployees.get(i).getUsername());
-            assertEquals("Qwerty1234", dummyEmployees.get(i).getPassword());
-            assertEquals(dummyEmployees.get(0), dummyEmployees.get(i).getSupervisor());
-            assertEquals(LocalDate.now().minusYears(5).plusMonths(i), dummyEmployees.get(i).getHireDate());
-            assertTrue(dummyEmployees.get(i).getAddress().equalsByAttributesWithoutId(addressFactory.createValidEntity(i)));
+            assertTrue(dummyEmployees.get(i).equalsByAttributesWithoutId(employeeFactory.createValidEntity(i)));
+            assertTrue(dummyEmployees.get(i).getSupervisor().equalsByAttributes(dummyEmployees.get(0)));
         }
     }
 

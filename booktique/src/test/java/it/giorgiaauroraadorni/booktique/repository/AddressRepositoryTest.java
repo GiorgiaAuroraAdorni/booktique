@@ -62,14 +62,7 @@ class AddressRepositoryTest {
             assertNotNull(dummyAddresses.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("Via Nomevia 99", dummyAddresses.get(i).getStreetAddress());
-            assertEquals("Appartamento 2 terzo piano", dummyAddresses.get(i).getBuilding());
-            assertEquals("Città", dummyAddresses.get(i).getCity());
-            assertEquals("CT", dummyAddresses.get(i).getProvince());
-            assertEquals("Stato", dummyAddresses.get(i).getCountry());
-            assertEquals("00000", dummyAddresses.get(i).getPostalCode());
-            assertEquals("Regione", dummyAddresses.get(i).getRegion());
-            assertNotNull(dummyAddresses.get(i).getId());
+            assertTrue(dummyAddresses.get(i).equalsByAttributesWithoutId(addressFactory.createValidEntity(i)));
         }
     }
 
@@ -202,13 +195,7 @@ class AddressRepositoryTest {
         Address updatedAddress = addressRepository.findById(savedAddress.getId()).get();
 
         assertTrue(addressRepository.existsById(savedAddress.getId()));
-        assertEquals("Largo Nomelargo 100", updatedAddress.getStreetAddress());
-        assertEquals("Nuova Città", updatedAddress.getCity());
-        assertEquals("NC", updatedAddress.getProvince());
-        assertEquals("11111", updatedAddress.getPostalCode());
-        assertEquals("Nuova Regione", updatedAddress.getRegion());
-        assertEquals("Nuovo Stato", updatedAddress.getCountry());
-        assertEquals("Edificio 1", updatedAddress.getBuilding());
+        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
     }
 
     /**

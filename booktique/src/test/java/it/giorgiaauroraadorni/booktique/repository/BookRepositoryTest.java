@@ -1,6 +1,5 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
-import com.sun.source.tree.LambdaExpressionTree;
 import it.giorgiaauroraadorni.booktique.model.Author;
 import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.EntityFactory;
@@ -15,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
 import java.util.*;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAssociationEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -66,7 +65,7 @@ class BookRepositoryTest {
         for (int i = 0; i < dummyBooks.size(); i++) {
             // check if the repository is populated
             assertNotEquals(0, bookRepository.count());
-            assertNotNull(bookRepository.existsById(dummyBooks.get(i).getId()));
+            assertTrue(bookRepository.existsById(dummyBooks.get(i).getId()));
 
             // check if the books contain the createdAt and updatedAt annotation that are automatically populate,
             // and check if the books id are correctly automatic generated
@@ -75,16 +74,10 @@ class BookRepositoryTest {
             assertNotNull(dummyBooks.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("978-00-00-00000-" + i, dummyBooks.get(i).getIsbn());
-            assertEquals("Titolo", dummyBooks.get(i).getTitle());
-            assertEquals("Editore", dummyBooks.get(i).getPublisher());
-            assertEquals(Book.Format.HARDCOVER, dummyBooks.get(i).getBookFormat());
-            assertEquals(Integer.valueOf(1), dummyBooks.get(i).getEdition());
-            assertEquals("Lingua", dummyBooks.get(i).getLanguage());
-            assertEquals(LocalDate.of(1999, 1, 1), dummyBooks.get(i).getPublicationDate());
-            assertEquals("Sottotitolo", dummyBooks.get(i).getSubtitle());
+            assertTrue(dummyBooks.get(i).equalsByAttributesWithoutIdAndAssociations(bookFactory.createValidEntity(i)));
             assertAssociationEquals(dummyBooks.get(i).getAuthors(), Set.of(authorFactory.createValidEntity(i)), false);
 
+            // FIXME missing assert on authors
         }
     }
 
@@ -126,7 +119,6 @@ class BookRepositoryTest {
      */
     @Test
     public void testBookAuthors() {
-        // check if the authors are set correctly
         for (Book book: dummyBooks)
             for (Author a: book.getAuthors()) {
                 assertTrue(authorRepository.existsById(a.getId()));
