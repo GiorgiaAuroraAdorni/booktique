@@ -20,9 +20,7 @@ $ docker-compose up
 ```
 
 An alternative to `docker-compose up` is the command `docker-compose up --build` that allows the rebuild of the app.  
-The application will be available at <http://localhost:8080/> .  
-In addition, the `docker-compose.yml` file also starts an instance of pgAdmin to
-access the database directly: you can reach it at <http://localhost:5005/>.
+The database is available at <http://localhost:5432/>, (you can find the necessary credentials to access to pgAdmin and interact with the model in the `docker-compose.yml`).
 
 Docker Compose also allows to locally run the unit tests:
 
@@ -30,12 +28,25 @@ Docker Compose also allows to locally run the unit tests:
 $ docker-compose run app mvn test
 ```
 
-## Application
+It is also possible to generate the API References using Javadoc:
 
-Booktique is a system that implements an online book store. <!-- spiegazione generale -->   
-The basic interface involves querying books according to the fields ISBN, title, author, publisher, language etc. We support services for buying books. We build a personal profile page which is used for handling customer orders. We implement a ”recommendation system” for recommending related books (prequels and sequels) based on those searched and purchased. 
+```
+$ mvn javadoc:javadoc
+$ mvn javadoc:test-javadoc
+```
 
-### Model
+## Containerization
+
+The application is composed of two main components:
+
+- **app:** the Java application, developed using the Spring Boot Maven plugin, that provides many convenient features such as the built-in dependency resolver, and the ORM Hibernate.
+- **database:** a PostgreSQL instance responsible for persistently storing the users data.
+
+No web interface has been created.
+
+Docker is used to containerize each of the two components, allowing to simplify the setup process of the development environment creating images that contain all dependencies needed.
+
+The Docker-compose produces three images: db, pgAdmin and the application.
 
 ![alt text](images/ER-Booktique.PNG)
 
