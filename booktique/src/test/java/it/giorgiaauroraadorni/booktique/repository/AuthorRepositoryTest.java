@@ -17,6 +17,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.*;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -63,7 +64,7 @@ class AuthorRepositoryTest {
             assertNotNull(dummyAuthors.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertTrue(dummyAuthors.get(i).equalsByAttributesWithoutId(authorFactory.createValidEntity(i)));
+            assertAttributesEquals(authorFactory.createValidEntity(i), dummyAuthors.get(i), false);
         }
     }
 
@@ -264,7 +265,7 @@ class AuthorRepositoryTest {
         Author updatedAuthor = authorRepository.findById(savedAuthor.getId()).get();
 
         assertTrue(authorRepository.existsById(updatedAuthor.getId()));
-        assertTrue(updatedAuthor.equalsByAttributes(savedAuthor));
+        assertAttributesEquals(savedAuthor, updatedAuthor, true);
     }
 
     /**

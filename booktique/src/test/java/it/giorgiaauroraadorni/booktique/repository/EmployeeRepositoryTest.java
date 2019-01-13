@@ -19,6 +19,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -75,8 +76,8 @@ class EmployeeRepositoryTest {
             assertNotNull(dummyEmployees.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertTrue(dummyEmployees.get(i).equalsByAttributesWithoutId(employeeFactory.createValidEntity(i)));
-            assertTrue(dummyEmployees.get(i).getSupervisor().equalsByAttributes(dummyEmployees.get(0)));
+            assertAttributesEquals(employeeFactory.createValidEntity(i), dummyEmployees.get(i), false);
+            assertAttributesEquals(dummyEmployees.get(0), dummyEmployees.get(i).getSupervisor(), true);
         }
     }
 
@@ -315,9 +316,8 @@ class EmployeeRepositoryTest {
 
         // check that all the attributes have been updated correctly and contain the expected value
         Employee updatedEmployee = employeeRepository.findById(savedEmployee.getId()).get();
-
         assertTrue(employeeRepository.existsById(updatedEmployee.getId()));
-        assertTrue(updatedEmployee.equalsByAttributes(savedEmployee));
+        assertAttributesEquals(savedEmployee, updatedEmployee, true);
     }
 
     /**
@@ -362,8 +362,7 @@ class EmployeeRepositoryTest {
         assertTrue(addressRepository.existsById(updatedAddress.getId()));
 
         // check that the address attribute have been updated correctly
-        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
-        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
+        assertAttributesEquals(savedEmployee, updatedEmployee, true);
     }
 
     /**
@@ -394,8 +393,8 @@ class EmployeeRepositoryTest {
         assertTrue(employeeRepository.existsById(updatesSupervisor.getId()));
 
         // check that the supervisor attribute have been updated correctly
-        assertTrue(updatesSupervisor.equalsByAttributes(savedSupervisor));
-        assertTrue(updatesSupervisor.equalsByAttributes(savedSupervisor));
+        assertAttributesEquals(savedEmployee, updatedEmployee, true);
+        assertAttributesEquals(savedSupervisor, updatesSupervisor, true);
     }
 
     /**

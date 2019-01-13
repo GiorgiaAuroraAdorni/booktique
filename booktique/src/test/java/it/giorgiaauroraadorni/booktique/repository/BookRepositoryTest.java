@@ -16,7 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.*;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAssociationEquals;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -74,10 +74,8 @@ class BookRepositoryTest {
             assertNotNull(dummyBooks.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertTrue(dummyBooks.get(i).equalsByAttributesWithoutIdAndAssociations(bookFactory.createValidEntity(i)));
+            assertAttributesEquals(bookFactory.createValidEntity(i), dummyBooks.get(i), false);
             assertAssociationEquals(dummyBooks.get(i).getAuthors(), Set.of(authorFactory.createValidEntity(i)), false);
-
-            // FIXME missing assert on authors
         }
     }
 
@@ -240,8 +238,8 @@ class BookRepositoryTest {
         Book updatedBook = bookRepository.findById(savedBook.getId()).get();
 
         assertTrue(bookRepository.existsById(updatedBook.getId()));
-        assertTrue(updatedBook.equalsByAttributes(savedBook));
-        }
+        assertAttributesEquals(savedBook, updatedBook, true);
+    }
 
     /**
      * Throws an exception when attempting to update the immutable natural identifier isbn.
@@ -266,13 +264,12 @@ class BookRepositoryTest {
         Book savedBook = dummyBooks.get(0);
         Set<Author> savedBookAuthors = savedBook.getAuthors();
 
-        // add an author to the savedBookAuthors
+        // add an author to the savedBookAuthors and update the object
         var author = authorFactory.createValidEntity(3);
+        author = authorRepository.save(author);
+
         savedBookAuthors.add(author);
         savedBook.setAuthors(savedBookAuthors);
-
-        // update the book object
-        savedBook = bookRepository.save(savedBook);
 
         // clear the memory in order to get new istances of the saved book and the authors from the db
         bookRepository.flush();
@@ -283,23 +280,11 @@ class BookRepositoryTest {
 
         // check that all the attributes have been updated correctly and contain the expected value
         assertTrue(bookRepository.existsById(updatedBook.getId()));
-        //FIXME
-        //assertEquals(savedBookAuthors, updatedBookAuthors);
-        assertTrue(savedBookAuthors.equals(updatedBookAuthors));
-        assertFalse(dummyBooks.get(0).getAuthors().equals(updatedBookAuthors));
-//        for (Author updatedAuthor: updatedBookAuthors) {
-//            assertTrue(authorRepository.existsById(updatedAuthor.getId()));
-//        }
-//        for (int i = 0; i < updatedBookAuthors.size(); i++) {
-//            for (Author updatedAuthor: updatedBookAuthors) {
-//                updatedAuthor.getId();
-//                for (Author savedAuthor: savedBookAuthors) {
-//
-//                }
-//            }
-//
-//            assertTrue();
-//        }
+        for (Author a: updatedBookAuthors) {
+            assertTrue(authorRepository.existsById(a.getId()));
+        }
+        assertAttributesEquals(savedBook, updatedBook, true);
+        assertAssociationEquals(savedBookAuthors, updatedBookAuthors, true);
     }
 
     /**
@@ -330,14 +315,14 @@ class BookRepositoryTest {
 
         // check that the sequel book attributes have been updated correctly and contain the expected value
         assertNotNull(updatedSequel.getPrequel());
-        assertTrue(updatedSequel.getPrequel().equalsByAttributes(prequel));
+        assertAttributesEquals(prequel, updatedSequel.getPrequel(), true);
         assertEquals("Nuovo sottotitolo", updatedSequel.getPrequel().getSubtitle());
         assertEquals("Nuovo titolo", updatedSequel.getPrequel().getTitle());
 
         // check that the prequel book attributes have been updated correctly and contain the expected value
-        assertTrue(updatedPrequel.equalsByAttributes(prequel));
+        assertAttributesEquals(prequel, updatedPrequel, true);
         assertNotNull(updatedPrequel.getSequel());
-        assertTrue(updatedPrequel.getSequel().equalsByAttributes(updatedSequel));
+        assertAttributesEquals(updatedSequel, updatedPrequel.getSequel(), true);
     }
 
     /**
@@ -387,7 +372,7 @@ class BookRepositoryTest {
         // been updated correctly
         assertTrue(bookRepository.existsById(updatedSequel.getId()));
         assertNull(updatedSequel.getPrequel());
-        assertTrue(updatedSequel.equalsByAttributes(sequel));
+        assertAttributesEquals(sequel, updatedSequel, true);
     }
 
     /**
@@ -415,7 +400,7 @@ class BookRepositoryTest {
         // have been updated correctly
         assertTrue(bookRepository.existsById(updatedPrequel.getId()));
         assertNull(updatedPrequel.getSequel());
-        assertTrue(updatedPrequel.equalsByAttributes(prequel));
+        assertAttributesEquals(prequel, updatedPrequel, true);
     }
 
     /**

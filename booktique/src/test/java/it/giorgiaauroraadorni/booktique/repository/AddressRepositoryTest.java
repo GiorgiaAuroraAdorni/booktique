@@ -16,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -62,7 +63,7 @@ class AddressRepositoryTest {
             assertNotNull(dummyAddresses.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertTrue(dummyAddresses.get(i).equalsByAttributesWithoutId(addressFactory.createValidEntity(i)));
+            assertAttributesEquals(addressFactory.createValidEntity(i), dummyAddresses.get(i), false);
         }
     }
 
@@ -195,7 +196,7 @@ class AddressRepositoryTest {
         Address updatedAddress = addressRepository.findById(savedAddress.getId()).get();
 
         assertTrue(addressRepository.existsById(savedAddress.getId()));
-        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
+        assertAttributesEquals(savedAddress, updatedAddress, true);
     }
 
     /**

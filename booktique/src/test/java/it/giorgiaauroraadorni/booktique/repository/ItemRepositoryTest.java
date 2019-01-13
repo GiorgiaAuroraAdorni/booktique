@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -74,10 +75,7 @@ class ItemRepositoryTest {
             assertNotNull(dummyItems.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals(1, dummyItems.get(i).getQuantityPerUnit());
-            assertEquals(BigDecimal.valueOf(13.49), dummyItems.get(i).getUnitPrice());
-            assertTrue(dummyItems.get(i).getSupplier().equalsByAttributesWithoutId(supplierFactory.createValidEntity(i)));
-            assertTrue(dummyItems.get(i).getBookItem().equalsByAttributesWithoutIdAndAssociations(bookFactory.createValidEntity(i)));
+            assertAttributesEquals(itemFactory.createValidEntity(i), dummyItems.get(i), false);
         }
     }
 
@@ -186,7 +184,7 @@ class ItemRepositoryTest {
 
         assertTrue(itemRepository.existsById(updatedItem.getId()));
         assertTrue(supplierRepository.existsById(updatedSupplier.getId()));
-        assertTrue(updatedSupplier.equalsByAttributes(savedSupplier));
+        assertAttributesEquals(savedItem, updatedItem, true);
     }
 
     /**
@@ -214,7 +212,7 @@ class ItemRepositoryTest {
 
         assertTrue(itemRepository.existsById(updatedItem.getId()));
         assertTrue(bookRepository.existsById(updatedBook.getId()));
-        assertTrue(updatedBook.equalsByAttributes(savedBook));
+        assertAttributesEquals(savedItem, updatedItem, true);
     }
 
     /**

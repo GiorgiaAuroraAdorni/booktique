@@ -15,8 +15,8 @@ import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.util.*;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -62,11 +62,7 @@ class PaymentRepositoryTest {
             assertNotNull(dummyPayments.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertEquals("Nome Cognome", dummyPayments.get(i).getCardholderName());
-            assertEquals("0000000000000000", dummyPayments.get(i).getCardNumber());
-            assertEquals("000", dummyPayments.get(i).getCVC());
-            assertEquals(LocalDate.now().plusYears(5), dummyPayments.get(i).getExpireDate());
-            assertEquals(LocalDate.now(), dummyPayments.get(i).getPaymentDate());
+            assertAttributesEquals(paymentFactory.createValidEntity(i), dummyPayments.get(i), false);
         }
     }
 
@@ -187,7 +183,7 @@ class PaymentRepositoryTest {
         Payment updatedPayment = paymentRepository.findById(savedPayment.getId()).get();
 
         assertTrue(paymentRepository.existsById(updatedPayment.getId()));
-        assertTrue(updatedPayment.equalsByAttributes(savedPayment));
+        assertAttributesEquals(savedPayment, updatedPayment, true);
     }
 
     /**

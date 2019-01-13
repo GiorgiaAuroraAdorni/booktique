@@ -17,6 +17,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -67,7 +68,7 @@ class CustomerRepositoryTest {
             assertNotNull(dummyCustomers.get(i).getId());
 
             // check that all the attributes have been created correctly and contain the expected value
-            assertTrue(dummyCustomers.get(i).equalsByAttributesWithoutId(customerFactory.createValidEntity(i)));
+            assertAttributesEquals(customerFactory.createValidEntity(i), dummyCustomers.get(i), false);
         }
     }
 
@@ -313,7 +314,7 @@ class CustomerRepositoryTest {
         Customer updatedCustomer = customerRepository.findById(savedCustomer.getId()).get();
 
         assertTrue(customerRepository.existsById(updatedCustomer.getId()));
-        assertTrue(updatedCustomer.equalsByAttributes(savedCustomer));
+        assertAttributesEquals(savedCustomer, updatedCustomer, true);
     }
 
     /**
@@ -358,8 +359,7 @@ class CustomerRepositoryTest {
         assertTrue(addressRepository.existsById(updatedAddress.getId()));
 
         // check that the address attribute have been updated correctly
-        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
-        assertTrue(updatedAddress.equalsByAttributes(savedAddress));
+        assertAttributesEquals(savedCustomer, updatedCustomer, true);
     }
 
     /**
