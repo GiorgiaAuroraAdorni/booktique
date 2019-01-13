@@ -82,6 +82,25 @@ Between those entities ther's 15 relations, in particular:
 
 All entities will also inherit from a Auditable abstract class that provides the `createdDate` and `modifiedDate` attributes using **JPA Auditing**. This allows to track changes to the entities made from the Java application.
 
+## Project architecture and responsibility
 
+The application consists of two parts:
 
+- `booktique / src / main` :
+   - `BooktiqueApplication.java` is the class that serves as the entrypoint of the app.
+   - `model` is the package containing the models used by the application. The domain models are the java classes that are mapped to the corresponding tables in the database. Every model is decorated with Hibernate annotations in order to perform operations on the relational database.
+
+The application consists of two parts:
+
+- `booktique/src/main` contains the source code files of the application:
+
+  - `BooktiqueApplication.java` is the class that serves as the entrypoint of the app.
+  - `model` is the package containing the models used by the application. The domain models are the java classes that are mapped to the corresponding tables in the database. Every model is decorated with Hibernate annotations in order to perform operations on the relational database.
+
+  - `repository`: contains repository interfaces for all models, excluding abstract classes. **Spring Data JPA** create automatically a repository implementations from the repository interface. Extending `JpaRepository` every repository inherits several methods for working with entity persistence, including methods that implement CRUD operations such as save and delete,  but also for entity search operations.  
+    Spring Data JPA also allows defining other custom query methods by simply declaring their method signature. For all models, customized `findBy{...}()` methods have been implemented. For example in the case of `BookRepository` the `findByAuthors_Name()` method.
+  - `utility` contains usefull classes and interface for operating on associations and entities:
+    - `Associations.java` a class containing a static method that return `true` if two associations are equal to each other.
+    - `EntityEqualsByAttributes.java` an interface that compare two instances and return `true` if the entities are equal to each other.
+    - `EntityToDict.java` an interface the trasform an entity in a dictionary.
 
