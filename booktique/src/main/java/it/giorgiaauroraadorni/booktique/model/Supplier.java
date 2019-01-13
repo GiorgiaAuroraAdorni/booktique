@@ -97,7 +97,9 @@ public class Supplier extends AuditModel implements EntityToDict, EntityEqualsBy
             dictionaryAttributes.put("id", this.getId());
         }
         dictionaryAttributes.put("companyName", this.getCompanyName());
-        dictionaryAttributes.put("address", this.getAddress());
+        if (this.getAddress() != null) {
+            dictionaryAttributes.put("address", this.getAddress().entityToDict(optionalId));
+        }
         dictionaryAttributes.put("email", this.getEmail());
         dictionaryAttributes.put("phoneNumber", this.getPhoneNumber());
 
