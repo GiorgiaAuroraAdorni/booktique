@@ -5,8 +5,8 @@ public interface EntityEqualsByAttributes {
     /**
      *
      * @param expectedObject
-     * @param OptionalId
+     * @param optionalId
      * @return
      */
-    boolean equalsByAttributes(Object expectedObject, boolean OptionalId);
+    boolean equalsByAttributes(Object expectedObject, boolean optionalId);
 }

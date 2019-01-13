@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "authors")
-public class Author extends Person implements EntityToDict {
+public class Author extends Person implements EntityToDict, EntityEqualsByAttributes {
 
     @Column(length = 280)
     private String biography;
@@ -35,20 +36,16 @@ public class Author extends Person implements EntityToDict {
         this.webSiteURL = webSiteURL;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
+    @Override
     public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Author)) return false;
-        if (optionalId) {
-            if(!(super.equalsByAttributes(expectedObject))) return false;
-        } else {
-            if(!(super.equalsByAttributesWithoutId(expectedObject))) return false;
-        }
         Author author = (Author) expectedObject;
+        if (optionalId) {
+            if(!(super.equalsByAttributes(author, true))) return false;
+        } else {
+            if(!(super.equalsByAttributes(author, false))) return false;
+        }
         return getBiography().equals(author.getBiography()) &&
                 getWebSiteURL().equals(author.getWebSiteURL());
     }

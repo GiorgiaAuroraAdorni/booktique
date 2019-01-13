@@ -1,5 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
@@ -7,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "payments")
-public class Payment extends AuditModel {
+public class Payment extends AuditModel implements EntityEqualsByAttributes {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
@@ -85,23 +87,13 @@ public class Payment extends AuditModel {
      * @param expectedObject
      * @return
      */
-    public boolean equalsByAttributes(Object expectedObject) {
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Payment)) return false;
         Payment payment = (Payment) expectedObject;
-        return Objects.equals(getId(), payment.getId()) &&
-                this.equalsByAttributesWithoutId(payment);
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Payment)) return false;
-        Payment payment = (Payment) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), payment.getId()))) return false;
+        }
         return Objects.equals(getCardNumber(), payment.getCardNumber()) &&
                 Objects.equals(getCardholderName(), payment.getCardholderName()) &&
                 (getExpireDate() == payment.getExpireDate() || (getExpireDate() != null && getExpireDate().isEqual(payment.getExpireDate()))) &&

@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "addresses")
-public class Address extends AuditModel implements EntityToDict {
+public class Address extends AuditModel implements EntityToDict, EntityEqualsByAttributes {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -104,26 +105,14 @@ public class Address extends AuditModel implements EntityToDict {
         this.country = country;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
-        Address address = (Address) expectedObject;
-        return Objects.equals(getId(), address.getId()) &&
-                this.equalsByAttributesWithoutId(address);
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+    @Override
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Address)) return false;
         Address address = (Address) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), address.getId()))) return false;
+        }
         return Objects.equals(getStreetAddress(), address.getStreetAddress()) &&
                 getBuilding().equals(address.getBuilding()) &&
                 Objects.equals(getCity(), address.getCity()) &&

@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import org.hibernate.annotations.Check;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.NonNull;
@@ -12,7 +13,7 @@ import java.util.*;
 @Entity
 @Check(constraints = "order_date <= shipping_date")
 @Table(name = "purchases")
-public class Purchase extends AuditModel {
+public class Purchase extends AuditModel implements EntityEqualsByAttributes {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
@@ -139,45 +140,6 @@ public class Purchase extends AuditModel {
     }
 
     /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
-        Purchase purchase = (Purchase) expectedObject;
-        return Objects.equals(getId(), purchase.getId()) &&
-                (getCustomer() == purchase.getCustomer() || (getCustomer() != null &&
-                        getCustomer().equalsByAttributes(purchase.getCustomer()))) &&
-                (getPaymentDetails() == purchase.getPaymentDetails() || (getPaymentDetails() != null &&
-                        getPaymentDetails().equalsByAttributes(purchase.getPaymentDetails()))) &&
-                (getEmployee() == purchase.getEmployee() || (getEmployee() != null &&
-                        getEmployee().equalsByAttributes(purchase.getEmployee())));
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributeWithoutId(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Purchase)) return false;
-        Purchase purchase = (Purchase) expectedObject;
-        return (getOrderDate() == purchase.getOrderDate() ||
-                (getOrderDate() != null && getOrderDate().isEqual(purchase.getOrderDate()))) &&
-                (getShippingDate() == purchase.getShippingDate() || (getShippingDate() != null &&
-                        getShippingDate().isEqual(purchase.getShippingDate()))) &&
-                getStatus() == purchase.getStatus() &&
-                (getCustomer() == purchase.getCustomer() || (getCustomer() != null &&
-                        getCustomer().equalsByAttributesWithoutId(purchase.getCustomer()))) &&
-                (getPaymentDetails() == purchase.getPaymentDetails() || (getPaymentDetails() != null &&
-                        getPaymentDetails().equalsByAttributesWithoutId(purchase.getPaymentDetails()))) &&
-                (getEmployee() == purchase.getEmployee() || (getEmployee() != null &&
-                        getEmployee().equalsByAttributesWithoutId(purchase.getEmployee())));
-        // ignore item
-    }
-
-    /**
      * Called before every insertion and every update to check in the first case that at least one item has been added
      * to the purchase, and in the second case to verify that all the items have not been deleted from the
      * purchase.
@@ -190,5 +152,27 @@ public class Purchase extends AuditModel {
         if (this.getItems().isEmpty()) {
             throw new DataIntegrityViolationException("Invalid puchase. No items have been added to the purchase.");
         }
+    }
+
+    @Override
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Purchase)) return false;
+        Purchase purchase = (Purchase) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), purchase.getId()))) return false;
+        }
+        return (getOrderDate() == purchase.getOrderDate() ||
+                (getOrderDate() != null && getOrderDate().isEqual(purchase.getOrderDate()))) &&
+                (getShippingDate() == purchase.getShippingDate() || (getShippingDate() != null &&
+                        getShippingDate().isEqual(purchase.getShippingDate()))) &&
+                getStatus() == purchase.getStatus() &&
+                (getCustomer() == purchase.getCustomer() || (getCustomer() != null &&
+                        getCustomer().equalsByAttributes(purchase.getCustomer(), optionalId))) &&
+                (getPaymentDetails() == purchase.getPaymentDetails() || (getPaymentDetails() != null &&
+                        getPaymentDetails().equalsByAttributes(purchase.getPaymentDetails(), optionalId))) &&
+                (getEmployee() == purchase.getEmployee() || (getEmployee() != null &&
+                        getEmployee().equalsByAttributes(purchase.getEmployee(), optionalId)));
+                // ignore item
     }
 }

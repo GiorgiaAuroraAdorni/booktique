@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 import org.hibernate.annotations.NaturalId;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "books")
-public class Book extends AuditModel implements Serializable, EntityToDict {
+public class Book extends AuditModel implements Serializable, EntityToDict, EntityEqualsByAttributes {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -182,37 +183,6 @@ public class Book extends AuditModel implements Serializable, EntityToDict {
     }
 
     /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
-        Book book = (Book) expectedObject;
-        return this.equalsByAttributesWithoutIdAndAssociations(expectedObject)
-                && Objects.equals(getId(), book.getId());
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutIdAndAssociations(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Book)) return false;
-        Book book = (Book) expectedObject;
-        return Objects.equals(getIsbn(), book.getIsbn()) &&
-                Objects.equals(getTitle(), book.getTitle()) &&
-                getSubtitle().equals(book.getSubtitle()) &&
-                Objects.equals(getPublisher(), book.getPublisher()) &&
-                getEdition().equals(book.getEdition()) &&
-                getLanguage().equals(book.getLanguage()) &&
-                getBookFormat() == book.getBookFormat() &&
-                getPublicationDate().isEqual(book.getPublicationDate());
-        // ignore associations
-    }
-
-    /**
      * Called before every deletion to update the prequel and sequel attributes of the book that needs to be deleted.
      * The prequel sequel and the sequel prequel of the current book, which refer to the book that is being
      * deleted, are set to null.
@@ -257,5 +227,24 @@ public class Book extends AuditModel implements Serializable, EntityToDict {
         dictionaryAttributes.put("format", this.getBookFormat());
 
         return dictionaryAttributes;
+    }
+
+    @Override
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
+        if (this == expectedObject) return true;
+        if (!(expectedObject instanceof Book)) return false;
+        Book book = (Book) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), book.getId()))) return false;
+        }
+        return Objects.equals(getIsbn(), book.getIsbn()) &&
+                Objects.equals(getTitle(), book.getTitle()) &&
+                getSubtitle().equals(book.getSubtitle()) &&
+                Objects.equals(getPublisher(), book.getPublisher()) &&
+                getEdition().equals(book.getEdition()) &&
+                getLanguage().equals(book.getLanguage()) &&
+                getBookFormat() == book.getBookFormat() &&
+                getPublicationDate().isEqual(book.getPublicationDate());
+                // ignore associations
     }
 }

@@ -1,5 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
+
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -7,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "customers")
-public class Customer extends Person {
+public class Customer extends Person implements EntityEqualsByAttributes {
 
     @Column(unique = true, length = 32, nullable = false)
     @Size(min = 5)
@@ -59,34 +61,16 @@ public class Customer extends Person {
         this.address = address;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
+    @Override
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Customer)) return false;
-        if(!(super.equalsByAttributes(expectedObject))) return false;
         Customer customer = (Customer) expectedObject;
-        return this.equalsByAttributesWithoutId(expectedObject) &&
-                getAddress().equalsByAttributes(customer.getAddress());
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Customer)) return false;
-        if(!(super.equalsByAttributesWithoutId(expectedObject))) return false;
-        Customer customer = (Customer) expectedObject;
+        if(!(super.equalsByAttributes(customer, optionalId))) return false;
         return Objects.equals(getUsername(), customer.getUsername()) &&
                 Objects.equals(getPassword(), customer.getPassword()) &&
                 getVatNumber().equals(customer.getVatNumber()) &&
                 (getAddress() == customer.getAddress() ||
-                (getAddress() != null && getAddress().equalsByAttributesWithoutId(customer.getAddress())));
+                (getAddress() != null && getAddress().equalsByAttributes(customer.getAddress(), optionalId)));
     }
 }

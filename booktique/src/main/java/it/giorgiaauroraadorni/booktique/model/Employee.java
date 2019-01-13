@@ -1,5 +1,7 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -7,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "employees")
-public class Employee extends Person {
+public class Employee extends Person implements EntityEqualsByAttributes {
 
     @Column(unique = true, length = 32, nullable = false)
     @Size(min = 5)
@@ -66,39 +68,18 @@ public class Employee extends Person {
         this.password = password;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Employee)) return false;
-        if(!(super.equalsByAttributes(expectedObject))) return false;
-        Employee employee = (Employee) expectedObject;
-        return this.equalsByAttributesWithoutId(expectedObject) &&
-                (getAddress() == employee.getAddress() ||
-                        (getAddress() != null && getAddress().equalsByAttributes(employee.getAddress())));
-                // ignore supervisor to avoid StackOverflowError
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
     @Override
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Employee)) return false;
-        if(!(super.equalsByAttributesWithoutId(expectedObject))) return false;
         Employee employee = (Employee) expectedObject;
+        if(!(super.equalsByAttributes(employee, optionalId))) return false;
         return Objects.equals(getUsername(), employee.getUsername()) &&
                 Objects.equals(getPassword(), employee.getPassword()) &&
-                (getHireDate() == employee.getHireDate() ||
-                        (getHireDate() != null && getHireDate().isEqual(employee.getHireDate()))) &&
-                (getAddress() == employee.getAddress() ||
-                        (getAddress() != null && getAddress().equalsByAttributesWithoutId(employee.getAddress())));
+                (getHireDate() == employee.getHireDate() || (getHireDate() != null &&
+                        getHireDate().isEqual(employee.getHireDate()))) &&
+                (getAddress() == employee.getAddress() || (getAddress() != null &&
+                        getAddress().equalsByAttributes(employee.getAddress(), optionalId)));
                 // ignore supervisor to avoid StackOverflowError
     }
 }

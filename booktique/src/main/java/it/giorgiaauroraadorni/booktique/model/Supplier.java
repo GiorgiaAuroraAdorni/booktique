@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="suppliers")
-public class Supplier extends AuditModel implements EntityToDict {
+public class Supplier extends AuditModel implements EntityToDict, EntityEqualsByAttributes {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -74,30 +75,18 @@ public class Supplier extends AuditModel implements EntityToDict {
         this.address = address;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributes(Object expectedObject) {
-        Supplier supplier = (Supplier) expectedObject;
-        return Objects.equals(getId(), supplier.getId()) &&
-                this.equalsByAttributesWithoutId(expectedObject);
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
+    @Override
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Supplier)) return false;
         Supplier supplier = (Supplier) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), supplier.getId()))) return false;
+        }
         return Objects.equals(getCompanyName(), supplier.getCompanyName()) &&
                 getEmail().equals(supplier.getEmail()) &&
                 getPhoneNumber().equals(supplier.getPhoneNumber()) &&
-                getAddress().equalsByAttributesWithoutId(supplier.getAddress());
+                getAddress().equalsByAttributes(supplier.getAddress(), false);
     }
 
     @Override

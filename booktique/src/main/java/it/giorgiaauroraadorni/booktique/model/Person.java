@@ -101,27 +101,18 @@ public abstract class Person extends AuditModel {
      * @param expectedObject
      * @return
      */
-    public boolean equalsByAttributes(Object expectedObject) {
+    public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Person)) return false;
         Person person = (Person) expectedObject;
-        return Objects.equals(getId(), person.getId()) &&
-                this.equalsByAttributesWithoutId(expectedObject);
-    }
-
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
-    public boolean equalsByAttributesWithoutId(Object expectedObject) {
-        if (this == expectedObject) return true;
-        if (!(expectedObject instanceof Person)) return false;
-        Person person = (Person) expectedObject;
+        if (optionalId) {
+            if (!(Objects.equals(getId(), person.getId()))) return false;
+        }
         return Objects.equals(getFiscalCode(), person.getFiscalCode()) &&
                 Objects.equals(getName(), person.getName()) &&
                 Objects.equals(getSurname(), person.getSurname()) &&
-                (getDateOfBirth() == person.getDateOfBirth() || (getDateOfBirth() != null && getDateOfBirth().isEqual(person.getDateOfBirth()))) &&
+                (getDateOfBirth() == person.getDateOfBirth() || (getDateOfBirth() != null
+                        && getDateOfBirth().isEqual(person.getDateOfBirth()))) &&
                 getEmail().equals(person.getEmail()) &&
                 getMobilePhone().equals(person.getMobilePhone());
     }
