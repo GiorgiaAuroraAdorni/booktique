@@ -91,7 +91,7 @@ The application consists of two parts:
   - **BooktiqueApplication** is the class that serves as the entrypoint of the app.
   - **`model`** contains the models used by the application. The domain models are the java classes that are mapped to the corresponding tables in the database. Every model is decorated with Hibernate annotations in order to perform operations on the relational database.
 
-  - **`repository`** contains repository interfaces for all models, excluding abstract classes. *Spring Data JPA* create automatically a repository implementations from the repository interface. Extending **JpaRepository** every repository inherits several methods for working with entity persistence, including methods that implement CRUD operations such as save and delete,  but also for entity search operations.  
+  - **`repository`** contains repository interfaces for all models, excluding abstract classes. *Spring Data JPA* create automatically a repository implementations from the repository interface. Extending **JpaRepository** every repository inherits several methods for working with entity persistence, including methods that implement CRUD operations such as save and delete, but also for entity search operations.  
     *Spring Data JPA* also allows defining other custom query methods by simply declaring their method signature. For all models, customized `findBy{...}()` methods have been implemented. For example in the case of **BookRepository** the `findByAuthors_Name()` method.
   - **`utility`** contains useful classes and interface for operating on associations and entities:
     - **Associations** a class containing a static method that returns `true` if two associations are equal to each other.
