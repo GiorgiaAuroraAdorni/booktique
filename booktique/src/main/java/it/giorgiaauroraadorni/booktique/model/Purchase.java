@@ -110,7 +110,7 @@ public class Purchase extends AuditModel implements EntityEqualsByAttributes {
 
     /**
      * Return the items that must be NonNull.
-     * @return
+     * @return the item set.
      */
     @NonNull
     public Set<Item> getItems() {
@@ -120,11 +120,11 @@ public class Purchase extends AuditModel implements EntityEqualsByAttributes {
     /**
      * Sets the items collection.
      * setItems(null) or setItems(Collections.emptySet()) cause a warning and return an exception
-     * @param items
+     * @param items element to add to the set.
      */
     public void setItems(@NonNull Set<Item> items) {
         if (items.isEmpty()) {
-            throw new DataIntegrityViolationException("Invalid puchase. No items have been added to the purchase.");
+            throw new DataIntegrityViolationException("Invalid purchase. No items have been added to the purchase.");
         } else {
             this.items = Objects.requireNonNull(items);
         }
@@ -142,13 +142,13 @@ public class Purchase extends AuditModel implements EntityEqualsByAttributes {
      * Called before every insertion and every update to check in the first case that at least one item has been added
      * to the purchase, and in the second case to verify that all the items have not been deleted from the purchase.
      * An exception is returned if one of the previous cases occurs in order to avoid the creation of empty orders.
-     * @throws DataIntegrityViolationException
+     * @throws DataIntegrityViolationException when no items have been added to the purchase.
      */
     @PrePersist
     @PreUpdate
     public void deniedEmptyPurchaseItems() throws DataIntegrityViolationException {
         if (this.getItems() == null || this.getItems().isEmpty()) {
-            throw new DataIntegrityViolationException("Invalid puchase. No items have been added to the purchase.");
+            throw new DataIntegrityViolationException("Invalid purchase. No items have been added to the purchase.");
         }
     }
 

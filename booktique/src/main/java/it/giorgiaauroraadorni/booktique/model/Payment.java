@@ -82,11 +82,7 @@ public class Payment extends AuditModel implements EntityEqualsByAttributes {
         this.paymentDate = paymentDate;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
+    @Override
     public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Payment)) return false;

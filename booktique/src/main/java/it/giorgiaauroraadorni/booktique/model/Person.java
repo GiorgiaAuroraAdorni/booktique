@@ -1,5 +1,6 @@
 package it.giorgiaauroraadorni.booktique.model;
 
+import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Person extends AuditModel {
+public abstract class Person extends AuditModel implements EntityEqualsByAttributes {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -96,11 +97,7 @@ public abstract class Person extends AuditModel {
         this.dateOfBirth = dateOfBirth;
     }
 
-    /**
-     *
-     * @param expectedObject
-     * @return
-     */
+    @Override
     public boolean equalsByAttributes(Object expectedObject, boolean optionalId) {
         if (this == expectedObject) return true;
         if (!(expectedObject instanceof Person)) return false;

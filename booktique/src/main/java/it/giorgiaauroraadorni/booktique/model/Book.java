@@ -170,7 +170,7 @@ public class Book extends AuditModel implements Serializable, EntityToDict, Enti
 
     /**
      * Set both sides of the association, adding a prequel to the book and setting the book as a sequel for the prequel
-     * @param prequel
+     * @param prequel to add to the book.
      */
     public void addPrequel(Book prequel) {
         if (prequel == null) {
@@ -182,7 +182,7 @@ public class Book extends AuditModel implements Serializable, EntityToDict, Enti
     }
     /**
      * Set both sides of the association, adding a sequel to the book and setting the book as a prequel for the sequel
-     * @param sequel
+     * @param sequel to add to the book.
      */
     public void addSequel(Book sequel) {
         if (sequel == null) {
@@ -213,7 +213,7 @@ public class Book extends AuditModel implements Serializable, EntityToDict, Enti
      * Called before every insertion and every update to check in the first case that at least one author has been added
      * to the book, and in the second case to verify that all the authors have not been deleted from the book.
      * An exception is returned if one of the previous cases occurs in order to avoid the creation of book without authors.
-     * @throws DataIntegrityViolationException
+     * @throws DataIntegrityViolationException when no authors have been added to the book.
      */
     @PrePersist
     @PreUpdate
