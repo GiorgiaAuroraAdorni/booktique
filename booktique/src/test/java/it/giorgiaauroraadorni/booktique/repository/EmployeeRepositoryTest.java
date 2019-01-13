@@ -19,7 +19,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -60,7 +60,7 @@ class EmployeeRepositoryTest {
     /* Test CRUD operations */
 
     /**
-     * Insert many entries in the repository and check if these are readable and the attributes are correct
+     * Insert many entries in the repository and check if these are readable and the attributes are correct.
      */
     @Test
     public void testCreateEmployee() {
@@ -82,7 +82,7 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create an employee without mandatory attributes
+     * Throws an exception when attempting to create an employee without mandatory attributes.
      */
     @Test
     public void testIllegalCreateEmployee() {
@@ -166,6 +166,9 @@ class EmployeeRepositoryTest {
         }
     }
 
+    /**
+     * Test the correct persistence of employee supervisors.
+     */
     @Test
     public void testEmployeeSupervisor() {
         for (Employee e: dummyEmployees) {
@@ -289,7 +292,7 @@ class EmployeeRepositoryTest {
     }
 
     /**
-     * Update one entry partially, edit different attributes and check if the fields are changed correctly
+     * Update one entry partially, edit different attributes and check if the fields are changed correctly.
      */
     @Test
     public void testUpdateEmployee() {
@@ -310,7 +313,7 @@ class EmployeeRepositoryTest {
 
         savedEmployee = employeeRepository.save(savedEmployee);
 
-        // clear the memory in order to get a new istance of the saved employee from the db
+        // clear the memory in order to get a new instance of the saved employee from the db
         employeeRepository.flush();
         entityManager.clear();
 
@@ -349,7 +352,7 @@ class EmployeeRepositoryTest {
 
         savedAddress = addressRepository.save(savedAddress);
 
-        // clear the memory in order to get a new istance of the saved employee and address from the db
+        // clear the memory in order to get a new instance of the saved employee and address from the db
         addressRepository.flush();
         entityManager.clear();
 
@@ -380,7 +383,7 @@ class EmployeeRepositoryTest {
 
         savedSupervisor = employeeRepository.save(savedSupervisor);
 
-        // clear the memory in order to get a new istance of the saved employee and supervisor from the db
+        // clear the memory in order to get a new instance of the saved employee and supervisor from the db
         addressRepository.flush();
         entityManager.clear();
 
@@ -436,7 +439,7 @@ class EmployeeRepositoryTest {
         Employee supervisor = employee.getSupervisor();
         employeeRepository.delete(supervisor);
 
-        // clear the memory in order to get a new istance of the saved employee and supervisor from the db
+        // clear the memory in order to get a new instance of the saved employee and supervisor from the db
         addressRepository.flush();
         entityManager.clear();
 
@@ -452,7 +455,7 @@ class EmployeeRepositoryTest {
         employeeRepository.delete(supervisor);
         employeeRepository.save(employee);
 
-        // clear the memory in order to get a new istance of the saved employee and supervisor from the db
+        // clear the memory in order to get a new instance of the saved employee and supervisor from the db
         addressRepository.flush();
         entityManager.clear();
 

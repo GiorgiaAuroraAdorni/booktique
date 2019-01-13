@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAssociationEquals;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -52,10 +54,10 @@ class BookRepositoryTest {
         dummyBooks = bookRepository.saveAll(dummyBooks);
     }
 
-    /* Test CRUD operations */
-
     @Test
     void repositoryLoads() {}
+
+    /* Test CRUD operations */
 
     /**
      * Insert many entries in the repository and check if these are readable and the attributes are correct.
@@ -75,7 +77,7 @@ class BookRepositoryTest {
 
             // check that all the attributes have been created correctly and contain the expected value
             assertAttributesEquals(bookFactory.createValidEntity(i), dummyBooks.get(i), false);
-            assertAssociationEquals(dummyBooks.get(i).getAuthors(), Set.of(authorFactory.createValidEntity(i)), false);
+            assertAssociationEquals(Set.of(authorFactory.createValidEntity(i)), dummyBooks.get(i).getAuthors(), false);
         }
     }
 
@@ -99,8 +101,8 @@ class BookRepositoryTest {
     }
 
     /**
-     * Creates a book with the same ISBN of another and throws an exception when attempting to insert data
-     * by violating the unique constraints on the properties that constitute a natural-id.
+     * Creates a book with the same ISBN of another and throws an exception when attempting to insert data by
+     * violating the unique constraints on the properties that constitute a natural-id.
      */
     @Test
     public void testUniqueBookIdentifier() {
@@ -230,7 +232,7 @@ class BookRepositoryTest {
 
         savedBook = bookRepository.save(savedBook);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get a new instance of the saved book from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -316,8 +318,7 @@ class BookRepositoryTest {
         // check that the sequel book attributes have been updated correctly and contain the expected value
         assertNotNull(updatedSequel.getPrequel());
         assertAttributesEquals(prequel, updatedSequel.getPrequel(), true);
-        assertEquals("Nuovo sottotitolo", updatedSequel.getPrequel().getSubtitle());
-        assertEquals("Nuovo titolo", updatedSequel.getPrequel().getTitle());
+        assertAttributesEquals(prequel, updatedPrequel, true);
 
         // check that the prequel book attributes have been updated correctly and contain the expected value
         assertAttributesEquals(prequel, updatedPrequel, true);
@@ -361,7 +362,7 @@ class BookRepositoryTest {
         sequel.addPrequel(null);
         sequel = bookRepository.save(sequel);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get a new instance of the saved book from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -371,6 +372,7 @@ class BookRepositoryTest {
         // check the existence of the sequel, the inexistence of the prequel and that the sequel book attributes have
         // been updated correctly
         assertTrue(bookRepository.existsById(updatedSequel.getId()));
+        assertFalse(bookRepository.existsById(prequel.getId()));
         assertNull(updatedSequel.getPrequel());
         assertAttributesEquals(sequel, updatedSequel, true);
     }
@@ -389,7 +391,7 @@ class BookRepositoryTest {
         prequel.addSequel(null);
         prequel = bookRepository.save(prequel);
 
-        // clear the memory in order to get a new istance of the saved book from the db
+        // clear the memory in order to get a new instance of the saved book from the db
         bookRepository.flush();
         entityManager.clear();
 
@@ -399,6 +401,7 @@ class BookRepositoryTest {
         // check the existence of the prequel, the inexistence of the sequel and that the prequel book attributes
         // have been updated correctly
         assertTrue(bookRepository.existsById(updatedPrequel.getId()));
+        assertFalse(bookRepository.existsById(sequel.getId()));
         assertNull(updatedPrequel.getSequel());
         assertAttributesEquals(prequel, updatedPrequel, true);
     }
@@ -414,10 +417,10 @@ class BookRepositoryTest {
         authorRepository.deleteAll();
 
         // throws an exception when attempting to delete an author of a book
+        assertTrue(bookRepository.existsById(book.getId()));
+
         assertThrows(AssertionFailedError.class, () -> {
             assertTrue(authorRepository.findAll().isEmpty());
-            assertNull(bookRepository.findById(book.getId()).get().getAuthors());
-            assertNotEquals(authors, bookRepository.findById(book.getId()).get().getAuthors());
         }, "It's not possible to delete an author if he has written a book!");
     }
 

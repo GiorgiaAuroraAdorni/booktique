@@ -1,7 +1,6 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
 import it.giorgiaauroraadorni.booktique.model.Address;
-import it.giorgiaauroraadorni.booktique.model.Book;
 import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -188,7 +187,7 @@ class AddressRepositoryTest {
 
         savedAddress = addressRepository.save(savedAddress);
 
-        // clear the memory in order to get a new istance of the saved address from the db
+        // clear the memory in order to get a new instance of the saved address from the db
         addressRepository.flush();
         entityManager.clear();
 

@@ -14,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,9 +34,6 @@ class SupplierRepositoryTest {
 
     @Autowired
     private EntityFactory<Supplier> supplierFactory;
-
-    @Autowired
-    private EntityFactory<Address> addressFactory;
 
     private List<Supplier> dummySuppliers;
 

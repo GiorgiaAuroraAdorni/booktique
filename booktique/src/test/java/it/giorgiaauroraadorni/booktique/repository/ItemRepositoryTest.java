@@ -1,6 +1,9 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
-import it.giorgiaauroraadorni.booktique.model.*;
+import it.giorgiaauroraadorni.booktique.model.Book;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
+import it.giorgiaauroraadorni.booktique.model.Item;
+import it.giorgiaauroraadorni.booktique.model.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -15,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -39,9 +42,6 @@ class ItemRepositoryTest {
 
     @Autowired
     private EntityFactory<Book> bookFactory;
-
-    @Autowired
-    private EntityFactory<Supplier> supplierFactory;
 
     private List<Item> dummyItems;
 
@@ -147,7 +147,7 @@ class ItemRepositoryTest {
         // update the item object
         savedItem = itemRepository.save(savedItem);
 
-        // clear the memory in order to get a new istance of the saved item from the db
+        // clear the memory in order to get a new instance of the saved item from the db
         itemRepository.flush();
         entityManager.clear();
 
@@ -174,7 +174,7 @@ class ItemRepositoryTest {
 
         savedSupplier = supplierRepository.save(savedSupplier);
 
-        // clear the memory in order to get a new istance of the saved item from the db
+        // clear the memory in order to get a new instance of the saved item from the db
         itemRepository.flush();
         entityManager.clear();
 
@@ -202,7 +202,7 @@ class ItemRepositoryTest {
 
         savedBook = bookRepository.save(savedBook);
 
-        // clear the memory in order to get a new istance of the saved item from the db
+        // clear the memory in order to get a new instance of the saved item from the db
         itemRepository.flush();
         entityManager.clear();
 

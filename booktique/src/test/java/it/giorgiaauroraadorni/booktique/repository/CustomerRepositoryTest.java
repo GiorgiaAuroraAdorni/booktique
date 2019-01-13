@@ -1,6 +1,8 @@
 package it.giorgiaauroraadorni.booktique.repository;
 
-import it.giorgiaauroraadorni.booktique.model.*;
+import it.giorgiaauroraadorni.booktique.model.Address;
+import it.giorgiaauroraadorni.booktique.model.Customer;
+import it.giorgiaauroraadorni.booktique.model.EntityFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -17,7 +19,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -306,7 +308,7 @@ class CustomerRepositoryTest {
 
         savedCustomer = customerRepository.save(savedCustomer);
 
-        // clear the memory in order to get a new istance of the saved customer from the db
+        // clear the memory in order to get a new instance of the saved customer from the db
         customerRepository.flush();
         entityManager.clear();
 
@@ -346,7 +348,7 @@ class CustomerRepositoryTest {
 
         savedAddress = addressRepository.save(savedAddress);
 
-        // clear the memory in order to get a new istance of the saved customer and address from the db
+        // clear the memory in order to get a new instance of the saved customer and address from the db
         addressRepository.flush();
         entityManager.clear();
 
@@ -394,7 +396,7 @@ class CustomerRepositoryTest {
         Address customerAddress = savedCustomer.getAddress();
         addressRepository.delete(customerAddress);
 
-        // clear the memory in order to get a new istance of the saved customer and address from the db
+        // clear the memory in order to get a new instance of the saved customer and address from the db
         addressRepository.flush();
         entityManager.clear();
 

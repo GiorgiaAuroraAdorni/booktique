@@ -15,9 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -55,7 +55,7 @@ class AuthorRepositoryTest {
         for (int i = 0; i < dummyAuthors.size(); i++) {
             // check if the repository is populated
             assertNotEquals(0, authorRepository.count());
-            assertNotNull(authorRepository.existsById(dummyAuthors.get(i).getId()));
+            assertTrue(authorRepository.existsById(dummyAuthors.get(i).getId()));
 
             // check if the authors contain the createdAt and updatedAt annotation that are automatically populate,
             // and check if the books id are correctly automatic generated
@@ -257,7 +257,7 @@ class AuthorRepositoryTest {
 
         savedAuthor = authorRepository.save(savedAuthor);
 
-        // clear the memory in order to get a new istance of the saved author from the db
+        // clear the memory in order to get a new instance of the saved author from the db
         authorRepository.flush();
         entityManager.clear();
 

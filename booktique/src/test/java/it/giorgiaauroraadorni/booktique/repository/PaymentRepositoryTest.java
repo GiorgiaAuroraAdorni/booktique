@@ -13,9 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -175,7 +175,7 @@ class PaymentRepositoryTest {
 
         savedPayment = paymentRepository.save(savedPayment);
 
-        // clear the memory in order to get a new istance of the saved payment from the db
+        // clear the memory in order to get a new instance of the saved payment from the db
         paymentRepository.flush();
         entityManager.clear();
 

@@ -13,9 +13,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static it.giorgiaauroraadorni.booktique.utility.Assertions.*;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAssociationEquals;
+import static it.giorgiaauroraadorni.booktique.utility.Assertions.assertAttributesEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -149,7 +152,7 @@ class PurchaseRepositoryTest {
     }
 
     /**
-     * Test the correct persist of customer.
+     * Test the correct persistence of customer.
      */
     @Test
     public void testPurchaseCustomer() {
@@ -159,7 +162,7 @@ class PurchaseRepositoryTest {
     }
 
     /**
-     * Test the correct persist of employee.
+     * Test the correct persistence of employee.
      */
     @Test
     public void testPurchaseEmployee() {
@@ -169,7 +172,7 @@ class PurchaseRepositoryTest {
     }
 
     /**
-     * Test the correct persist of payment details.
+     * Test the correct persistence of payment details.
      */
     @Test
     public void testPurchasePaymentDetails() {
@@ -179,7 +182,7 @@ class PurchaseRepositoryTest {
     }
 
     /**
-     * Test the correct persist of items.
+     * Test the correct persistence of items.
      */
     @Test
     public void testPurchaseItems() {
@@ -310,8 +313,7 @@ class PurchaseRepositoryTest {
 
     /**
      * Update the payment details of an entry editing different attributes and check if the fields are changed correctly
-     * and
-     * that the purchase was updated.
+     * and that the purchase was updated.
      */
     @Test
     public void testUpdatePurchasePaymentDetails() {
