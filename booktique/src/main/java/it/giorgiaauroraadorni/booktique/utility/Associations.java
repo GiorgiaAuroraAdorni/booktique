@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Associations {
     /**
-     * Compare to set of entity instances that represent the associations.
+     * Compare two set of entity instances that represent the associations.
      * Return {@code true} is the associations are equal to each other and {@code false} otherwise.
      * During the comparison is considered all the attributes of the entities. To do that is use a dictionary
      * containing the fields of the reference entities.
