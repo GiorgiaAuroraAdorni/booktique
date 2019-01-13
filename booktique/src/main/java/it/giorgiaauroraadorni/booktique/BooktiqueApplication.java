@@ -13,7 +13,7 @@ public class BooktiqueApplication {
 
     @RequestMapping("/")
     public String home() {
-        return "Hello Docker World";
+        return "Booktique";
     }
 
     public static void main(String[] args) {
