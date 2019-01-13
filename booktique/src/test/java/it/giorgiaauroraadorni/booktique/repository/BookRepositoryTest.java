@@ -93,6 +93,22 @@ class BookRepositoryTest {
         });
     }
 
+    /**
+     * Throws an exception when attempting to create a book without authors.
+     */
+    @Test
+    public void testCreationDeniesWithoutAuthors() {
+        Book invalidBook = new Book();
+
+        invalidBook.setIsbn("978-00-00-00000-5");
+        invalidBook.setTitle("Titolo");
+        invalidBook.setPublisher("Editore");
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            bookRepository.saveAndFlush(invalidBook);
+        });
+    }
+
     @Test
     public void testSave() {
         var book = bookFactory.createValidEntity(3);

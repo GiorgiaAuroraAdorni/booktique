@@ -3,6 +3,8 @@ package it.giorgiaauroraadorni.booktique.model;
 import it.giorgiaauroraadorni.booktique.utility.EntityEqualsByAttributes;
 import it.giorgiaauroraadorni.booktique.utility.EntityToDict;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -93,12 +95,21 @@ public class Book extends AuditModel implements Serializable, EntityToDict, Enti
         this.subtitle = subtitle;
     }
 
+    /**
+     * It's not possible to set authors as null.
+     * @return set of authors
+     */
+    @NonNull
     public Set<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
+    public void setAuthors(@NonNull Set<Author> authors) {
+        if (authors.isEmpty()) {
+            throw new DataIntegrityViolationException("Invalid book. No authors have been added to the book.");
+        } else {
+            this.authors = Objects.requireNonNull(authors);
+        }
     }
 
     public String getPublisher() {
@@ -195,6 +206,20 @@ public class Book extends AuditModel implements Serializable, EntityToDict, Enti
             sequel.setPrequel(null);
         } else if (prequel != null) {
             prequel.setSequel(null);
+        }
+    }
+
+    /**
+     * Called before every insertion and every update to check in the first case that at least one author has been added
+     * to the book, and in the second case to verify that all the authors have not been deleted from the book.
+     * An exception is returned if one of the previous cases occurs in order to avoid the creation of book without authors.
+     * @throws DataIntegrityViolationException
+     */
+    @PrePersist
+    @PreUpdate
+    public void deniedEmptyBookAuthors() throws DataIntegrityViolationException {
+        if (this.getAuthors() == null || this.getAuthors().isEmpty()) {
+            throw new DataIntegrityViolationException("Invalid book. No authors have been added to the book.");
         }
     }
 

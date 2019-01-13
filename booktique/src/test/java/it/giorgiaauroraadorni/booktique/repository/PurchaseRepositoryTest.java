@@ -111,10 +111,10 @@ class PurchaseRepositoryTest {
     }
 
     /**
-     * Throws an exception when attempting to create a purchase without items
+     * Throws an exception when attempting to create a purchase without items.
      */
     @Test
-    public void testCreationDeniesWithoutItem() {
+    public void testCreationDeniesWithoutItems() {
         Purchase invalidPurchase = new Purchase();
 
         var employee = employeeFactory.createValidEntity(2);

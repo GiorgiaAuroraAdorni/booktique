@@ -29,7 +29,7 @@ public class BookFactory implements EntityFactory<Book> {
         book.setLanguage("Lingua");
         book.setPublicationDate(LocalDate.of(1999, 1, 1));
 
-        // association withs authors
+        // mandatory association withs authors
         Set<Author> authors = new HashSet<>();
         authors.add(author);
         book.setAuthors(authors);
