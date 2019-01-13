@@ -35,6 +35,10 @@ $ docker-compose run app mvn test
 Booktique is a system that implements an online book store. <!-- spiegazione generale -->   
 The basic interface involves querying books according to the fields ISBN, title, author, publisher, language etc. We support services for buying books. We build a personal profile page which is used for handling customer orders. We implement a ”recommendation system” for recommending related books (prequels and sequels) based on those searched and purchased. 
 
+### Model
+
+![alt text](images/ER-Booktique.PNG)
+
 #### Entities
 
 The model is composed of 9 entities:
